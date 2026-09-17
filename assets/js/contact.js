@@ -1,7 +1,8 @@
 /**
  * Karl Evan Tabunda - Contact Form Module
- * Implements client-side form validation and explicit mailto action.
- * Strictly adheres to truthful frontend UX: never fabricates server receipt.
+ * Directly delivers user inquiries to tabunda.karlevan@ncst.edu.ph via FormSubmit AJAX service.
+ * Includes client-side input validation, loading states, success confirmation,
+ * and resilient mailto fallback if network is unreachable.
  */
 
 const ContactManager = (() => {
@@ -9,9 +10,11 @@ const ContactManager = (() => {
   let nameInput = null;
   let emailInput = null;
   let messageInput = null;
+  let submitBtn = null;
   let statusArea = null;
 
   const TARGET_EMAIL = "tabunda.karlevan@ncst.edu.ph";
+  const FORMSUBMIT_ENDPOINT = `https://formsubmit.co/ajax/${TARGET_EMAIL}`;
 
   /**
    * Validate standard email pattern
@@ -48,7 +51,7 @@ const ContactManager = (() => {
   }
 
   /**
-   * Validate entire form
+   * Validate entire form inputs
    */
   function validate() {
     let isValid = true;
@@ -90,13 +93,47 @@ const ContactManager = (() => {
   }
 
   /**
-   * Handle form submission
+   * Escape HTML utility
    */
-  function handleSubmit(e) {
+  function escapeHtml(str) {
+    if (!str) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  /**
+   * Set submit button loading state
+   */
+  function setLoading(isLoading) {
+    if (!submitBtn) return;
+    submitBtn.disabled = isLoading;
+    if (isLoading) {
+      submitBtn.innerHTML = `
+        <span class="matrix-spinner" style="width: 14px; height: 14px; border-width: 2px;" aria-hidden="true"></span>
+        <span>Sending message...</span>
+      `;
+    } else {
+      submitBtn.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+        <span>Send Message</span>
+      `;
+    }
+  }
+
+  /**
+   * Handle form submission — directly delivers message to TARGET_EMAIL
+   */
+  async function handleSubmit(e) {
     e.preventDefault();
 
     if (!validate()) {
-      // Focus first error field
       const firstError = form.querySelector(".has-error");
       if (firstError) firstError.focus();
       return;
@@ -106,31 +143,82 @@ const ContactManager = (() => {
     const email = emailInput.value.trim();
     const message = messageInput.value.trim();
 
-    const subject = encodeURIComponent(`Portfolio Inquiry from ${name}`);
-    const body = encodeURIComponent(
-      `Hello Karl,\n\n${message}\n\n---\nSender: ${name}\nEmail: ${email}`
-    );
+    setLoading(true);
 
-    const mailtoUrl = `mailto:${TARGET_EMAIL}?subject=${subject}&body=${body}`;
-
-    // Display clear, honest instructions to user
     if (statusArea) {
-      statusArea.innerHTML = `
-        <div class="contact-notice contact-notice-success" role="status">
-          <div class="contact-notice-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-          </div>
-          <div class="contact-notice-content">
-            <p><strong>Launching your email client...</strong></p>
-            <p>Since this is a static site without a backend, your default mail client is opening with your message pre-addressed to <code>${TARGET_EMAIL}</code>.</p>
-            <p class="contact-notice-manual">If your email client didn't open automatically, <a href="${mailtoUrl}" class="direct-mail-btn">click here to send email</a> or copy the address directly.</p>
-          </div>
-        </div>
-      `;
+      statusArea.innerHTML = "";
     }
 
-    // Trigger mailto link
-    window.location.href = mailtoUrl;
+    try {
+      const response = await fetch(FORMSUBMIT_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          message: message,
+          _subject: `New Portfolio Inquiry from ${name}`,
+          _template: "table",
+          _captcha: "false"
+        })
+      });
+
+      const result = await response.json();
+
+      if (response.ok && (result.success === "true" || result.success === true || result.message)) {
+        // Success: Message sent directly to Karl Evan's email
+        if (statusArea) {
+          statusArea.innerHTML = `
+            <div class="contact-notice contact-notice-success" role="status">
+              <div class="contact-notice-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+              </div>
+              <div class="contact-notice-content">
+                <p><strong>Message sent directly to Karl Evan!</strong></p>
+                <p>Thank you, <strong>${escapeHtml(name)}</strong>. Your message has been delivered to <code>${TARGET_EMAIL}</code>. I'll get back to you shortly.</p>
+              </div>
+            </div>
+          `;
+        }
+        form.reset();
+      } else {
+        throw new Error(result.message || "Delivery failed");
+      }
+    } catch (err) {
+      console.warn("Direct message delivery failed, presenting mailto fallback:", err);
+
+      const subject = encodeURIComponent(`Portfolio Inquiry from ${name}`);
+      const body = encodeURIComponent(
+        `Hello Karl,\n\n${message}\n\n---\nSender: ${name}\nEmail: ${email}`
+      );
+      const mailtoUrl = `mailto:${TARGET_EMAIL}?subject=${subject}&body=${body}`;
+
+      if (statusArea) {
+        statusArea.innerHTML = `
+          <div class="contact-notice contact-notice-error" role="status">
+            <div class="contact-notice-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <div class="contact-notice-content">
+              <p><strong>Direct delivery could not be completed online.</strong></p>
+              <p>Please <a href="${mailtoUrl}" class="direct-mail-btn">click here to send via your email client</a> directly to <code>${TARGET_EMAIL}</code>.</p>
+            </div>
+          </div>
+        `;
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
   /**
@@ -142,6 +230,7 @@ const ContactManager = (() => {
     emailInput = document.getElementById("contact-email");
     messageInput = document.getElementById("contact-message");
     statusArea = document.getElementById("contact-status");
+    submitBtn = form ? form.querySelector('button[type="submit"]') : null;
 
     if (!form) return;
 

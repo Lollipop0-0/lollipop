@@ -543,6 +543,16 @@
   color: var(--primary);
 }
 
+.contact-notice-error {
+  background-color: rgba(239, 68, 68, 0.08);
+  border: 1px solid #ef4444;
+  color: var(--primary);
+}
+
+.contact-notice-error .contact-notice-icon {
+  color: #ef4444;
+}
+
 .contact-notice-icon {
   color: var(--accent);
   flex-shrink: 0;

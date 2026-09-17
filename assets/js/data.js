@@ -15,7 +15,7 @@ const PORTFOLIO_DATA = {
     email: "tabunda.karlevan@ncst.edu.ph",
     github: "https://github.com/Lollipop0-0",
     githubUsername: "Lollipop0-0",
-    linkedin: "https://www.linkedin.com/in/karlevantabunda",
+    linkedin: "https://www.linkedin.com/in/tabunda-karl-evan-r-44b4a1381/",
     facebook: "https://www.facebook.com/karl.evan.tabunda.2024",
     resumeUrl: "assets/documents/Karl-Evan-Tabunda-Resume.pdf",
     bio: "Information Technology student exploring software development, web applications, databases, and UI/UX through real projects.",

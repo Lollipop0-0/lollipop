@@ -848,41 +848,71 @@
   color: var(--accent);
 }
 
-/* View Mode Toggle Pill */
-.gh-mode-toggle {
+/* Live Status & GitHub Profile Button */
+.gh-matrix-header-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.gh-live-indicator {
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   background-color: var(--surface-alt);
   border: 1px solid var(--border);
   border-radius: var(--radius-full);
-  padding: 2px;
-  gap: 2px;
-}
-
-.gh-toggle-btn {
-  background: transparent;
-  border: none;
   padding: 4px 10px;
+  font-family: var(--font-mono);
   font-size: 0.75rem;
-  font-weight: 600;
   color: var(--secondary);
+}
+
+.gh-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #22c55e;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25);
+  animation: ghLivePulse 2s infinite;
+}
+
+@keyframes ghLivePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 5px rgba(34, 197, 94, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+.gh-profile-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: transparent;
+  border: 1px solid var(--border);
   border-radius: var(--radius-full);
-  cursor: pointer;
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-decoration: none;
   transition: all var(--transition-fast);
-  font-family: inherit;
 }
 
-.gh-toggle-btn:hover {
+.gh-profile-btn:hover {
   color: var(--primary);
-}
-
-.gh-toggle-btn.active {
-  background-color: var(--accent);
-  color: #ffffff;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  border-color: var(--secondary);
+  background-color: var(--surface-alt);
 }
 
 .gh-matrix-card-body {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -894,7 +924,7 @@
   max-width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 4px 0 8px 0;
+  padding: 6px 0 10px 0;
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
 }
@@ -910,6 +940,43 @@
 .gh-matrix-scroll-wrapper::-webkit-scrollbar-thumb {
   background: var(--border);
   border-radius: 4px;
+}
+
+/* Floating Matrix Tooltip */
+.matrix-tooltip {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  background-color: #0f172a;
+  color: #f8fafc;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 5px 11px;
+  border-radius: var(--radius-xs);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 50;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.matrix-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 4px;
+  border-style: solid;
+  border-color: #0f172a transparent transparent transparent;
+}
+
+.matrix-tooltip.is-visible {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* Native SVG Contribution Calendar */
@@ -946,6 +1013,60 @@
   stroke-width: 1.5px;
   transform: scale(1.15);
   transform-origin: center;
+}
+
+.matrix-cell:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  stroke: var(--primary);
+  stroke-width: 1.5px;
+  transform: scale(1.2);
+  transform-origin: center;
+}
+
+/* Loading & Error Placeholders */
+.matrix-loading-placeholder {
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+.matrix-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: ghSpinner 0.8s linear infinite;
+}
+
+@keyframes ghSpinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.matrix-error-placeholder {
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  text-align: center;
+  padding: 16px;
+}
+
+.matrix-error-text {
+  font-family: var(--font-mono);
+  color: var(--secondary);
 }
 
 /* Cell Colors - Light Theme matching mockup blues */

@@ -1,0 +1,15 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/contributions.php"
+  to = "/.netlify/functions/contributions"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/contributions"
+  to = "/.netlify/functions/contributions"
+  status = 200
+  force = true

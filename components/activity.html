@@ -1,56 +1,68 @@
-<!-- Code Activity Section (Public GitHub REST & GraphQL API) -->
+<!-- Code Activity Section (Dynamic GitHub Contribution Matrix & Activity) -->
 <section id="activity" class="activity-section" aria-labelledby="activity-title">
   <div class="container">
     <div class="section-title-wrap" style="margin-bottom: 20px;">
       <h2 id="activity-title" class="activity-title-text">Code Activity</h2>
     </div>
 
-    <!-- Status notice (fallback or rate limit banner) -->
+    <!-- Status notice (fallback or error banner) -->
     <div id="github-status-notice"></div>
 
-    <!-- Two-card Code Activity Layout matching mockup -->
+    <!-- Compact Code Activity Layout -->
     <div class="code-activity-grid">
       <!-- Left Card: Profile & Contribution Matrix -->
       <div class="code-activity-card activity-matrix-card">
-        <!-- Top Profile Row: Avatar + Name + Handle + Live / Mockup Toggle -->
+        <!-- Top Profile Row: Avatar + Name + Handle + Live Status / Profile Link -->
         <div class="gh-matrix-header">
           <div id="github-profile-card" class="gh-profile-compact">
             <div class="gh-profile-user">
-              <img src="assets/images/profile.jpg" alt="Karl Evan Tabunda" class="gh-avatar" width="46" height="46" loading="lazy">
+              <img src="assets/images/profile.jpg" alt="Karl Evan Tabunda" class="gh-avatar" width="46" height="46"
+                loading="lazy">
               <div class="gh-user-meta">
                 <span class="gh-user-fullname">Karl Evan Tabunda</span>
-                <a href="https://github.com/Lollipop0-0" target="_blank" rel="noopener noreferrer" class="gh-user-handle">@KarlEvanTabunda</a>
+                <a href="https://github.com/Lollipop0-0" target="_blank" rel="noopener noreferrer"
+                  class="gh-user-handle">@KarlEvanTabunda</a>
               </div>
             </div>
           </div>
 
-          <!-- View Mode Toggle: Live GitHub API vs Mockup View -->
-          <div class="gh-mode-toggle" id="github-mode-toggle" role="group" aria-label="Matrix view mode">
-            <button type="button" class="gh-toggle-btn active" id="btn-mode-live" title="Show live data from GitHub API">Live API</button>
-            <button type="button" class="gh-toggle-btn" id="btn-mode-mockup" title="Show visual representation from mockup">Mockup View</button>
+          <div class="gh-matrix-header-actions">
+            <span class="gh-live-indicator" title="Live GitHub Activity Sync">
+              <span class="gh-live-dot" aria-hidden="true"></span>
+              <span>Activity Matrix</span>
+            </span>
+            <a href="https://github.com/Lollipop0-0" target="_blank" rel="noopener noreferrer"
+              class="gh-profile-btn" aria-label="Open Karl Evan Tabunda GitHub profile in new tab">
+              <span>github.com/Lollipop0-0</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
           </div>
         </div>
 
-        <!-- Matrix Calendar with Month headers, Day labels, Cells, and Legend -->
+        <!-- Matrix Calendar with Month headers, Day labels, Cells, and Floating Tooltip -->
         <div class="gh-matrix-card-body">
-          <div class="gh-matrix-scroll-wrapper" id="github-matrix-container">
+          <div class="gh-matrix-scroll-wrapper" id="github-matrix-container" role="region" aria-label="GitHub Contribution Graph">
             <div class="matrix-loading-placeholder">
-              <span>Loading GitHub contribution matrix...</span>
+              <span class="matrix-spinner" aria-hidden="true"></span>
+              <span>Loading GitHub contributions...</span>
             </div>
           </div>
+
+          <!-- Dynamic Floating Tooltip -->
+          <div id="matrix-tooltip" class="matrix-tooltip" role="tooltip" aria-hidden="true"></div>
 
           <div class="gh-matrix-footer">
             <div class="gh-matrix-footer-left">
               <span class="gh-total-contribs-badge" id="github-total-contribs">Loading contributions...</span>
             </div>
-            <div class="gh-matrix-legend">
+            <div class="gh-matrix-legend" aria-label="Contribution activity legend">
               <span>Less</span>
               <div class="gh-legend-cells" aria-hidden="true">
-                <span class="gh-legend-cell lvl-0"></span>
-                <span class="gh-legend-cell lvl-1"></span>
-                <span class="gh-legend-cell lvl-2"></span>
-                <span class="gh-legend-cell lvl-3"></span>
-                <span class="gh-legend-cell lvl-4"></span>
+                <span class="gh-legend-cell lvl-0" title="0 contributions"></span>
+                <span class="gh-legend-cell lvl-1" title="1–2 contributions"></span>
+                <span class="gh-legend-cell lvl-2" title="3–5 contributions"></span>
+                <span class="gh-legend-cell lvl-3" title="6–9 contributions"></span>
+                <span class="gh-legend-cell lvl-4" title="10+ contributions"></span>
               </div>
               <span>More</span>
             </div>
@@ -75,4 +87,3 @@
     </div>
   </div>
 </section>
-

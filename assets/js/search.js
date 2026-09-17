@@ -137,8 +137,8 @@ const SearchManager = (() => {
       type: "section",
       badge: "Section",
       title: "Contact / Let's Build Something",
-      desc: "Send an email inquiry, connect on GitHub or LinkedIn",
-      keywords: ["contact", "email", "hire", "message", "linkedin", "github", "form"],
+      desc: "Send an email inquiry, connect on GitHub, LinkedIn, or Facebook",
+      keywords: ["contact", "email", "hire", "message", "linkedin", "github", "facebook", "form"],
       action: () => scrollToSection("contact")
     },
 

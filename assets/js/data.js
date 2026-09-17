@@ -16,6 +16,7 @@ const PORTFOLIO_DATA = {
     github: "https://github.com/Lollipop0-0",
     githubUsername: "Lollipop0-0",
     linkedin: "https://www.linkedin.com/in/karlevantabunda",
+    facebook: "https://www.facebook.com/karl.evan.tabunda.2024",
     resumeUrl: "assets/documents/Karl-Evan-Tabunda-Resume.pdf",
     bio: "Information Technology student exploring software development, web applications, databases, and UI/UX through real projects.",
     extendedBio: "I'm Karl Evan, an IT student passionate about building useful systems and learning new technologies. I enjoy turning ideas into real projects and solving problems through code, design, and collaboration."

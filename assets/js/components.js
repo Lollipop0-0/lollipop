@@ -38,8 +38,8 @@ const ComponentLoader = (() => {
    * @returns {Promise<void>}
    */
   async function loadAll(targetSelector = "#app") {
-    const appEl = typeof targetSelector === "string" 
-      ? document.querySelector(targetSelector) 
+    const appEl = typeof targetSelector === "string"
+      ? document.querySelector(targetSelector)
       : targetSelector;
 
     if (!appEl) {

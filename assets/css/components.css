@@ -12,7 +12,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 22px;
+  padding: 9px 18px;
   font-size: 0.9375rem;
   font-weight: 500;
   border-radius: var(--radius-sm);
@@ -124,7 +124,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
+  padding: 3px 9px;
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -152,7 +152,7 @@
 
 .tech-pill {
   display: inline-block;
-  padding: 4px 12px;
+  padding: 3px 10px;
   font-size: 0.8125rem;
   font-family: var(--font-mono);
   background-color: var(--surface-alt);
@@ -163,7 +163,7 @@
 
 .tech-pill-sm {
   display: inline-block;
-  padding: 2px 8px;
+  padding: 2px 7px;
   font-size: 0.75rem;
   font-family: var(--font-mono);
   background-color: var(--surface-alt);
@@ -176,7 +176,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 5px 12px;
+  padding: 4px 10px;
   border-radius: var(--radius-full);
   background-color: var(--surface);
   border: 1px solid var(--border);
@@ -197,8 +197,17 @@
 }
 
 @keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.15); }
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.6;
+    transform: scale(1.15);
+  }
 }
 
 /* ==========================================================================
@@ -270,10 +279,21 @@
   z-index: 4;
 }
 
-.php-snippet-card .code-keyword { color: #F472B6; }
-.php-snippet-card .code-func { color: #60A5FA; }
-.php-snippet-card .code-string { color: #34D399; }
-.php-snippet-card .code-tag { color: #FBBF24; }
+.php-snippet-card .code-keyword {
+  color: #F472B6;
+}
+
+.php-snippet-card .code-func {
+  color: #60A5FA;
+}
+
+.php-snippet-card .code-string {
+  color: #34D399;
+}
+
+.php-snippet-card .code-tag {
+  color: #FBBF24;
+}
 
 /* ==========================================================================
    Accessible Modal Dialog
@@ -890,4 +910,3 @@
   background-color: var(--surface);
   border: 1px solid var(--border);
 }
-

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <!-- Zero background - 100% transparent -->
+  <style>
+    :root { color-scheme: light dark; }
+    .monogram-mark {
+      fill: #000000;
+    }
+    @media (prefers-color-scheme: dark) {
+      .monogram-mark {
+        fill: #FFFFFF;
+      }
+    }
+  </style>
+  <g class="monogram-mark">
+    <!-- Letter K -->
+    <rect x="10" y="18" width="12" height="64" rx="1.5"/>
+    <polygon points="22,50 42,18 55,18 32,54"/>
+    <polygon points="28,51 55,82 42,82 20,59"/>
+
+    <!-- Letter E -->
+    <polygon points="58,18 90,18 90,30 70,30 70,44 87,44 87,55 70,55 70,70 90,70 90,82 58,82"/>
+  </g>
+</svg>

@@ -60,7 +60,12 @@ body.drawer-locked {
 }
 
 /* Typography Hierarchy */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: var(--primary);
   line-height: 1.25;
   font-weight: 600;
@@ -119,11 +124,13 @@ button {
   color: inherit;
 }
 
-ul, ol {
+ul,
+ol {
   list-style: none;
 }
 
-code, pre {
+code,
+pre {
   font-family: var(--font-mono);
   font-size: 0.875rem;
 }
@@ -148,7 +155,7 @@ code, pre {
 .editorial-grid-bg {
   position: absolute;
   inset: 0;
-  background-image: 
+  background-image:
     linear-gradient(to right, var(--border-subtle) 1px, transparent 1px),
     linear-gradient(to bottom, var(--border-subtle) 1px, transparent 1px);
   background-size: 80px 80px;

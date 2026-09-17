@@ -1,0 +1,106 @@
+/**
+ * Karl Evan Tabunda - CSS Custom Properties & Design Tokens
+ * Light & Dark theme palettes, typography scales, spacing units, and elevations.
+ */
+
+:root {
+  /* Default / Light Theme */
+  --bg: #FBFBFA;
+  --surface: #FFFFFF;
+  --surface-alt: #F4F4F1;
+  --surface-elevated: #FFFFFF;
+  --primary: #0F172A;
+  --secondary: #475569;
+  --muted: #64748B;
+  --accent: #2563EB;
+  --accent-hover: #1D4ED8;
+  --accent-light: rgba(37, 99, 235, 0.08);
+  --warm: #B45309;
+  --warm-light: rgba(180, 83, 9, 0.08);
+  --border: #E2E8F0;
+  --border-subtle: #ECEEF2;
+  --border-focus: #2563EB;
+
+  /* Featured Project Deep Navy Palette */
+  --navy-deep: #0F1D38;
+  --navy-surface: #16284D;
+  --navy-surface-hover: #1D3463;
+  --navy-border: #233A6B;
+  --navy-text: #F8FAFC;
+  --navy-muted: #94A3B8;
+
+  /* Badges & Tags */
+  --badge-collaborative-bg: rgba(37, 99, 235, 0.1);
+  --badge-collaborative-text: #1D4ED8;
+  --badge-personal-bg: rgba(180, 83, 9, 0.1);
+  --badge-personal-text: #B45309;
+  --badge-active-dot: #10B981;
+
+  /* Typography */
+  --font-serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-hand: "Caveat", "Comic Sans MS", cursive;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+
+  /* Radius */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 10px 25px -3px rgba(15, 23, 42, 0.1), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+  --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.04), 0 10px 24px rgba(15, 23, 42, 0.03);
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.25s ease;
+  --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Layout */
+  --container-max: 1240px;
+  --header-height: 64px;
+}
+
+/* Dark Theme Overrides */
+[data-theme="dark"] {
+  --bg: #0B0F19;
+  --surface: #131C2E;
+  --surface-alt: #1A263D;
+  --surface-elevated: #172238;
+  --primary: #F8FAFC;
+  --secondary: #CBD5E1;
+  --muted: #94A3B8;
+  --accent: #3B82F6;
+  --accent-hover: #60A5FA;
+  --accent-light: rgba(59, 130, 246, 0.15);
+  --warm: #FBBF24;
+  --warm-light: rgba(251, 191, 36, 0.12);
+  --border: #263247;
+  --border-subtle: #1E293B;
+  --border-focus: #3B82F6;
+
+  /* Featured Project in Dark Theme remains deep navy or refined */
+  --navy-deep: #0C162A;
+  --navy-surface: #132240;
+  --navy-surface-hover: #182B52;
+  --navy-border: #233A66;
+  --navy-text: #F8FAFC;
+  --navy-muted: #A0AEC0;
+
+  /* Badges & Tags */
+  --badge-collaborative-bg: rgba(59, 130, 246, 0.16);
+  --badge-collaborative-text: #93C5FD;
+  --badge-personal-bg: rgba(251, 191, 36, 0.14);
+  --badge-personal-text: #FDE047;
+
+  /* Shadows for dark mode */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 28px -4px rgba(0, 0, 0, 0.6);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3), 0 12px 28px rgba(0, 0, 0, 0.4);
+}

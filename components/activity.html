@@ -1,0 +1,78 @@
+<!-- Code Activity Section (Public GitHub REST & GraphQL API) -->
+<section id="activity" class="activity-section" aria-labelledby="activity-title">
+  <div class="container">
+    <div class="section-title-wrap" style="margin-bottom: 20px;">
+      <h2 id="activity-title" class="activity-title-text">Code Activity</h2>
+    </div>
+
+    <!-- Status notice (fallback or rate limit banner) -->
+    <div id="github-status-notice"></div>
+
+    <!-- Two-card Code Activity Layout matching mockup -->
+    <div class="code-activity-grid">
+      <!-- Left Card: Profile & Contribution Matrix -->
+      <div class="code-activity-card activity-matrix-card">
+        <!-- Top Profile Row: Avatar + Name + Handle + Live / Mockup Toggle -->
+        <div class="gh-matrix-header">
+          <div id="github-profile-card" class="gh-profile-compact">
+            <div class="gh-profile-user">
+              <img src="assets/images/profile.jpg" alt="Karl Evan Tabunda" class="gh-avatar" width="46" height="46" loading="lazy">
+              <div class="gh-user-meta">
+                <span class="gh-user-fullname">Karl Evan Tabunda</span>
+                <a href="https://github.com/Lollipop0-0" target="_blank" rel="noopener noreferrer" class="gh-user-handle">@KarlEvanTabunda</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- View Mode Toggle: Live GitHub API vs Mockup View -->
+          <div class="gh-mode-toggle" id="github-mode-toggle" role="group" aria-label="Matrix view mode">
+            <button type="button" class="gh-toggle-btn active" id="btn-mode-live" title="Show live data from GitHub API">Live API</button>
+            <button type="button" class="gh-toggle-btn" id="btn-mode-mockup" title="Show visual representation from mockup">Mockup View</button>
+          </div>
+        </div>
+
+        <!-- Matrix Calendar with Month headers, Day labels, Cells, and Legend -->
+        <div class="gh-matrix-card-body">
+          <div class="gh-matrix-scroll-wrapper" id="github-matrix-container">
+            <div class="matrix-loading-placeholder">
+              <span>Loading GitHub contribution matrix...</span>
+            </div>
+          </div>
+
+          <div class="gh-matrix-footer">
+            <div class="gh-matrix-footer-left">
+              <span class="gh-total-contribs-badge" id="github-total-contribs">Loading contributions...</span>
+            </div>
+            <div class="gh-matrix-legend">
+              <span>Less</span>
+              <div class="gh-legend-cells" aria-hidden="true">
+                <span class="gh-legend-cell lvl-0"></span>
+                <span class="gh-legend-cell lvl-1"></span>
+                <span class="gh-legend-cell lvl-2"></span>
+                <span class="gh-legend-cell lvl-3"></span>
+                <span class="gh-legend-cell lvl-4"></span>
+              </div>
+              <span>More</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Card: Recent Activity + Top Languages -->
+      <div class="code-activity-card activity-feed-card">
+        <div class="activity-side-block">
+          <h3 class="activity-subheading">Recent Activity</h3>
+          <div id="github-activity-feed"></div>
+        </div>
+
+        <div class="activity-side-divider"></div>
+
+        <div class="activity-side-block">
+          <h3 class="activity-subheading">Top Languages</h3>
+          <div id="github-languages-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+

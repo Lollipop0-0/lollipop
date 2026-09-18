@@ -74,9 +74,50 @@ This document records the major architectural, engineering, and UX decisions mad
 
 ---
 
+## Decision 7: Tablet Viewport Optimization (2-Column Grids for Snapshots, Projects & Development Journey)
+- **Decision**: Optimize tablet viewports (`601px` to `868px`) by maintaining 2-column dashboard layouts for About snapshots (`2×2`), project archive cards (`repeat(2, 1fr)`), and Development Journey (`1.08fr 0.92fr` with top alignment).
+- **Rationale**:
+  - Previously, `.journey-layout-grid`, `.snapshot-grid`, and `.projects-grid` collapsed into a single column (`1fr`) at `max-width: 868px`.
+  - On tablet displays (e.g. 768px iPad Mini and 800px+ Android tablets), a single-column layout stretched excessively across the entire screen, pushing the "Currently Figuring Things Out" card all the way below milestone 09, creating huge vertical scrolling.
+  - Retaining a 2-column side-by-side layout (`1.08fr 0.92fr` with `align-items: start;`) on tablet keeps the milestone timeline and "Currently Figuring Things Out" card directly visible together, matching the desktop and iPad Pro 13 aesthetic.
+  - Moving the 1-column mobile collapse to `@media (max-width: 600px)` ensures phone viewports maintain clean, readable single-column stacking.
+- **Files Responsible**:
+  - `assets/css/responsive.css`: Configures `@media (max-width: 868px)` with 2-column layouts and `@media (max-width: 600px)` with `1fr`.
+
+---
+
+## Decision 8: Tablet Squeezed 2-Column Hero & Profile Ergonomics
+- **Decision**: In tablet viewports (`601px` to `868px`, e.g. 768px iPad Mini), retain the side-by-side 2-column layout (`.hero-grid { grid-template-columns: 1.15fr 0.85fr; }`) and "squeeze" the profile visual cluster proportionally (`width: 215px; height: 270px;` photo frame, `bottom: -18px; right: -22px;` Currently Building card, and both annotations visible), rather than stacking them vertically into 1 column.
+- **Rationale**:
+  - Tablet screens (e.g. 768px) have ample horizontal space (~736px container width). Forcing the hero into a single vertical column caused Karl's intro text to stretch across the top, pushed the profile photo downward into an isolated centered block with awkward empty horizontal space, and pushed the About Me section off-screen.
+  - Squeezing the profile component into the right column preserves the visual relationship established on desktop (intro copy on left, graduation portrait + PHP card + Currently Building badge on right), matching the compact layout seen on Surface Pro / wide tablet devices.
+  - Side-by-side layout in About Me (`.about-header-row { grid-template-columns: 1fr 1.45fr; }`) mirrors this layout balance immediately below the hero.
+  - Stacking into 1 column is reserved strictly for phone viewports (`@media (max-width: 600px)`), where physical width constraints genuinely necessitate vertical order.
+- **Files Responsible**:
+  - `assets/css/responsive.css`: Configures tablet rules under `@media (max-width: 868px)` and mobile-only collapse under `@media (max-width: 600px)`.
+
+## Decision 9: Multi-Tier Resilient Visitor Counter Architecture (Footer-Only Placement)
+- **Decision**: Implement the website viewer/visitor counter exclusively in the global footer colophon (`components/footer.html`), using a resilient three-tier fallback architecture:
+  1. Local PHP API (`api/visitors.php`) with atomic file locking (`flock`) on `cache/visitors.json` and session cooldown cookies (`ke_portfolio_sess`).
+  2. Public REST Counter API (`api.counterapi.dev`) for static CDN deployments (Netlify / GitHub Pages), strictly treated as non-guaranteed with a 2.5s `AbortController` timeout and content-type verification.
+  3. `localStorage` cache & persistent seed fallback (`248 site views`) ensuring the badge never displays an error or "NaN".
+- **Rationale**:
+  - **Footer-Only Placement**: Keeping the badge exclusively in the global footer prevents visual competition with Karl's primary hero identity, portrait, and action buttons, while still maintaining full visitor transparency.
+  - **Non-Guaranteed Public API Handling**: External free APIs like `counterapi.dev` can suffer from downtime or rate limits. Enforcing a strict timeout and type validation guarantees that a slow or broken external service will never stall portfolio loading or display a broken state.
+  - **Zero-Dependency Privacy**: No third-party tracking cookies or external analytical SDKs are loaded.
+- **Files Responsible**:
+  - `api/visitors.php`: Local backend endpoint with atomic write lock and session deduplication.
+  - `cache/visitors.json`: Local atomic counter storage.
+  - `assets/js/visitors.js`: Client orchestrator with 3-tier fallback and smooth number animation.
+  - `components/footer.html`: Clean UI pill badge markup with live pulsating indicator.
+  - `assets/css/sections.css`: Styling for `.footer-visitor-pill`.
+
+---
+
 ## Cross References
 - Architecture: [[Architecture]]
 - Rules: [[Project Rules]]
 - Features: [[Features]]
 - Tech Stack: [[Tech Stack]]
 - Known Issues: [[Known Issues]]
+

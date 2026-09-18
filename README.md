@@ -70,7 +70,6 @@ Tabunda-sample2/
 │   │
 │   ├── images/
 │   │   ├── profile.jpg                  # Primary portrait photo (hero section)
-│   │   ├── profile-sticker.jpg          # Casual polaroid sticker photo (contact section)
 │   │   ├── og-preview.png               # Open Graph & social media preview banner
 │   │   │
 │   │   └── projects/
@@ -163,7 +162,6 @@ Recommended aspect ratio is **16:9** (e.g., 1280×720 or 1920×1080) for sharp r
 ## Where to Place Profile Photos
 
 - **Main Hero Portrait**: Save as `assets/images/profile.jpg` (ideal ratio 4:5 or 1:1 square, minimum 600×600 px).
-- **Contact Sticker Photo**: Save as `assets/images/profile-sticker.jpg` (square 1:1 polaroid style, minimum 400×400 px).
 - **Social Media Share Banner**: Save as `assets/images/og-preview.png` (1200×630 px).
 
 ---

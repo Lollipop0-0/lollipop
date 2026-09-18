@@ -177,7 +177,7 @@
 
   .hero-visual {
     order: 2;
-    margin: 4px 0 0 0;
+    margin: 4px 0 90px 0;
   }
 
   .hero-photo-card {
@@ -207,9 +207,9 @@
   }
 
   .currently-building-card {
-    right: -5px;
-    bottom: 0px;
-    max-width: 200px;
+    right: 5px;
+    bottom: -75px;
+    max-width: 210px;
     padding: 10px 14px;
   }
 

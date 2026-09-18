@@ -206,6 +206,24 @@ const SearchManager = (() => {
       keywords: ["git", "github", "version", "control", "repository", "commits"],
       action: () => scrollToSection("stack")
     },
+    {
+      id: "tech-gemini",
+      type: "tech",
+      badge: "AI",
+      title: "Google Gemini",
+      desc: "AI assistant for code reasoning, planning, architectural review, and problem-solving",
+      keywords: ["gemini", "ai", "google", "artificial intelligence", "llm", "assistant", "stack"],
+      action: () => scrollToSection("stack")
+    },
+    {
+      id: "tech-codex",
+      type: "tech",
+      badge: "AI",
+      title: "Codex",
+      desc: "AI code generation, agentic development, and workflow automation",
+      keywords: ["codex", "openai", "ai", "code generation", "llm", "agent", "stack"],
+      action: () => scrollToSection("stack")
+    },
 
     // --- Currently Figuring Things Out ---
     {

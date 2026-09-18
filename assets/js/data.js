@@ -206,6 +206,10 @@ const PORTFOLIO_DATA = {
     ],
     "UI / UX": [
       { name: "Figma", icon: "figma" }
+    ],
+    AI: [
+      { name: "Gemini", icon: "sparkles" },
+      { name: "Codex", icon: "cpu" }
     ]
   },
 

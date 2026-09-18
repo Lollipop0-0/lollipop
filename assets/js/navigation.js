@@ -83,6 +83,23 @@ const NavigationManager = (() => {
    * Update active nav link based on current scroll position (Scroll-Spy)
    */
   function updateActiveLink() {
+    const isAboutPage = window.location.pathname.endsWith("about.html") ||
+      (document.getElementById("app") && document.getElementById("app").getAttribute("data-page") === "about");
+
+    if (isAboutPage) {
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href");
+        if (href === "about.html" || href === "/about" || href.endsWith("/about.html")) {
+          link.classList.add("is-active");
+          link.setAttribute("aria-current", "page");
+        } else {
+          link.classList.remove("is-active");
+          link.removeAttribute("aria-current");
+        }
+      });
+      return;
+    }
+
     const scrollPosition = window.scrollY + 140;
 
     let currentSectionId = "";
@@ -97,7 +114,7 @@ const NavigationManager = (() => {
     if (currentSectionId) {
       navLinks.forEach(link => {
         const href = link.getAttribute("href");
-        if (href === `#${currentSectionId}`) {
+        if (href === `#${currentSectionId}` || href === `index.html#${currentSectionId}`) {
           link.classList.add("is-active");
           link.setAttribute("aria-current", "page");
         } else {
@@ -149,13 +166,20 @@ const NavigationManager = (() => {
 
     // Smooth scroll for in-page anchor links
     document.addEventListener("click", e => {
-      const anchor = e.target.closest('a[href^="#"]');
+      const anchor = e.target.closest('a[href*="#"]');
       if (!anchor) return;
 
       const href = anchor.getAttribute("href");
-      if (href === "#" || href === "") return;
+      if (!href || href === "#") return;
 
-      const targetId = href.substring(1);
+      // If linking to another page with a hash, allow normal browser navigation
+      const isCrossPage = href.includes(".html") && !window.location.pathname.endsWith(href.split("#")[0]);
+      if (isCrossPage) return;
+
+      const hashIndex = href.indexOf("#");
+      if (hashIndex === -1) return;
+
+      const targetId = href.substring(hashIndex + 1);
       const targetElement = document.getElementById(targetId);
 
       if (targetElement) {

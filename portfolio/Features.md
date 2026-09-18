@@ -4,41 +4,56 @@ This document provides a detailed breakdown of all user-facing features, their b
 
 ---
 
-## 1. Hero Section
+## 1. Hero Section (Entry Point)
 - **Location**: `components/hero.html`
 - **Styles**: `assets/css/sections.css`, `assets/css/components.css`, `assets/css/responsive.css`
 - **Behavior**:
-  - Displays Karl's primary graduation/portrait photo (`assets/images/gradpic.jpg`) inside `.hero-photo-card` (`z-index: 2`) as the clear visual focal point.
-  - Floating PHP syntax-highlighted code snippet card (`.php-snippet-card`, `z-index: 1`) positioned in the upper-left, strictly layered **behind** the photo frame so overlapping edges are naturally masked by the photo frame across all viewports.
-  - Hand-drawn tape strip (`.tape-strip`, `z-index: 3`) pinned to the top-center of the photo frame.
-  - Floating "Currently Building" card (`.currently-building-card`, `z-index: 5`) attached to the lower-right outside edge of the photo frame, slightly overlapping the frame border while keeping Karl's portrait completely visible across all desktop and mobile viewports.
-  - Handwritten Caveat doodle annotations: "Better Code Bigger Dreams" (top-right) and "small steps big progress" (bottom-left).
-  - Quick action buttons ("View Projects" primary CTA, circular GitHub, LinkedIn, Facebook, and Email channels; Resume CTA is cleanly anchored in the sticky navigation bar and mobile drawer).
-  - **Responsive Layout**:
-    - **Desktop (≥ 869px)**: 2-column layout (`1.15fr 0.95fr`).
-    - **Tablet (601px–868px, e.g. 768px iPad Mini)**: Maintains an ergonomic 2-column side-by-side layout (`1.15fr 0.85fr`) with the profile cluster squeezed proportionally (`width: 215px; height: 270px;` photo frame, `bottom: -18px; right: -22px;` Currently Building card, both doodles visible) so intro copy and visual identity sit side-by-side without vertical displacement or awkward empty spaces.
-    - **Mobile (≤ 600px)**: Collapses cleanly into a single vertical column (`1fr`) with the photo centered below intro text and Currently Building card below the frame.
+  - Direct, honest introduction designed around: **WHO I AM → WHAT I BUILD → LET THE VISITOR EXPLORE**.
+  - Status pill: "IT STUDENT".
+  - Large headline: "Karl Evan Tabunda".
+  - Core introduction: "IT student who enjoys building software and figuring out how things work."
+  - Supporting sentence: "I'm more into the backend side of things, but I also like exploring web development and generative AI."
+  - Primary button: "View My Work →" pointing to `#selected-work`.
+  - Secondary quick links: GitHub • LinkedIn • Contact.
+  - Preserves visual identity: portrait photo frame (`.hero-photo-card`), taped PHP code card behind the photo, and handwritten annotations.
+  - Stripped of resume pills ("BS Information Technology", "Philippines"), moving all detailed academic metadata to `/about.html`.
 
 ---
 
-## 2. About Me & Snapshot Statistics
-- **Location**: `components/about.html`
+## 2. Dedicated About Page (`about.html`)
+- **Location**: `about.html`, `components/about-page-hero.html`
 - **Styles**: `assets/css/sections.css`, `assets/css/responsive.css`
 - **Behavior**:
-  - Details academic standing as a BSIT student at NCST (Class of 2027).
-  - Snapshot statistics grid displaying years of coding, academic GPA/status, active projects, and primary frameworks.
-  - **Responsive Sizing**: Renders side-by-side on desktop (`1fr 1.65fr`) and tablet (`1fr 1.45fr`), placing "About Me" bio text on the left and an ergonomic 2×2 metric grid (`repeat(2, 1fr)`) on the right. Collapses to a single column (`1fr`) on mobile devices (≤600px).
+  - Full personal narrative detailing how Karl builds software, experiments with backend systems, and explores generative AI.
+  - Organized secondary metadata cards:
+    - **Education**: BS Information Technology, National College of Science and Technology (NCST), Expected Graduation: 2028.
+    - **Focus**: Backend Development, Software Development, Web Development, UI/UX, Generative AI.
+    - **Currently Learning**: Java, PHP / MVC, JavaScript, Database Design, Git / GitHub.
+    - **Interests**: Building practical systems, Backend development, Database-driven applications, Exploring new technologies.
+  - Hosts full chronological Development Journey, Tech Stack, and Verified Certificates gallery.
 
 ---
 
-## 3. Featured Project Showcase: Celestine University of the Pacific (CUP)
-- **Location**: `components/work.html`
-- **Data Source**: `PORTFOLIO_DATA.featuredProject` in `assets/js/data.js`
-- **Styles**: `assets/css/sections.css`
+## 3. Section 01: Selected Work
+- **Location**: `components/selected-work.html`, `assets/js/app.js` (`renderSelectedProjects`)
+- **Styles**: `assets/css/sections.css`, `assets/css/responsive.css`
 - **Behavior**:
-  - Editorial spotlight on the collaborative admissions and university management platform.
-  - Highlights core architectural pillars: role-based access control (RBAC), multi-step applicant registration, real-time application tracking, and MySQL relational queries.
-  - Interactive "View Deep Dive" button triggers the accessible project details modal.
+  - Curated 4 compact project cards:
+    1. `01` Celestine University of the Pacific (CUP)
+    2. `02` Inventory Management System
+    3. `06` SmartSpace Room Planning
+    4. `04` UI SneakerHub
+  - Compact format: preview image, title, one-line summary, tech pills, and "View Case Study →" trigger invoking `ModalManager`.
+  - Closing CTA: "View all work →" linking to GitHub repositories.
+
+---
+
+## 4. Section 02: Currently Building
+- **Location**: `components/currently-building-section.html`
+- **Styles**: `assets/css/sections.css`, `assets/css/responsive.css`
+- **Behavior**:
+  - Small, focused section featuring Karl's current mindset: *"These days, I'm just building whatever catches my interest, learning new stuff along the way, and turning random ideas into actual projects."*
+  - Compact active visual card for Celestine University of the Pacific with live pulsing indicator, case study trigger, and repository link.
 
 ---
 

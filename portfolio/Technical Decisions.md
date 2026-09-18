@@ -130,6 +130,26 @@ This document records the major architectural, engineering, and UX decisions mad
   - `assets/css/components.css`: `.modal-cert-preview-frame` and `.cert-code-highlight`.
   - `assets/css/responsive.css`: 4-column (desktop) → 2-column (tablet) → 1-column (mobile) grid rules.
 
+## Decision 11: Two-Page Information Architecture (Entry Point vs Exploration)
+- **Decision**: Decouple the portfolio into a lean, high-conversion homepage entry point (`index.html`) following **WHO I AM → WHAT I BUILD → LET THE VISITOR EXPLORE**, while relocating dense academic metadata (Education, Focus, Currently Learning, Interests), the Development Journey, Tech Stack, and Verified Certificates to a dedicated exploration page (`about.html`).
+- **Rationale**:
+  - **Information Hierarchy**: First-time visitors should not be inundated with a mini-resume immediately beneath the hero. Moving straight from Karl's natural student introduction into compact Selected Work and active Currently Building establishes immediate proof of work.
+  - **Conversational Tone**: Replaced corporate and AI-like clichés with Karl's authentic student voice: *"IT student who enjoys building software and figuring out how things work. I'm more into the backend side of things, but I also like exploring web development and generative AI."*
+  - **Dynamic Manifests**: `ComponentLoader` (`assets/js/components.js`) was engineered with two distinct manifests (`HOMEPAGE_MANIFEST` and `ABOUT_MANIFEST`), automatically mounting the correct section sequence based on `data-page="about"` on `#app` without breaking zero-dependency architecture.
+  - **Unified Navigation & Search**: `NavigationManager` and `SearchManager` were updated to handle cross-page routing and in-page anchor smooth scrolling seamlessly.
+- **Files Responsible**:
+  - `index.html`: Entry point page shell.
+  - `about.html`: Standalone deep-dive exploration page shell.
+  - `components/hero.html`: Direct, honest hero introduction with minimal secondary links.
+  - `components/selected-work.html`: Section 01: Selected Work featuring 4 compact project cards.
+  - `components/currently-building-section.html`: Section 02: Currently Building active highlight.
+  - `components/activity-preview.html`: Section 03: GitHub Activity compact preview.
+  - `components/about-preview.html`: Section 04: A Little About Me 2-sentence teaser.
+  - `components/contact-cta.html`: High-impact contact prompt.
+  - `components/about-page-hero.html`: Detailed About page narrative and secondary background cards.
+  - `assets/js/components.js`: `HOMEPAGE_MANIFEST` and `ABOUT_MANIFEST`.
+  - `assets/js/app.js`: `renderSelectedProjects()`.
+
 ---
 
 ## Cross References

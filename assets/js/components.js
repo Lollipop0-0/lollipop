@@ -5,17 +5,27 @@
  */
 
 const ComponentLoader = (() => {
-  // Ordered manifest of components
-  const COMPONENT_MANIFEST = [
+  // Homepage manifest: WHO I AM → WHAT I BUILD → LET THE VISITOR EXPLORE
+  const HOMEPAGE_MANIFEST = [
     { name: "header", path: "components/header.html", isMainChild: false },
     { name: "hero", path: "components/hero.html", isMainChild: true },
-    { name: "about", path: "components/about.html", isMainChild: true },
-    { name: "work", path: "components/work.html", isMainChild: true },
-    { name: "activity", path: "components/activity.html", isMainChild: true },
+    { name: "selected-work", path: "components/selected-work.html", isMainChild: true },
+    { name: "currently-building", path: "components/currently-building-section.html", isMainChild: true },
+    { name: "activity-preview", path: "components/activity-preview.html", isMainChild: true },
+    { name: "about-preview", path: "components/about-preview.html", isMainChild: true },
+    { name: "contact-cta", path: "components/contact-cta.html", isMainChild: true },
+    { name: "footer", path: "components/footer.html", isMainChild: false },
+    { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
+  ];
+
+  // Dedicated About page manifest: Detailed personal narrative, secondary background, milestones, stack, certificates
+  const ABOUT_MANIFEST = [
+    { name: "header", path: "components/header.html", isMainChild: false },
+    { name: "about-hero", path: "components/about-page-hero.html", isMainChild: true },
+    { name: "journey", path: "components/journey.html", isMainChild: true },
     { name: "stack", path: "components/stack.html", isMainChild: true },
     { name: "certificates", path: "components/certificates.html", isMainChild: true },
-    { name: "journey", path: "components/journey.html", isMainChild: true },
-    { name: "contact", path: "components/contact.html", isMainChild: true },
+    { name: "contact-cta", path: "components/contact-cta.html", isMainChild: true },
     { name: "footer", path: "components/footer.html", isMainChild: false },
     { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
   ];
@@ -48,10 +58,17 @@ const ComponentLoader = (() => {
       return;
     }
 
+    // Determine active page manifest
+    const isAboutPage = appEl.getAttribute("data-page") === "about" ||
+      window.location.pathname.endsWith("about.html") ||
+      window.location.pathname.endsWith("/about");
+
+    const manifest = isAboutPage ? ABOUT_MANIFEST : HOMEPAGE_MANIFEST;
+
     try {
       // Fetch all components concurrently
       const loadedContents = await Promise.all(
-        COMPONENT_MANIFEST.map(async (comp) => {
+        manifest.map(async (comp) => {
           const html = await fetchComponent(comp.path);
           return { ...comp, html };
         })
@@ -113,7 +130,8 @@ const ComponentLoader = (() => {
   return {
     loadAll,
     fetchComponent,
-    MANIFEST: COMPONENT_MANIFEST
+    HOMEPAGE_MANIFEST,
+    ABOUT_MANIFEST
   };
 })();
 

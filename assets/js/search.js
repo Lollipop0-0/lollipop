@@ -324,6 +324,13 @@ const SearchManager = (() => {
     const el = document.getElementById(sectionId);
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
+    } else {
+      const aboutSections = ["about-intro", "journey", "stack", "certificates"];
+      if (aboutSections.includes(sectionId)) {
+        window.location.href = `about.html#${sectionId}`;
+      } else {
+        window.location.href = `index.html#${sectionId}`;
+      }
     }
   }
 

@@ -372,6 +372,29 @@
     grid-template-columns: 1fr;
     gap: 20px;
   }
+
+  /* 01 Selected Work & 02 Currently Building on Tablet */
+  .selected-projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
+  .cb-section-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .contact-cta-box {
+    padding: 36px 24px;
+  }
+
+  .contact-cta-heading {
+    font-size: 1.85rem;
+  }
+
+  .about-page-title {
+    font-size: 2.25rem;
+  }
 }
 
 /* Mobile devices (< 600px) */
@@ -468,6 +491,50 @@
     flex-direction: column-reverse;
     align-items: flex-start;
     gap: 12px;
+  }
+
+  /* 01 Selected Work, 02 Currently Building, and Contact CTA on Mobile */
+  .selected-projects-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .selected-project-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .selected-project-link {
+    align-self: flex-end;
+  }
+
+  .cb-statement {
+    font-size: 1.05rem;
+  }
+
+  .about-preview-copy {
+    font-size: 1.05rem;
+  }
+
+  .contact-cta-box {
+    padding: 28px 18px;
+  }
+
+  .contact-cta-heading {
+    font-size: 1.5rem;
+  }
+
+  .contact-cta-actions .btn {
+    width: 100%;
+  }
+
+  .about-page-title {
+    font-size: 1.85rem;
+  }
+
+  .about-lead-p {
+    font-size: 1.1rem;
   }
 }
 

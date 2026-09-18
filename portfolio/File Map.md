@@ -7,7 +7,8 @@ This document provides a complete inventory of project files and their specific 
 ## Root Files
 | File | Responsibility |
 |---|---|
-| `index.html` | Minimal application shell with `<head>` metadata, Open Graph tags, JSON-LD structured data, anti-flash theme script, accessible skip link, `#app` mounting point, and script tags. |
+| `index.html` | Minimal application shell for Homepage Entry Point (WHO I AM → WHAT I BUILD → LET THE VISITOR EXPLORE). |
+| `about.html` | Standalone application shell for Detailed About page mounting `ABOUT_MANIFEST`. |
 | `README.md` | Comprehensive project setup, execution guide, folder overview, and architectural reference. |
 | `.gitignore` | Git ignore rules for OS files, IDE configs, environment secrets, and node/temp artifacts. |
 | `.env` | Environment configuration file (e.g. optional GitHub token for local environments). |
@@ -18,15 +19,21 @@ This document provides a complete inventory of project files and their specific 
 | File | Responsibility |
 |---|---|
 | `components/header.html` | Sticky navigation bar with brand monogram, desktop navigation links, theme toggle button, quick-search trigger (`Cmd+K`), and mobile drawer toggle. |
-| `components/hero.html` | Hero introduction section, editorial portrait photo card, floating PHP code card, Caveat handwritten annotations, and "Currently Building" status badge. |
-| `components/about.html` | Academic background at NCST, developer biography, philosophy, and quick snapshot statistics. |
+| `components/hero.html` | Minimal, direct hero introduction section, portrait photo card, floating PHP code card, Caveat annotations, and secondary quick links. |
+| `components/selected-work.html` | Section 01: Selected Work featuring 4 compact project cards with one-line summaries, tech pills, case study triggers, and "View all work →". |
+| `components/currently-building-section.html` | Section 02: Currently Building highlight with personal focus statement and active project card (CUP). |
+| `components/activity-preview.html` | Section 03: GitHub Activity compact preview card with live commit matrix and "View activity →". |
+| `components/about-preview.html` | Section 04: A Little About Me 2-sentence teaser with "More about me →" button linking to `about.html`. |
+| `components/contact-cta.html` | Clean closing contact card with direct NCST email link and social pills. |
+| `components/about-page-hero.html` | Detailed About page narrative, 2-paragraph personal journey, and secondary background cards (Education, Focus, Currently Learning, Interests). |
+| `components/about.html` | Academic background at NCST, developer biography, philosophy, and quick snapshot statistics (legacy). |
 | `components/work.html` | Featured Project deep dive (Celestine University of the Pacific) and categorized Project Archive with filtering tabs. |
 | `components/activity.html` | GitHub activity overview, live profile stats, languages breakdown, and interactive contribution calendar matrix. |
 | `components/stack.html` | "Things I Build With" container hosting categorized technology and tool cards. |
 | `components/certificates.html` | "Certificates & Certifications" container hosting verified Sololearn course credentials and credential ID inspector triggers. |
 | `components/journey.html` | Academic and programming development timeline alongside the "Currently Figuring Out" exploration cards. |
 | `components/contact.html` | Contact information, verified channels, validated contact form, and transparent `mailto:` launch system. |
-| `components/footer.html` | Footer colophon, social media links, back-to-top button, and copyright year. |
+| `components/footer.html` | Footer colophon, social media links, back-to-top button, visitor view counter, and copyright year. |
 | `components/project-modal.html` | WAI-ARIA accessible modal dialog for inspecting detailed project architectural highlights and screenshots. |
 
 ---

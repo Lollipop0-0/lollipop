@@ -20,7 +20,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       window.NavigationManager.init();
     }
 
-    // 4. Render Tech Stack, Journey, Figuring Out, and Certificates lists
+    // 4. Render Selected Projects, Tech Stack, Journey, Figuring Out, and Certificates lists
+    renderSelectedProjects();
     renderTechStack();
     renderCertificates();
     renderJourney();
@@ -56,7 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       window.VisitorManager.init();
     }
 
-    // 9. Back to Top Smooth Scroll
+    // 11. Back to Top Smooth Scroll
     const backToTopBtn = document.getElementById("back-to-top");
     if (backToTopBtn) {
       backToTopBtn.addEventListener("click", e => {
@@ -65,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     }
 
-    // 10. Copyright Year
+    // 12. Copyright Year
     const yearEl = document.getElementById("copyright-year");
     if (yearEl) {
       yearEl.textContent = "2026";
@@ -74,6 +75,72 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Application initialization error:", err);
   }
 });
+
+/**
+ * Render Selected Projects (Homepage 01 — SELECTED WORK)
+ * Shows 3-4 compact project cards with one-line descriptions, tech tags, and case study triggers.
+ */
+function renderSelectedProjects() {
+  const container = document.getElementById("selected-projects-grid");
+  if (!container || !window.PORTFOLIO_DATA) return;
+
+  // Curated 4 selected projects: 01 CUP, 02 Inventory, 06 SmartSpace, 04 SneakerHub
+  const selectedIds = ["01", "02", "06", "04"];
+  const allProjects = [];
+
+  if (window.PORTFOLIO_DATA.featuredProject) {
+    allProjects.push(window.PORTFOLIO_DATA.featuredProject);
+  }
+  if (Array.isArray(window.PORTFOLIO_DATA.projects)) {
+    allProjects.push(...window.PORTFOLIO_DATA.projects);
+  }
+
+  const selectedProjects = selectedIds
+    .map(id => allProjects.find(p => p.id === id))
+    .filter(Boolean);
+
+  const html = selectedProjects.map(project => {
+    const techPills = (project.technologies || []).slice(0, 4)
+      .map(t => `<span class="tech-pill-sm">${escapeHtml(t)}</span>`)
+      .join("");
+
+    const isCollaborative = project.category === "collaborative" || project.isCollaborative;
+    const badgeText = isCollaborative ? "Collaborative" : "Personal";
+
+    return `
+      <article class="selected-project-card">
+        <div class="selected-project-media">
+          <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)} preview" class="selected-project-img" loading="lazy">
+          <div class="selected-project-hover-overlay">
+            <button type="button" class="btn btn-sm btn-glass" data-modal-project="${escapeHtml(project.id)}" aria-label="View case study for ${escapeHtml(project.title)}">
+              <span>View Case Study</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
+            </button>
+          </div>
+        </div>
+        <div class="selected-project-body">
+          <div class="selected-project-header">
+            <h3 class="selected-project-title">
+              <button type="button" class="selected-project-title-btn" data-modal-project="${escapeHtml(project.id)}">
+                ${escapeHtml(project.title)}
+              </button>
+            </h3>
+            <span class="selected-project-badge">${badgeText}</span>
+          </div>
+          <p class="selected-project-desc">${escapeHtml(project.description)}</p>
+          <div class="selected-project-footer">
+            <div class="selected-project-tech">${techPills}</div>
+            <button type="button" class="selected-project-link" data-modal-project="${escapeHtml(project.id)}" aria-label="View case study for ${escapeHtml(project.title)}">
+              <span>View Case Study →</span>
+            </button>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  container.innerHTML = html;
+}
 
 /**
  * Render Tech Stack Categories

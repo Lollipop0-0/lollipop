@@ -2,6 +2,27 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-19: Homepage Direct & Minimal Redesign — Entry Point Architecture (WHO I AM → WHAT I BUILD → LET THE VISITOR EXPLORE)
+- **Objective**: Redesign the homepage of the portfolio to be direct, minimal, and personal, stripping out resume-like information overload (Education, Focus, Currently Learning, Interests) and relocating detailed personal and academic background to a dedicated About page (`about.html`).
+- **Changes**:
+  - Re-anchored Hero section copy to Karl's authentic student voice: status badge "IT STUDENT", headline "Karl Evan Tabunda", core introduction ("IT student who enjoys building software and figuring out how things work."), supporting sentence ("I'm more into the backend side of things, but I also like exploring web development and generative AI."), primary button "View My Work →", and clean secondary links ("GitHub • LinkedIn • Contact"). Removed mini-resume chips ("BS Information Technology", "Philippines").
+  - Streamlined Homepage sequence:
+    - `01 — SELECTED WORK`: 4 compact project cards (CUP, Inventory Management, SmartSpace, UI SneakerHub) with image, title, one-line summary, tech pills, and modal trigger "View Case Study →", followed by "View all work →".
+    - `02 — CURRENTLY BUILDING`: Compact active project card for Celestine University of the Pacific with personal focus statement: *"These days, I'm just building whatever catches my interest, learning new stuff along the way, and turning random ideas into actual projects."*
+    - `03 — GITHUB ACTIVITY`: Compact live contribution matrix calendar preview with "View activity →" linking to GitHub.
+    - `04 — A LITTLE ABOUT ME`: 2-sentence teaser narrative with "More about me →" button linking directly to `about.html`.
+    - `CONTACT CTA`: Clean, high-impact prompt ("Let's build something together.") with direct NCST mailto action and social links.
+    - `FOOTER`: Two-tier balanced footer with site view counter.
+  - Created dedicated About page (`about.html` & `components/about-page-hero.html`) containing the full narrative, background cards (Education: BS IT at NCST, Exp. Grad 2028; Focus; Currently Learning; Interests), Development Journey timeline, Tech Stack breakdown, Verified Certificates gallery, Contact prompt, and Footer.
+  - Upgraded `ComponentLoader` in `assets/js/components.js` with `HOMEPAGE_MANIFEST` and `ABOUT_MANIFEST`, dynamically detecting `data-page="about"` on `#app` or `about.html` pathname.
+  - Extended `assets/js/app.js` with `renderSelectedProjects()`, updated `assets/js/navigation.js` to highlight active links across both pages and smoothly route cross-page anchors, and made `assets/js/search.js` route search results smoothly across `index.html` and `about.html`.
+  - Added responsive rules for tablet and mobile in `assets/css/responsive.css` and section styling in `assets/css/sections.css`.
+- **Files Modified/Created**:
+  - Created: `about.html`, `components/selected-work.html`, `components/currently-building-section.html`, `components/activity-preview.html`, `components/about-preview.html`, `components/contact-cta.html`, `components/about-page-hero.html`.
+  - Modified: `components/hero.html`, `components/header.html`, `assets/js/components.js`, `assets/js/app.js`, `assets/js/navigation.js`, `assets/js/search.js`, `assets/css/sections.css`, `assets/css/responsive.css`.
+
+---
+
 ## 2026-09-19: Verified Course Certificates Integration (Sololearn Credentials)
 - **Objective**: Integrate Karl Evan Tabunda's 4 Sololearn coursework certificates into the portfolio system with a dedicated modular section, data-driven architecture, accessible modal inspection, responsive grid styling, and command search integration.
 - **Certificates Added**:

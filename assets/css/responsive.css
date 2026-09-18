@@ -177,34 +177,28 @@
 
   .hero-visual {
     order: 2;
-    margin: 8px auto 0;
-    max-width: 400px;
-    min-height: 380px;
-    padding: 16px 8px;
+    margin: 4px 0 0 0;
   }
 
   .hero-photo-card {
-    width: 240px;
-    height: 302px;
-    padding: 8px 8px 14px 8px;
+    width: 232px;
+    height: 290px;
   }
 
   .hero-photo-img {
-    height: 280px;
+    height: 262px;
   }
 
   .hero-visual .php-snippet-card {
-    top: 6px;
-    right: calc(50% + 45px);
-    max-width: 175px;
-    padding: 8px 11px;
-    font-size: 0.68rem;
-    line-height: 1.4;
+    left: -12px;
+    top: -5px;
+    font-size: 0.7rem;
+    padding: 8px 12px;
   }
 
   .hero-annotation-dream {
-    top: -4px;
-    left: calc(50% + 124px);
+    right: -10px;
+    top: -15px;
     font-size: 1.1rem;
   }
 
@@ -212,15 +206,11 @@
     display: none;
   }
 
-  .hero-annotation-student {
-    display: none;
-  }
-
   .currently-building-card {
-    bottom: 2px;
-    left: calc(50% + 22px);
+    right: -5px;
+    bottom: 0px;
     max-width: 200px;
-    padding: 9px 13px;
+    padding: 10px 14px;
   }
 
   /* About Section */
@@ -364,41 +354,6 @@
 
 /* Small mobile devices (< 480px) */
 @media (max-width: 480px) {
-  .hero-visual {
-    max-width: 320px;
-    min-height: 340px;
-    padding: 10px 4px;
-  }
-
-  .hero-photo-card {
-    width: 215px;
-    height: 270px;
-  }
-
-  .hero-photo-img {
-    height: 248px;
-  }
-
-  .hero-visual .php-snippet-card {
-    top: 4px;
-    right: calc(50% + 30px);
-    max-width: 155px;
-    font-size: 0.62rem;
-    padding: 6px 9px;
-  }
-
-  .currently-building-card {
-    bottom: 0px;
-    left: calc(50% + 12px);
-    max-width: 175px;
-    padding: 8px 10px;
-  }
-
-  .hero-annotation-dream {
-    left: calc(50% + 100px);
-    font-size: 1rem;
-  }
-
   .stack-grid {
     grid-template-columns: 1fr;
   }

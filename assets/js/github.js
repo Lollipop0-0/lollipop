@@ -215,52 +215,173 @@ const GitHubManager = (() => {
     }
   }
 
+  let activeCell = null;
+  let rafId = null;
+  let matrixListenersAttached = false;
+  let matrixCardBody = null;
+
   /**
-   * Attach tooltip interaction listeners to all matrix cells
+   * Position and display the single persistent tooltip relative to the hovered cell
+   * Includes boundary collision detection and requestAnimationFrame batching
+   */
+  function updateTooltip(cell) {
+    if (!cell || !tooltipEl || !matrixContainer) return;
+    if (!matrixCardBody) {
+      matrixCardBody = matrixContainer.closest(".gh-matrix-card-body") || matrixContainer.parentElement;
+    }
+    if (!matrixCardBody) return;
+
+    const count = parseInt(cell.getAttribute("data-count") || "0", 10);
+    const fullDate = cell.getAttribute("data-full-date") || cell.getAttribute("data-date") || "";
+    const countText = count === 0
+      ? "No contributions"
+      : (count === 1 ? "1 contribution" : `${count} contributions`);
+
+    tooltipEl.textContent = `${countText} on ${fullDate}`;
+
+    // Measure bounding rectangles
+    const cellRect = cell.getBoundingClientRect();
+    const bodyRect = matrixCardBody.getBoundingClientRect();
+
+    // Check if cell is horizontally visible within the card body
+    if (cellRect.right < bodyRect.left || cellRect.left > bodyRect.right) {
+      hideTooltip();
+      return;
+    }
+
+    // Cell center X relative to matrixCardBody
+    const cellCenterX = cellRect.left - bodyRect.left + (cellRect.width / 2);
+    const cellTopY = cellRect.top - bodyRect.top;
+
+    // Measure tooltip size
+    const tipWidth = tooltipEl.offsetWidth || 180;
+    const tipHeight = tooltipEl.offsetHeight || 28;
+
+    // Horizontal clamping within matrixCardBody with 8px margin
+    const minX = 8;
+    const maxX = Math.max(minX, bodyRect.width - tipWidth - 8);
+    const idealX = cellCenterX - (tipWidth / 2);
+    const clampedX = Math.max(minX, Math.min(idealX, maxX));
+
+    // Dynamic arrow position pointing directly to cell center
+    const arrowLeft = Math.max(10, Math.min(cellCenterX - clampedX, tipWidth - 10));
+    tooltipEl.style.setProperty("--arrow-left", `${arrowLeft}px`);
+
+    // Vertical collision handling: position above cell or flip below if close to top
+    const offsetGap = 8;
+    let targetY;
+    let isFlipped = false;
+
+    if (cellTopY - tipHeight - offsetGap < 4) {
+      // Flip below cell
+      targetY = cellTopY + cellRect.height + offsetGap;
+      isFlipped = true;
+    } else {
+      // Default above cell
+      targetY = cellTopY - tipHeight - offsetGap;
+    }
+
+    tooltipEl.style.transform = `translate3d(${Math.round(clampedX)}px, ${Math.round(targetY)}px, 0)`;
+    tooltipEl.classList.toggle("is-flipped", isFlipped);
+    tooltipEl.classList.add("is-visible");
+    tooltipEl.setAttribute("aria-hidden", "false");
+  }
+
+  function scheduleTooltipUpdate(cell) {
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+    }
+    rafId = requestAnimationFrame(() => {
+      updateTooltip(cell);
+      rafId = null;
+    });
+  }
+
+  function hideTooltip() {
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+    activeCell = null;
+    if (tooltipEl) {
+      tooltipEl.classList.remove("is-visible");
+      tooltipEl.setAttribute("aria-hidden", "true");
+    }
+  }
+
+  /**
+   * Attach high-performance event delegation listeners for the matrix
+   * Attaches once to container instead of hundreds of individual cells
    */
   function attachCellListeners() {
-    if (!matrixContainer || !tooltipEl) return;
+    if (!matrixContainer || !tooltipEl || matrixListenersAttached) return;
+    matrixListenersAttached = true;
+    matrixCardBody = matrixContainer.closest(".gh-matrix-card-body") || matrixContainer.parentElement;
 
-    const cells = matrixContainer.querySelectorAll(".matrix-cell");
-    cells.forEach(cell => {
-      const showTooltip = (e) => {
-        const count = parseInt(cell.getAttribute("data-count") || "0", 10);
-        const fullDate = cell.getAttribute("data-full-date") || cell.getAttribute("data-date");
-        const countText = count === 0
-          ? "No contributions"
-          : (count === 1 ? "1 contribution" : `${count} contributions`);
-
-        tooltipEl.textContent = `${countText} — ${fullDate}`;
-        tooltipEl.classList.add("is-visible");
-        tooltipEl.setAttribute("aria-hidden", "false");
-
-        // Position tooltip dynamically relative to cell and scroll position
-        const rect = cell.getBoundingClientRect();
-        const wrapperRect = matrixContainer.getBoundingClientRect();
-        const left = rect.left - wrapperRect.left + (rect.width / 2) + matrixContainer.scrollLeft;
-        const top = rect.top - wrapperRect.top;
-
-        tooltipEl.style.left = `${left}px`;
-        tooltipEl.style.top = `${top - 8}px`;
-      };
-
-      const hideTooltip = () => {
-        tooltipEl.classList.remove("is-visible");
-        tooltipEl.setAttribute("aria-hidden", "true");
-      };
-
-      cell.addEventListener("mouseenter", showTooltip);
-      cell.addEventListener("mouseleave", hideTooltip);
-      cell.addEventListener("focus", showTooltip);
-      cell.addEventListener("blur", hideTooltip);
-
-      cell.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          showTooltip(e);
-        }
-      });
+    // Mouse hover tracking via delegation
+    matrixContainer.addEventListener("mouseover", (e) => {
+      const cell = e.target.closest(".matrix-cell");
+      if (!cell) return;
+      if (cell === activeCell) return;
+      activeCell = cell;
+      scheduleTooltipUpdate(cell);
     });
+
+    matrixContainer.addEventListener("mouseout", (e) => {
+      const related = e.relatedTarget;
+      // If moving within the same cell, ignore
+      if (related && (related === activeCell || (related.closest && related.closest(".matrix-cell") === activeCell))) {
+        return;
+      }
+      // If moving to another cell, mouseover will handle it
+      if (related && related.closest && related.closest(".matrix-cell")) {
+        return;
+      }
+      // Leaving the cells area
+      hideTooltip();
+    });
+
+    matrixContainer.addEventListener("mouseleave", hideTooltip);
+
+    // Keyboard accessibility via event delegation
+    matrixContainer.addEventListener("focusin", (e) => {
+      const cell = e.target.closest(".matrix-cell");
+      if (cell) {
+        activeCell = cell;
+        scheduleTooltipUpdate(cell);
+      }
+    });
+
+    matrixContainer.addEventListener("focusout", (e) => {
+      hideTooltip();
+    });
+
+    matrixContainer.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        const cell = e.target.closest(".matrix-cell");
+        if (cell) {
+          e.preventDefault();
+          activeCell = cell;
+          scheduleTooltipUpdate(cell);
+        }
+      } else if (e.key === "Escape") {
+        hideTooltip();
+      }
+    });
+
+    // Keep tooltip locked to cell if user scrolls horizontally
+    matrixContainer.addEventListener("scroll", () => {
+      if (activeCell) {
+        scheduleTooltipUpdate(activeCell);
+      }
+    }, { passive: true });
+
+    // Handle window resize smoothly
+    window.addEventListener("resize", () => {
+      if (activeCell) {
+        scheduleTooltipUpdate(activeCell);
+      }
+    }, { passive: true });
   }
 
   /**

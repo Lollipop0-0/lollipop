@@ -2,6 +2,25 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-19: Homepage Section Re-sequencing & Restoration of Original GitHub Activity and Contact Form
+- **Objective**: Re-sequence the homepage so `01 — Currently Building` precedes `02 — Selected Work`, and restore the exact original `Code Activity` (with full activity feed and top languages breakdown) and `Message / Get in Touch` section (with original layout, form, error states, and actions) while preserving the new Home and About page designs.
+- **Sequence Applied**:
+  - `Hero` (`components/hero.html` with primary button pointing to `#currently-building`)
+  - `01 — Currently Building` (`components/currently-building-section.html`, kicker `01`)
+  - `02 — Selected Work` (`components/selected-work.html`, kicker `02`)
+  - `Original GitHub Recent Activity` (`components/activity.html`, `#github-activity-feed`, `#github-languages-list`, `#github-matrix-container`)
+  - `About Preview` (`components/about-preview.html`)
+  - `Original Message / Get in Touch` (`components/contact.html`, `#contact-form`, `#contact-status`, verified contact channels)
+  - `Footer` (`components/footer.html`)
+- **Files Modified**:
+  - `assets/js/components.js`: Updated `HOMEPAGE_MANIFEST` and `ABOUT_MANIFEST` to mount `activity.html` and `contact.html`.
+  - `components/currently-building-section.html`: Renumbered kicker to `01`.
+  - `components/selected-work.html`: Renumbered kicker to `02`.
+  - `components/hero.html`: Primary CTA points to `#currently-building`.
+  - `components/about-preview.html`: Removed orphaned kicker badge.
+
+---
+
 ## 2026-09-19: Homepage Direct & Minimal Redesign — Entry Point Architecture (WHO I AM → WHAT I BUILD → LET THE VISITOR EXPLORE)
 - **Objective**: Redesign the homepage of the portfolio to be direct, minimal, and personal, stripping out resume-like information overload (Education, Focus, Currently Learning, Interests) and relocating detailed personal and academic background to a dedicated About page (`about.html`).
 - **Changes**:

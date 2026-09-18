@@ -6,40 +6,24 @@
 ---
 
 ## Active Task Summary
-- **Task**: Homepage Minimal & Direct Redesign (WHO I AM → WHAT I BUILD → LET THE VISITOR EXPLORE) + Dedicated About Page Architecture
-- **Context**: The user requested removing mini-resume cards (Education, Focus, Currently Learning, Interests) from the homepage, relocating them to a dedicated About page (`about.html`), adopting natural, conversational IT student copy, and streamlining the homepage into an entry point with compact selected projects, currently building highlight, GitHub contribution preview, and an about teaser.
+- **Task**: Homepage Sequence Adjustment & Full Restoration of Original GitHub Activity + Original Message/Contact Section
+- **Context**: The user approved the new Home and About design with three specific refinements: (1) Swap Currently Building to 01 and Selected Work to 02, (2) Restore the exact original GitHub Recent Activity section and functionality (including feed and top languages), and (3) Restore the exact original Message / Get in Touch section and form without modernizing or altering its visual treatment.
 
 ---
 
-## Recent Modifications Synchronized
-1. **Hero Section Redesign (`components/hero.html`)**:
-   - Status: "IT STUDENT".
-   - Headline: "Karl Evan Tabunda".
-   - Natural copy: "IT student who enjoys building software and figuring out how things work. I'm more into the backend side of things, but I also like exploring web development and generative AI."
-   - Primary CTA: "View My Work →".
-   - Secondary Links: "GitHub • LinkedIn • Contact".
-   - Removed mini-resume chips ("BS Information Technology", "Philippines").
-2. **Homepage Streamlined Flow (`HOMEPAGE_MANIFEST`)**:
-   - `01 — SELECTED WORK` (`components/selected-work.html`): 4 compact selected cards (CUP, Inventory Management, SmartSpace, UI SneakerHub) with one-line descriptions, tech pills, "View Case Study →", and "View all work →".
-   - `02 — CURRENTLY BUILDING` (`components/currently-building-section.html`): Compact active project card with personal focus statement.
-   - `03 — GITHUB ACTIVITY` (`components/activity-preview.html`): Compact contribution calendar preview with "View activity →".
-   - `04 — A LITTLE ABOUT ME` (`components/about-preview.html`): 2-sentence teaser with "More about me →".
-   - `CONTACT CTA` (`components/contact-cta.html`): Clean contact card with direct NCST email link.
-3. **Dedicated About Page (`about.html` & `components/about-page-hero.html`)**:
-   - Main 2-paragraph introduction.
-   - Secondary background cards: Education (BS IT at NCST, Expected Grad: 2028), Focus, Currently Learning, Interests.
-   - Complete Development Journey, Tech Stack, and Verified Certificates.
-4. **JavaScript & Navigation Orchestration**:
-   - `ComponentLoader` (`assets/js/components.js`): Dynamic manifest switching (`HOMEPAGE_MANIFEST` vs `ABOUT_MANIFEST`) based on `data-page="about"`.
-   - `assets/js/app.js`: Added `renderSelectedProjects()` for the 4 chosen project cards.
-   - `assets/js/navigation.js`: Handled active link state across pages and seamless cross-page anchor routing.
-   - `assets/js/search.js`: Smooth cross-page routing for search results.
-5. **Responsive Styling**:
-   - `assets/css/sections.css`: Complete styles for selected work, currently building, activity preview, about preview, contact CTA, and about page hero.
-   - `assets/css/responsive.css`: Added tablet and mobile media query rules.
+## Applied Homepage Structure
+1. **Hero**: Direct, minimal intro (`components/hero.html` with primary button pointing to `#currently-building`).
+2. **01 — Currently Building** (`components/currently-building-section.html`, kicker `01`): Personal mindset statement + active CUP card.
+3. **02 — Selected Work** (`components/selected-work.html`, kicker `02`): 4 compact selected project cards + modal inspection + "View all work →".
+4. **Original GitHub Recent Activity** (`components/activity.html`): Live contribution matrix calendar, profile card, recent activity feed (`#github-activity-feed`), and top languages breakdown (`#github-languages-list`).
+5. **About Preview** (`components/about-preview.html`): 2-sentence teaser narrative with "More about me →" button linking to `about.html`.
+6. **ORIGINAL Message / Get in Touch** (`components/contact.html`): Original layout, typography, contact methods list, and full `#contact-form` with validation and error states.
+7. **Footer**: Balanced two-tier footer with live visitor counter.
 
 ---
 
-## Next Steps / Awaiting User Directives
-- System is fully verified over local HTTP and passes all syntax checks.
-- AI assistant must strictly follow Section 6 of `portfolio/Project Rules.md` (no screenshots or generated pictures).
+## Verification & Status
+- All 11 JS modules pass `node -c` with zero syntax errors.
+- Both `http://localhost/lollipop/` and `http://localhost/lollipop/about.html` return `HTTP 200 OK`.
+- Branch: `UI-2`.
+- Project Rules: No screenshots or generated pictures.

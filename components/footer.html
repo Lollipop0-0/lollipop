@@ -1,42 +1,36 @@
 <!-- Global Footer -->
 <footer class="site-footer" role="contentinfo">
   <div class="container footer-container">
-    <!-- Top Row: Brand Monogram/Title & Links -->
-    <div class="footer-main-row">
-      <div class="footer-brand">
-        <span class="footer-brand-title">KE / Karl Evan Tabunda</span>
-        <span class="footer-role">Information Technology Student</span>
-      </div>
-
-      <div class="footer-links">
-        <a href="https://github.com/Lollipop0-0" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
-        <a href="https://www.linkedin.com/in/tabunda-karl-evan-r-44b4a1381/" target="_blank" rel="noopener noreferrer"
-          class="footer-link">LinkedIn</a>
-        <a href="https://www.facebook.com/karl.evan.tabunda.2024" target="_blank" rel="noopener noreferrer"
-          class="footer-link">Facebook</a>
-        <a href="mailto:tabunda.karlevan@ncst.edu.ph" class="footer-link">Email</a>
-        <button type="button" id="back-to-top" class="back-to-top-btn" aria-label="Scroll back to top">
-          <span>Back to top</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="12" y1="19" x2="12" y2="5"></line>
-            <polyline points="5 12 12 5 19 12"></polyline>
-          </svg>
-        </button>
-      </div>
+    <div class="footer-left">
+      <a href="#home" class="footer-brand" aria-label="Karl Evan Tabunda Homepage">
+        <span class="brand-monogram">KE</span>
+        <span class="brand-divider">/</span>
+        <span class="footer-brand-name">Karl Evan Tabunda</span>
+      </a>
+      <p class="footer-meta-text">
+        <span>Information Technology Student</span>
+        <span class="footer-dot-sep" aria-hidden="true">•</span>
+        <span>© <span id="copyright-year">2026</span> All rights reserved.</span>
+      </p>
     </div>
 
-    <!-- Bottom Row: Copyright Notice & Live View Telemetry Pill -->
-    <div class="footer-meta-row">
-      <span class="footer-copyright">© <span id="copyright-year">2026</span> Karl Evan Tabunda. All rights reserved.</span>
-
-      <div class="footer-visitor-pill" aria-label="Total site views">
+    <div class="footer-right">
+      <div class="footer-visitor-pill" aria-label="Total site views" title="Live Site Views">
         <span class="status-dot status-dot-active" aria-hidden="true"></span>
-        <svg class="footer-eye-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg class="footer-eye-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
           <circle cx="12" cy="12" r="3"></circle>
         </svg>
         <span><strong data-visitor-count>...</strong> site views</span>
       </div>
+
+      <button type="button" id="back-to-top" class="back-to-top-btn" aria-label="Scroll back to top">
+        <span>Back to top</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <line x1="12" y1="19" x2="12" y2="5"></line>
+          <polyline points="5 12 12 5 19 12"></polyline>
+        </svg>
+      </button>
     </div>
   </div>
 </footer>

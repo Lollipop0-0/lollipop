@@ -476,21 +476,16 @@
     padding: 20px;
   }
 
-  .footer-main-row {
+  /* Footer on Mobile */
+  .footer-container {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
   }
 
-  .footer-links {
-    flex-wrap: wrap;
-    gap: 14px;
-  }
-
-  .footer-meta-row {
-    flex-direction: column-reverse;
-    align-items: flex-start;
-    gap: 12px;
+  .footer-right {
+    width: 100%;
+    justify-content: space-between;
   }
 
   /* 01 Selected Work, 02 Currently Building, and Contact CTA on Mobile */

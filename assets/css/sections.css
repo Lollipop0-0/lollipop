@@ -2231,6 +2231,25 @@
     gap: 6px;
 }
 
+.selected-project-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.selected-repo-link {
+    color: var(--secondary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.selected-repo-link:hover {
+    color: var(--primary);
+    transform: translateY(-1px);
+}
+
 .selected-project-link {
     background: none;
     border: none;

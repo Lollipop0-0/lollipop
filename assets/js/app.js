@@ -77,26 +77,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 /**
- * Render Selected Projects (Homepage 01 — SELECTED WORK)
- * Shows 3-4 compact project cards with one-line descriptions, tech tags, and case study triggers.
+ * Render Selected Projects (Homepage 02 — SELECTED WORK)
+ * Shows the selected projects: SmartSpace, Hotel Management System,
+ * Inventory Management System, Library-Management-System, and UI-SneakerHub.
+ * Celestine University of the Pacific is strictly excluded (shown ONLY in 01 — Currently Building).
  */
 function renderSelectedProjects() {
   const container = document.getElementById("selected-projects-grid");
-  if (!container || !window.PORTFOLIO_DATA) return;
+  if (!container || !window.PORTFOLIO_DATA || !Array.isArray(window.PORTFOLIO_DATA.projects)) return;
 
-  // Curated 4 selected projects: 01 CUP, 02 Inventory, 06 SmartSpace, 04 SneakerHub
-  const selectedIds = ["01", "02", "06", "04"];
-  const allProjects = [];
-
-  if (window.PORTFOLIO_DATA.featuredProject) {
-    allProjects.push(window.PORTFOLIO_DATA.featuredProject);
-  }
-  if (Array.isArray(window.PORTFOLIO_DATA.projects)) {
-    allProjects.push(...window.PORTFOLIO_DATA.projects);
-  }
+  // Selected projects in exact requested sequence:
+  // 1. SmartSpace (06)
+  // 2. Hotel Management System (05)
+  // 3. Inventory Management System (02)
+  // 4. Library Management System (03)
+  // 5. UI-SneakerHub (04)
+  const selectedIds = ["06", "05", "02", "03", "04"];
 
   const selectedProjects = selectedIds
-    .map(id => allProjects.find(p => p.id === id))
+    .map(id => window.PORTFOLIO_DATA.projects.find(p => p.id === id))
     .filter(Boolean);
 
   const html = selectedProjects.map(project => {
@@ -130,9 +129,14 @@ function renderSelectedProjects() {
           <p class="selected-project-desc">${escapeHtml(project.description)}</p>
           <div class="selected-project-footer">
             <div class="selected-project-tech">${techPills}</div>
-            <button type="button" class="selected-project-link" data-modal-project="${escapeHtml(project.id)}" aria-label="View case study for ${escapeHtml(project.title)}">
-              <span>View Case Study →</span>
-            </button>
+            <div class="selected-project-actions">
+              <a href="${escapeHtml(project.repository)}" target="_blank" rel="noopener noreferrer" class="selected-repo-link" aria-label="GitHub repository for ${escapeHtml(project.title)}" title="GitHub Repository">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+              </a>
+              <button type="button" class="selected-project-link" data-modal-project="${escapeHtml(project.id)}" aria-label="View case study for ${escapeHtml(project.title)}">
+                <span>View Case Study →</span>
+              </button>
+            </div>
           </div>
         </div>
       </article>

@@ -2,6 +2,26 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-19: Selected Work Project Update (Excluding CUP) & Complete 01–05 Homepage Flow
+- **Objective**: Ensure Celestine University of the Pacific appears ONLY in `01 — Currently Building` (labeled with System Integration Architecture subject context), and update `02 — Selected Work` to showcase strictly the requested projects (SmartSpace, Hotel Management System, Inventory Management System, Library Management System, UI-SneakerHub) with both direct GitHub repo links and case study triggers. Ensure complete 01–05 sequence across the homepage.
+- **Sequence Synchronized**:
+  - `Hero`
+  - `01 — Currently Building`: Celestine University of the Pacific (System Integration Architecture · Collaborative Project)
+  - `02 — Selected Work`: SmartSpace, Hotel Management System, Inventory Management System, Library Management System, UI-SneakerHub
+  - `03 — GitHub Activity`: Original Code Activity matrix, feed, and languages breakdown
+  - `04 — About Me`: Teaser preview with link to `about.html`
+  - `05 — Get in Touch`: Original Message / Contact section and form
+  - `Footer`: Refined cohesive bar with visitor telemetry and back to top
+- **Files Modified**:
+  - `assets/js/app.js`: Updated `renderSelectedProjects()` to select `06`, `05`, `02`, `03`, `04` and exclude CUP.
+  - `components/currently-building-section.html`: Updated label to "System Integration Architecture · Collaborative Project" and "Enrollment & Admissions Management System".
+  - `components/activity.html`: Added `03` kicker badge.
+  - `components/about-preview.html`: Added `04` kicker badge and updated heading to "About Me".
+  - `components/contact.html`: Added `05` kicker badge.
+  - `assets/css/sections.css`: Added `.selected-project-actions` and `.selected-repo-link`.
+
+---
+
 ## 2026-09-19: Homepage Section Re-sequencing & Restoration of Original GitHub Activity and Contact Form
 - **Objective**: Re-sequence the homepage so `01 — Currently Building` precedes `02 — Selected Work`, and restore the exact original `Code Activity` (with full activity feed and top languages breakdown) and `Message / Get in Touch` section (with original layout, form, error states, and actions) while preserving the new Home and About page designs.
 - **Sequence Applied**:

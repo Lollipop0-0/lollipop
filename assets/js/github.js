@@ -296,11 +296,12 @@ const GitHubManager = (() => {
 
     const personal = (window.PORTFOLIO_DATA && window.PORTFOLIO_DATA.personal) || {};
     const name = personal.name || "Karl Evan Tabunda";
-    const avatar = "assets/images/profile.jpg";
+    const avatar = personal.githubAvatar || `https://avatars.githubusercontent.com/${USERNAME}`;
+    const fallbackAvatar = "assets/images/github-avatar.png";
 
     profileContainer.innerHTML = `
       <div class="gh-profile-user">
-        <img src="${escapeHtml(avatar)}" alt="${escapeHtml(name)}" class="gh-avatar" width="46" height="46" loading="lazy">
+        <img src="${escapeHtml(avatar)}" alt="${escapeHtml(name)}" class="gh-avatar" width="46" height="46" loading="lazy" onerror="this.onerror=null;this.src='${escapeHtml(fallbackAvatar)}';">
         <div class="gh-user-meta">
           <span class="gh-user-fullname">${escapeHtml(name)}</span>
           <a href="https://github.com/${USERNAME}" target="_blank" rel="noopener noreferrer" class="gh-user-handle">@KarlEvanTabunda</a>

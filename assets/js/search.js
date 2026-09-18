@@ -124,6 +124,15 @@ const SearchManager = (() => {
       action: () => scrollToSection("stack")
     },
     {
+      id: "sec-certificates",
+      type: "section",
+      badge: "Section",
+      title: "Certificates & Certifications",
+      desc: "Verified Sololearn course credentials in JavaScript, HTML, CSS, and C++",
+      keywords: ["certificates", "certifications", "credentials", "sololearn", "courses", "verified", "degrees", "diploma"],
+      action: () => scrollToSection("certificates")
+    },
+    {
       id: "sec-journey",
       type: "section",
       badge: "Section",
@@ -243,6 +252,44 @@ const SearchManager = (() => {
       desc: "Exploring payment processing, transaction handling, and receipt generation",
       keywords: ["payment", "transactions", "checkout", "billing", "money"],
       action: () => scrollToSection("journey")
+    },
+
+    // --- Certificates ---
+    {
+      id: "cert-search-cpp",
+      type: "cert",
+      badge: "Certificate",
+      title: "Introduction to C++ Certificate",
+      desc: "Sololearn Verified Credential (ID: CC-KDC4AZEG) — Issued 18 Mar 2025",
+      keywords: ["c++", "cpp", "certificate", "sololearn", "kdc4azeg", "credential", "verified"],
+      action: () => openCertificateModal("cert-cpp")
+    },
+    {
+      id: "cert-search-html",
+      type: "cert",
+      badge: "Certificate",
+      title: "Introduction to HTML Certificate",
+      desc: "Sololearn Verified Credential (ID: CC-NHB7RE2H) — Issued 20 Feb 2025",
+      keywords: ["html", "html5", "certificate", "sololearn", "nhb7re2h", "credential", "verified"],
+      action: () => openCertificateModal("cert-html")
+    },
+    {
+      id: "cert-search-css",
+      type: "cert",
+      badge: "Certificate",
+      title: "Introduction to CSS Certificate",
+      desc: "Sololearn Verified Credential (ID: CC-T8NGLTB4) — Issued 17 Mar 2025",
+      keywords: ["css", "css3", "certificate", "sololearn", "t8ngltb4", "credential", "verified"],
+      action: () => openCertificateModal("cert-css")
+    },
+    {
+      id: "cert-search-js",
+      type: "cert",
+      badge: "Certificate",
+      title: "Introduction to JavaScript Certificate",
+      desc: "Sololearn Verified Credential (ID: CC-C8KJA5GY) — Issued 17 May 2025",
+      keywords: ["javascript", "js", "certificate", "sololearn", "c8kja5gy", "credential", "verified"],
+      action: () => openCertificateModal("cert-javascript")
     }
   ];
 
@@ -253,8 +300,21 @@ const SearchManager = (() => {
       workSection.scrollIntoView({ behavior: "smooth" });
     }
     setTimeout(() => {
-      if (window.ModalManager && typeof window.ModalManager.openModal === "function") {
-        window.ModalManager.openModal(projectId);
+      if (window.ModalManager && typeof window.ModalManager.open === "function") {
+        window.ModalManager.open(projectId);
+      }
+    }, 400);
+  }
+
+  function openCertificateModal(certId) {
+    close();
+    const certSection = document.getElementById("certificates");
+    if (certSection) {
+      certSection.scrollIntoView({ behavior: "smooth" });
+    }
+    setTimeout(() => {
+      if (window.ModalManager && typeof window.ModalManager.openCertificate === "function") {
+        window.ModalManager.openCertificate(certId);
       }
     }, 400);
   }
@@ -387,6 +447,8 @@ const SearchManager = (() => {
     switch (type) {
       case "project":
         return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`;
+      case "cert":
+        return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>`;
       case "section":
         return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>`;
       case "tech":

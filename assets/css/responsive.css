@@ -310,6 +310,16 @@
     gap: 14px;
   }
 
+  /* Certificates Section */
+  .certificates-section {
+    padding: 48px 0;
+  }
+
+  .certificates-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
   /* Journey & Figuring Out */
   .journey-section {
     padding: 48px 0;
@@ -429,8 +439,35 @@
     gap: 24px;
   }
 
+  .certificates-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .modal-details-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
   .figuring-out-card {
     padding: 20px;
+  }
+
+  .footer-main-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .footer-links {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .footer-meta-row {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: 12px;
   }
 }
 

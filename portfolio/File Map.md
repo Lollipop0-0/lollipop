@@ -23,6 +23,7 @@ This document provides a complete inventory of project files and their specific 
 | `components/work.html` | Featured Project deep dive (Celestine University of the Pacific) and categorized Project Archive with filtering tabs. |
 | `components/activity.html` | GitHub activity overview, live profile stats, languages breakdown, and interactive contribution calendar matrix. |
 | `components/stack.html` | "Things I Build With" container hosting categorized technology and tool cards. |
+| `components/certificates.html` | "Certificates & Certifications" container hosting verified Sololearn course credentials and credential ID inspector triggers. |
 | `components/journey.html` | Academic and programming development timeline alongside the "Currently Figuring Out" exploration cards. |
 | `components/contact.html` | Contact information, verified channels, validated contact form, and transparent `mailto:` launch system. |
 | `components/footer.html` | Footer colophon, social media links, back-to-top button, and copyright year. |

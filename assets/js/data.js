@@ -235,9 +235,53 @@ const PORTFOLIO_DATA = {
     { title: "Git Workflows", status: "Merge conflict resolution & release branching" },
     { title: "Web Architecture", status: "RESTful principles & decoupled frontend patterns" },
     { title: "Deployment", status: "Hosting configurations, DNS & environment setups" }
+  ],
+
+  certificates: [
+    {
+      id: "cert-cpp",
+      title: "Introduction to C++",
+      issuer: "Sololearn",
+      issueDate: "18 March, 2025",
+      credentialId: "CC-KDC4AZEG",
+      image: "assets/images/certificates/cert-cpp.png",
+      skills: ["C++", "Procedural Logic", "Data Structures", "Memory Concepts"],
+      description: "Official Sololearn course certification verifying competency in C++ syntax, conditional branching, loops, functions, arrays, memory concepts, and algorithmic foundations."
+    },
+    {
+      id: "cert-html",
+      title: "Introduction to HTML",
+      issuer: "Sololearn",
+      issueDate: "20 February, 2025",
+      credentialId: "CC-NHB7RE2H",
+      image: "assets/images/certificates/cert-html.png",
+      skills: ["HTML5", "Semantic Markup", "Web Accessibility", "Forms & Tables"],
+      description: "Official Sololearn course certification verifying understanding of core HTML structure, semantic tags, tables, forms, media integration, and accessible web standards."
+    },
+    {
+      id: "cert-css",
+      title: "Introduction to CSS",
+      issuer: "Sololearn",
+      issueDate: "17 March, 2025",
+      credentialId: "CC-T8NGLTB4",
+      image: "assets/images/certificates/cert-css.png",
+      skills: ["CSS3", "Box Model", "Flexbox & Grid", "Responsive Design"],
+      description: "Official Sololearn course certification verifying expertise in CSS cascading rules, selectors, box sizing, Flexbox, responsive layouts, and modern visual styling."
+    },
+    {
+      id: "cert-javascript",
+      title: "Introduction to JavaScript",
+      issuer: "Sololearn",
+      issueDate: "17 May, 2025",
+      credentialId: "CC-C8KJA5GY",
+      image: "assets/images/certificates/cert-javascript.png",
+      skills: ["JavaScript", "DOM Manipulation", "ES6+ Logic", "Event Handling"],
+      description: "Official Sololearn course certification verifying theoretical and practical understanding of JavaScript fundamentals, variables, control flow, functions, objects, and DOM manipulation."
+    }
   ]
 };
 
 if (typeof window !== "undefined") {
   window.PORTFOLIO_DATA = PORTFOLIO_DATA;
 }
+

@@ -140,8 +140,31 @@ This document provides a detailed breakdown of all user-facing features, their b
 
 ---
 
+## 13. Certificates & Verified Credentials
+- **Location**: `components/certificates.html`, `assets/js/app.js` (`renderCertificates`)
+- **Data Source**: `PORTFOLIO_DATA.certificates` in `assets/js/data.js`
+- **Modal Inspector**: `assets/js/modal.js` (`ModalManager.openCertificate`)
+- **Styles**: `assets/css/sections.css` (`.certificates-section`, `.certificates-grid`, `.certificate-card`), `assets/css/components.css` (`.modal-cert-preview-frame`), `assets/css/responsive.css`
+- **Behavior**:
+  - Displays Karl's verified Sololearn coursework credentials:
+    1. **Introduction to C++** (ID: `CC-KDC4AZEG`, Issued 18 March, 2025)
+    2. **Introduction to HTML** (ID: `CC-NHB7RE2H`, Issued 20 February, 2025)
+    3. **Introduction to CSS** (ID: `CC-T8NGLTB4`, Issued 17 March, 2025)
+    4. **Introduction to JavaScript** (ID: `CC-C8KJA5GY`, Issued 17 May, 2025)
+  - Seamlessly positioned between the `#stack` and `#journey` sections in `ComponentLoader`.
+  - Displays high-resolution certificate previews with completion badges, Sololearn verification badges, issuance dates, official credential IDs, and tested skills tags.
+  - Interactive click or keyboard `Enter`/`Space` triggers the accessible WAI-ARIA modal dialog, providing a full preview frame, complete credential metadata, and external view/download options.
+  - Integrated into global command search (`Ctrl+K`) for instantaneous discovery.
+  - **Responsive Sizing**:
+    - **Desktop (≥ 869px)**: 4-column balanced grid (`repeat(4, 1fr)`).
+    - **Tablet (601px–868px)**: 2-column grid (`repeat(2, 1fr)`).
+    - **Mobile (≤ 600px)**: 1-column stacked cards (`1fr`).
+
+---
+
 ## Cross References
 - Architecture: [[Architecture]]
 - File Map: [[File Map]]
 - Tech Stack Details: [[Tech Stack]]
 - Decisions: [[Technical Decisions]]
+

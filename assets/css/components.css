@@ -411,6 +411,36 @@
   object-fit: cover;
 }
 
+.modal-cert-preview-frame {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+  background-color: var(--surface-alt);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-cert-img {
+  width: 100%;
+  height: auto;
+  max-height: 480px;
+  object-fit: contain;
+  display: block;
+}
+
+.cert-code-highlight {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  background-color: var(--surface-alt);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  color: var(--primary);
+}
+
 .modal-details-grid {
   display: grid;
   grid-template-columns: 1.2fr 1fr;

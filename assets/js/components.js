@@ -13,6 +13,7 @@ const ComponentLoader = (() => {
     { name: "work", path: "components/work.html", isMainChild: true },
     { name: "activity", path: "components/activity.html", isMainChild: true },
     { name: "stack", path: "components/stack.html", isMainChild: true },
+    { name: "certificates", path: "components/certificates.html", isMainChild: true },
     { name: "journey", path: "components/journey.html", isMainChild: true },
     { name: "contact", path: "components/contact.html", isMainChild: true },
     { name: "footer", path: "components/footer.html", isMainChild: false },

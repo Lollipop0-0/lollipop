@@ -112,6 +112,24 @@ This document records the major architectural, engineering, and UX decisions mad
   - `components/footer.html`: Clean UI pill badge markup with live pulsating indicator.
   - `assets/css/sections.css`: Styling for `.footer-visitor-pill`.
 
+## Decision 10: Data-Driven Modular Certificates Architecture with Modal Inspection
+- **Decision**: Architect the coursework certificates showcase as a data-driven, modular component (`components/certificates.html` and `PORTFOLIO_DATA.certificates`), inserted sequentially between `#stack` and `#journey`, and leveraging the existing WAI-ARIA accessible modal dialog (`ModalManager.openCertificate`) for full credential inspection.
+- **Rationale**:
+  - **Narrative Continuity**: Placing verified credentials directly after the technical stack ("Things I Build With") provides tangible proof of Karl's skills in JavaScript, HTML, CSS, and C++ before transitioning into his chronological learning journey ("Development Journey").
+  - **Data-Driven Decoupling**: Storing certificate metadata (ID, issuer, issue date, skills, description, and image path) inside `PORTFOLIO_DATA` in `data.js` ensures that updating, removing, or adding future credentials requires zero HTML modifications.
+  - **Accessible Inspection**: Certificate cards feature full keyboard accessibility (`tabindex="0"`, `Enter`/`Space` listeners), and clicking any card invokes the WAI-ARIA modal dialog, providing visitors with high-resolution image viewing, credential verification ID, issuing body, CEO signatory, and direct image download actions.
+  - **Unified Command Search**: Registering the certificates and section in `search.js` enables instant access via `Ctrl+K` for recruiters and reviewers looking for certifications.
+- **Files Responsible**:
+  - `components/certificates.html`: Semantic section template with header and dynamic grid mount.
+  - `assets/js/data.js`: Authoritative certificates dataset in `PORTFOLIO_DATA`.
+  - `assets/js/components.js`: Registered in `COMPONENT_MANIFEST`.
+  - `assets/js/app.js`: `renderCertificates()` dynamic rendering function.
+  - `assets/js/modal.js`: `ModalManager.openCertificate()` preview and keyboard handling.
+  - `assets/js/search.js`: Search index items and modal triggers.
+  - `assets/css/sections.css`: `.certificates-section`, `.certificate-card`, and `.cert-summary-pill`.
+  - `assets/css/components.css`: `.modal-cert-preview-frame` and `.cert-code-highlight`.
+  - `assets/css/responsive.css`: 4-column (desktop) → 2-column (tablet) → 1-column (mobile) grid rules.
+
 ---
 
 ## Cross References
@@ -120,4 +138,5 @@ This document records the major architectural, engineering, and UX decisions mad
 - Features: [[Features]]
 - Tech Stack: [[Tech Stack]]
 - Known Issues: [[Known Issues]]
+
 

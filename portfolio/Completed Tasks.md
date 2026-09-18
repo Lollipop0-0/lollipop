@@ -2,6 +2,30 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-19: Verified Course Certificates Integration (Sololearn Credentials)
+- **Objective**: Integrate Karl Evan Tabunda's 4 Sololearn coursework certificates into the portfolio system with a dedicated modular section, data-driven architecture, accessible modal inspection, responsive grid styling, and command search integration.
+- **Certificates Added**:
+  1. **Introduction to C++** (ID: `CC-KDC4AZEG`, Issued 18 March, 2025)
+  2. **Introduction to HTML** (ID: `CC-NHB7RE2H`, Issued 20 February, 2025)
+  3. **Introduction to CSS** (ID: `CC-T8NGLTB4`, Issued 17 March, 2025)
+  4. **Introduction to JavaScript** (ID: `CC-C8KJA5GY`, Issued 17 May, 2025)
+- **Changes**:
+  - Verified and stored image assets in `assets/images/certificates/` (`cert-javascript.png`, `cert-html.png`, `cert-css.png`, `cert-cpp.png`).
+  - Added structured `certificates` dataset to `PORTFOLIO_DATA` in `assets/js/data.js` including title, issuer, issue date, credential ID, skills, and course summary.
+  - Created modular component `components/certificates.html` with section header, eyebrow, verified count badge ("4 Verified"), and dynamic `#certificates-grid`.
+  - Registered `certificates` in `COMPONENT_MANIFEST` in `assets/js/components.js` positioned between `#stack` and `#journey`.
+  - Added "Certificates" navigation item to desktop header and mobile drawer in `components/header.html`.
+  - Implemented `renderCertificates()` in `assets/js/app.js` generating interactive cards with hover zoom preview, verified badge, title, skills pills, credential ID, and inspection action.
+  - Extended `ModalManager` in `assets/js/modal.js` with `openCertificate()` and `renderCertificateContent()` supporting WAI-ARIA focus trap, backdrop dismiss, Escape key dismiss, and direct image viewing/downloading.
+  - Indexed the Certificates section and all 4 credentials in `assets/js/search.js` (`Ctrl+K` command search).
+  - Styled certificates section in `assets/css/sections.css`, modal frame in `assets/css/components.css`, and responsive grid rules (4-col desktop, 2-col tablet, 1-col mobile) in `assets/css/responsive.css`.
+  - Synchronized `portfolio/Features.md` (Section 13), `portfolio/File Map.md`, `portfolio/Technical Decisions.md` (Decision 10), `portfolio/Completed Tasks.md`, and `portfolio/Current Task.md`.
+- **Files Modified/Created**:
+  - Created: `components/certificates.html`.
+  - Modified: `assets/js/data.js`, `assets/js/components.js`, `components/header.html`, `assets/js/app.js`, `assets/js/modal.js`, `assets/js/search.js`, `assets/css/sections.css`, `assets/css/components.css`, `assets/css/responsive.css`, `portfolio/Features.md`, `portfolio/File Map.md`, `portfolio/Technical Decisions.md`.
+
+---
+
 ## 2026-09-19: Tablet Viewport Optimization — Side-by-Side Development Journey Layout
 - **Objective**: Adjust the Development Journey section on tablet viewports (e.g. iPad Mini 768×1024) to match the 2-column side-by-side aesthetic of the desktop / iPad Pro 13 view, eliminating excessive vertical stacking while strictly retaining 1-column mobile stacking (`≤ 600px`).
 - **Changes**:

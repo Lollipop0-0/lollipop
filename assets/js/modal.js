@@ -49,6 +49,102 @@ const ModalManager = (() => {
   }
 
   /**
+   * Populate modal with certificate details and display it
+   * @param {string} certId - ID matching certificate in PORTFOLIO_DATA.certificates
+   * @param {HTMLElement} triggerElement - Element that triggered the modal
+   */
+  function openCertificate(certId, triggerElement) {
+    if (!modal) return;
+    lastFocusedElement = triggerElement || document.activeElement;
+
+    let cert = null;
+    if (window.PORTFOLIO_DATA && Array.isArray(window.PORTFOLIO_DATA.certificates)) {
+      cert = window.PORTFOLIO_DATA.certificates.find(c => c.id === certId);
+    }
+
+    if (!cert) return;
+
+    renderCertificateContent(cert);
+
+    modal.classList.add("is-active");
+    if (modalBackdrop) modalBackdrop.classList.add("is-active");
+    document.body.classList.add("modal-locked");
+    modal.setAttribute("aria-hidden", "false");
+
+    updateFocusableElements();
+    if (closeBtn) {
+      closeBtn.focus();
+    }
+  }
+
+  /**
+   * Render structured certificate details inside modal body
+   * @param {Object} cert
+   */
+  function renderCertificateContent(cert) {
+    if (modalTitle) {
+      modalTitle.textContent = `Certificate — ${cert.title}`;
+    }
+
+    if (!modalBody) return;
+
+    const skillBadges = (cert.skills || [])
+      .map(s => `<span class="tech-pill">${escapeHtml(s)}</span>`)
+      .join("");
+
+    modalBody.innerHTML = `
+      <div class="modal-project-header">
+        <div class="modal-badges-row">
+          <span class="badge badge-collaborative">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right: 4px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            ${escapeHtml(cert.issuer)} Verified
+          </span>
+          <span class="badge badge-subtle">Issued: ${escapeHtml(cert.issueDate)}</span>
+        </div>
+        <p class="modal-project-summary">${escapeHtml(cert.description)}</p>
+      </div>
+
+      <div class="modal-cert-preview-frame">
+        <img src="${escapeHtml(cert.image)}" alt="${escapeHtml(cert.title)} Certificate preview" class="modal-cert-img" loading="lazy">
+      </div>
+
+      <div class="modal-details-grid" style="margin-top: 24px;">
+        <div class="modal-detail-col">
+          <h4 class="modal-section-heading">Credential Information</h4>
+          <ul class="modal-feature-list">
+            <li><span class="bullet-icon">✦</span> <span><strong>Course:</strong> ${escapeHtml(cert.title)}</span></li>
+            <li><span class="bullet-icon">✦</span> <span><strong>Issuing Body:</strong> ${escapeHtml(cert.issuer)}</span></li>
+            <li><span class="bullet-icon">✦</span> <span><strong>Certificate ID:</strong> <code class="cert-code-highlight">${escapeHtml(cert.credentialId)}</code></span></li>
+            <li><span class="bullet-icon">✦</span> <span><strong>Issue Date:</strong> ${escapeHtml(cert.issueDate)}</span></li>
+            <li><span class="bullet-icon">✦</span> <span><strong>Signatory:</strong> Yeva Hyusyan (Chief Executive Officer)</span></li>
+          </ul>
+        </div>
+
+        <div class="modal-detail-col">
+          <h4 class="modal-section-heading">Key Competencies Tested</h4>
+          <div class="modal-tech-list">
+            ${skillBadges}
+          </div>
+
+          <div class="modal-actions-area">
+            <h4 class="modal-section-heading">Credential Media</h4>
+            <div class="modal-btn-group">
+              <a href="${escapeHtml(cert.image)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+                <svg class="btn-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <span>View Full Image</span>
+              </a>
+              <a href="${escapeHtml(cert.image)}" download="${escapeHtml(cert.id)}.png" class="btn btn-secondary btn-sm">
+                <svg class="btn-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>Download</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
    * Render structured project details inside modal body
    * @param {Object} project
    */
@@ -210,13 +306,34 @@ const ModalManager = (() => {
 
     document.addEventListener("keydown", handleKeyDown);
 
-    // Global listener for elements requesting modal
+    // Global listener for elements requesting project or certificate modal
     document.addEventListener("click", e => {
-      const trigger = e.target.closest("[data-modal-project]");
-      if (trigger) {
+      const projTrigger = e.target.closest("[data-modal-project]");
+      if (projTrigger) {
         e.preventDefault();
-        const projectId = trigger.getAttribute("data-modal-project");
-        open(projectId, trigger);
+        const projectId = projTrigger.getAttribute("data-modal-project");
+        open(projectId, projTrigger);
+        return;
+      }
+
+      const certTrigger = e.target.closest("[data-modal-certificate]");
+      if (certTrigger) {
+        e.preventDefault();
+        const certId = certTrigger.getAttribute("data-modal-certificate");
+        openCertificate(certId, certTrigger);
+        return;
+      }
+    });
+
+    // Handle Enter/Space on focused certificate card
+    document.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") {
+        const certTrigger = document.activeElement ? document.activeElement.closest("[data-modal-certificate]") : null;
+        if (certTrigger && modal && !modal.classList.contains("is-active")) {
+          e.preventDefault();
+          const certId = certTrigger.getAttribute("data-modal-certificate");
+          openCertificate(certId, certTrigger);
+        }
       }
     });
   }
@@ -224,6 +341,7 @@ const ModalManager = (() => {
   return {
     init,
     open,
+    openCertificate,
     close
   };
 })();

@@ -20,8 +20,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       window.NavigationManager.init();
     }
 
-    // 4. Render Tech Stack, Journey, Figuring Out lists
+    // 4. Render Tech Stack, Journey, Figuring Out, and Certificates lists
     renderTechStack();
+    renderCertificates();
     renderJourney();
     renderFiguringOut();
 
@@ -151,6 +152,69 @@ function renderFiguringOut() {
       </div>
     </li>
   `).join("");
+
+  container.innerHTML = html;
+}
+
+/**
+ * Render Verified Certificates Grid
+ */
+function renderCertificates() {
+  const container = document.getElementById("certificates-grid");
+  if (!container || !window.PORTFOLIO_DATA || !Array.isArray(window.PORTFOLIO_DATA.certificates)) return;
+
+  const certs = window.PORTFOLIO_DATA.certificates;
+  const html = certs.map(cert => {
+    const skillsHtml = (cert.skills || [])
+      .map(s => `<span class="cert-skill-tag">${escapeHtml(s)}</span>`)
+      .join("");
+
+    return `
+      <article class="certificate-card" data-modal-certificate="${escapeHtml(cert.id)}" role="button" tabindex="0" aria-label="View ${escapeHtml(cert.title)} certificate details">
+        <div class="cert-card-media">
+          <img src="${escapeHtml(cert.image)}" alt="${escapeHtml(cert.title)} Sololearn Certificate" class="cert-img-thumb" loading="lazy">
+          <div class="cert-media-badge">
+            <span class="cert-gold-star">★</span>
+            <span>Completed</span>
+          </div>
+          <div class="cert-media-hover-overlay">
+            <span class="cert-inspect-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              Inspect Credential
+            </span>
+          </div>
+        </div>
+
+        <div class="cert-card-content">
+          <div class="cert-meta-row">
+            <span class="cert-verified-pill">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              ${escapeHtml(cert.issuer)}
+            </span>
+            <span class="cert-date-text">${escapeHtml(cert.issueDate)}</span>
+          </div>
+
+          <h3 class="cert-card-title">${escapeHtml(cert.title)}</h3>
+          <p class="cert-card-description">${escapeHtml(cert.description)}</p>
+
+          <div class="cert-skills-group">
+            ${skillsHtml}
+          </div>
+
+          <div class="cert-card-footer">
+            <div class="cert-id-info">
+              <span class="cert-id-muted">ID:</span>
+              <code class="cert-id-code">${escapeHtml(cert.credentialId)}</code>
+            </div>
+            <span class="cert-view-link">
+              <span>Inspect</span>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </span>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
 
   container.innerHTML = html;
 }

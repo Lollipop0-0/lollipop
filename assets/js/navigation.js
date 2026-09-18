@@ -172,22 +172,21 @@ const NavigationManager = (() => {
       const href = anchor.getAttribute("href");
       if (!href || href === "#") return;
 
-      // If linking to another page with a hash, allow normal browser navigation
-      const isCrossPage = href.includes(".html") && !window.location.pathname.endsWith(href.split("#")[0]);
-      if (isCrossPage) return;
-
       const hashIndex = href.indexOf("#");
       if (hashIndex === -1) return;
 
       const targetId = href.substring(hashIndex + 1);
       const targetElement = document.getElementById(targetId);
 
+      // If target element exists on current page, smooth scroll to it
       if (targetElement) {
         e.preventDefault();
         if (isDrawerOpen) {
           closeDrawer();
         }
         scrollToTarget(targetId);
+      } else if (isDrawerOpen) {
+        closeDrawer();
       }
     });
 

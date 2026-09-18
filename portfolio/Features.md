@@ -30,7 +30,7 @@ This document provides a detailed breakdown of all user-facing features, their b
     - **Focus**: Backend Development, Software Development, Web Development, UI/UX, Generative AI.
     - **Currently Learning**: Java, PHP / MVC, JavaScript, Database Design, Git / GitHub.
     - **Interests**: Building practical systems, Backend development, Database-driven applications, Exploring new technologies.
-  - Hosts full chronological Development Journey, Tech Stack, and Verified Certificates gallery.
+  - Hosts full chronological Development Journey, Tech Stack, and Verified Certificates gallery (ending cleanly at the gallery before the footer, with the primary contact form residing on the homepage).
 
 ---
 

@@ -2,6 +2,16 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-19: Remove Contact Section from About Page & Route Contact Nav Links to Homepage
+- **Objective**: Remove the contact section (`components/contact.html`) from the dedicated About page (`about.html`), letting the page transition cleanly from the Verified Certificates gallery to the colophon footer. Route the header navigation Contact links (`components/header.html`) to `index.html#contact` so clicking Contact from `about.html` navigates directly to the contact form on the homepage.
+- **Changes**:
+  - `assets/js/components.js`: Removed `contact` component from `ABOUT_MANIFEST`. `HOMEPAGE_MANIFEST` retains `contact` as section 05 (`components/contact.html`).
+  - `components/header.html`: Updated desktop nav link and mobile nav link `href` from `#contact` to `index.html#contact`.
+  - `assets/js/navigation.js`: Refined anchor click event listener so elements existing in the current DOM (e.g., `#contact` on the homepage) smooth-scroll immediately without reloading, while cross-page anchors (e.g., `#contact` from `about.html`) cleanly navigate to the destination page.
+  - Verification: All JS modules validated with `node -c`, HTTP 200 response on both pages, zero console errors.
+
+---
+
 ## 2026-09-19: Selected Work Project Update (Excluding CUP) & Complete 01–05 Homepage Flow
 - **Objective**: Ensure Celestine University of the Pacific appears ONLY in `01 — Currently Building` (labeled with System Integration Architecture subject context), and update `02 — Selected Work` to showcase strictly the requested projects (SmartSpace, Hotel Management System, Inventory Management System, Library Management System, UI-SneakerHub) with both direct GitHub repo links and case study triggers. Ensure complete 01–05 sequence across the homepage.
 - **Sequence Synchronized**:

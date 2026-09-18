@@ -6,8 +6,8 @@
 ---
 
 ## Active Task Summary
-- **Task**: Selected Work Projects Update (Excluding CUP & Rendering Requested Projects) + Complete Homepage 01–05 Sequence
-- **Context**: The user specified that Celestine University of the Pacific must appear ONLY in `01 — Currently Building`. In `02 — Selected Work`, only the 5 projects (SmartSpace, Hotel Management System, Inventory Management System, Library Management System, UI-SneakerHub) are showcased. Kicker numbering follows `01` to `05` across the homepage sequence.
+- **Task**: Cut Contact Section from About Page (`about.html`) & Route Navigation Links
+- **Context**: The user requested removing the contact section from `about.html`. The About page now flows directly from the Verified Certificates gallery to the colophon footer. In the site header (`components/header.html`), Contact navigation links route to `index.html#contact` so clicking Contact from `about.html` directs visitors seamlessly to the full contact form on the homepage.
 
 ---
 

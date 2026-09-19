@@ -228,8 +228,7 @@ Because this website operates as a pure frontend project without an active backe
 
 ## TODO
 
-- [ ] Replace "View Projects" with "More About Me"
-- [ ] Fix and improve profile responsiveness
-- [ ] Remove unnecessary/redundant "IT Student" text
+- [x] Replace "View Projects" with "More About Me" and swap certificates / about me sections between index and about pages
+- [x] Fix and improve profile responsiveness (profile first before info)
 - [ ] Keep the introduction concise and avoid repeating the same information
 - [ ] Error State Design

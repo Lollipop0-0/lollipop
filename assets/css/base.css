@@ -151,17 +151,32 @@ pre {
   padding-right: 24px;
 }
 
-/* Subtle Editorial Grid Lines (Decorative) */
+/* ==========================================================================
+   Subtle Blueprint / Editorial Grid Lines (Applied to All Sections)
+   ========================================================================== */
+
+section {
+  position: relative;
+}
+
+section::before,
 .editorial-grid-bg {
+  content: "";
   position: absolute;
   inset: 0;
   background-image:
     linear-gradient(to right, var(--border-subtle) 1px, transparent 1px),
     linear-gradient(to bottom, var(--border-subtle) 1px, transparent 1px);
   background-size: 80px 80px;
-  opacity: 0.25;
+  opacity: 0.35;
   pointer-events: none;
   z-index: 0;
+}
+
+/* Ensure all content inside sections sits cleanly above the decorative grid lines */
+section > .container {
+  position: relative;
+  z-index: 1;
 }
 
 /* Selection */

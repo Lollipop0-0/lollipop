@@ -5,26 +5,26 @@
  */
 
 const ComponentLoader = (() => {
-  // Homepage manifest: Hero → 01 Currently Building → 02 Selected Work → Original GitHub Recent Activity → About Preview → Original Message/Contact → Footer
+  // Homepage manifest: Hero → 01 Currently Building → 02 Selected Work → 03 GitHub Recent Activity → 04 Certificates → 05 Contact → Footer
   const HOMEPAGE_MANIFEST = [
     { name: "header", path: "components/header.html", isMainChild: false },
     { name: "hero", path: "components/hero.html", isMainChild: true },
     { name: "currently-building", path: "components/currently-building-section.html", isMainChild: true },
     { name: "selected-work", path: "components/selected-work.html", isMainChild: true },
     { name: "activity", path: "components/activity.html", isMainChild: true },
-    { name: "about-preview", path: "components/about-preview.html", isMainChild: true },
+    { name: "certificates", path: "components/certificates.html", isMainChild: true },
     { name: "contact", path: "components/contact.html", isMainChild: true },
     { name: "footer", path: "components/footer.html", isMainChild: false },
     { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
   ];
 
-  // Dedicated About page manifest: Detailed personal narrative, secondary background, milestones, stack, certificates
+  // Dedicated About page manifest: Narrative hero, journey, stack, about me snapshot
   const ABOUT_MANIFEST = [
     { name: "header", path: "components/header.html", isMainChild: false },
     { name: "about-hero", path: "components/about-page-hero.html", isMainChild: true },
     { name: "journey", path: "components/journey.html", isMainChild: true },
     { name: "stack", path: "components/stack.html", isMainChild: true },
-    { name: "certificates", path: "components/certificates.html", isMainChild: true },
+    { name: "about", path: "components/about.html", isMainChild: true },
     { name: "footer", path: "components/footer.html", isMainChild: false },
     { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
   ];

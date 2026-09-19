@@ -111,21 +111,43 @@ const NavigationManager = (() => {
       return;
     }
 
-    const scrollPosition = window.scrollY + 140;
+    // On homepage, dynamically detect current active section
+    const allSections = sections && sections.length ? sections : document.querySelectorAll("section[id], header[id]");
+    const allLinks = navLinks && navLinks.length ? navLinks : document.querySelectorAll(".nav-link, .mobile-nav-link");
+
+    const scrollPosition = window.scrollY + 160;
+    const isAtBottom = (window.innerHeight + Math.round(window.scrollY)) >= (document.documentElement.scrollHeight - 60);
 
     let currentSectionId = "";
-    sections.forEach(section => {
-      const top = section.offsetTop;
-      const height = section.offsetHeight;
-      if (scrollPosition >= top && scrollPosition < top + height) {
-        currentSectionId = section.getAttribute("id");
-      }
-    });
+
+    if (isAtBottom) {
+      currentSectionId = "contact";
+    } else {
+      allSections.forEach(section => {
+        const top = section.offsetTop;
+        const height = section.offsetHeight;
+        if (scrollPosition >= top && scrollPosition < top + height) {
+          currentSectionId = section.getAttribute("id");
+        }
+      });
+    }
+
+    // Map currently-building section to Work in nav
+    if (currentSectionId === "currently-building") {
+      currentSectionId = "selected-work";
+    }
 
     if (currentSectionId) {
-      navLinks.forEach(link => {
-        const href = link.getAttribute("href");
-        if (href === `#${currentSectionId}` || href === `index.html#${currentSectionId}`) {
+      allLinks.forEach(link => {
+        const href = link.getAttribute("href") || "";
+        const hashIndex = href.indexOf("#");
+        const linkHash = hashIndex !== -1 ? href.substring(hashIndex + 1) : "";
+
+        if (
+          href === `#${currentSectionId}` ||
+          href === `index.html#${currentSectionId}` ||
+          linkHash === currentSectionId
+        ) {
           link.classList.add("is-active");
           link.setAttribute("aria-current", "page");
         } else {

@@ -2,6 +2,114 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-19: Certificates Navigation Highlight & Scroll-Spy Synchronization
+- **Objective**: Fix the navigation link and active highlight state for the "Certificates" section in both desktop and mobile headers so it correctly highlights when scrolling through `#certificates` on the homepage and reliably smooth-scrolls to the section without 404 errors.
+- **Key Deliverables**:
+  - **Header Navigation Path Resolution** (`components/header.html`):
+    - Changed `href="certificates.html#certificates"` to `href="index.html#certificates"` in both `.desktop-nav` and `.mobile-nav-links`. Since certificates are hosted dynamically on `index.html` as Section 04, this points to the exact in-page anchor without attempting to load a nonexistent standalone page.
+  - **Robust Scroll-Spy Hash Matching** (`assets/js/navigation.js`):
+    - Enhanced `updateActiveLink()` to parse the target fragment (`linkHash === currentSectionId`), allowing any link format (`#certificates`, `index.html#certificates`) to match the active section.
+    - Added fallback DOM query (`document.querySelectorAll`) in case dynamic partial templates finish mounting after initial scroll check.
+    - Added bottom-of-page boundary detection and mapped `currently-building` to `selected-work` so the active navigation state never goes blank.
+- **Verification**: Verified zero syntax errors via `node -c`, tested HTTP 200 responses on both `http://localhost/lollipop/` and `http://localhost/lollipop/about.html`.
+
+## 2026-09-19: Fix & Improve Profile Responsiveness (Profile First Before Info)
+- **Objective**: Reorder the hero elements on mobile and tablet screens so that the profile photo collage appears first before the introductory info/text, while completely optimizing the responsiveness and fluid scaling of the profile card, IDE code snippet, annotations, and floating cards to eliminate clipping and horizontal overflow.
+- **Key Deliverables**:
+  - **Profile-First Stacking Order** (`assets/css/responsive.css`):
+    - Across tablet (`<= 868px`), mobile (`<= 600px`), and compact devices (`<= 480px`), set `.hero-visual` to `order: 1` and `.hero-content` to `order: 2`.
+    - Visitors on handheld and tablet devices now see Karl's signature profile photo collage right at the top, followed immediately by his name, bio narrative, CTA buttons, and social channels.
+  - **Responsive Photo Card Scaling** (`assets/css/responsive.css`):
+    - Updated `.hero-photo-card` to use `aspect-ratio: 340 / 430` with fluid `clamp()` widths (`clamp(240px, 36vw, 290px)` on tablet, `clamp(210px, 60vw, 250px)` on mobile, and `clamp(185px, 58vw, 215px)` on small screens) with proportional padding.
+    - Set `.hero-photo-img` to `height: calc(100% - 10px); width: 100%; object-fit: cover;`, preserving the authentic portrait proportions without stretching or distortion.
+  - **Fluid Sizing for Floating Elements & Overflow Protection** (`assets/css/responsive.css`):
+    - `.php-snippet-card`: Scaled with fluid clamp widths (`160px` to `250px`) and responsive font sizes and paddings, preventing side clipping.
+    - `.currently-building-card`: Shifted coordinates and clamped width (`clamp(190px, 56vw, 230px)`), with refined label/title/status typography.
+    - `.hero-annotation-dream` and `.hero-annotation-steps`: Sized fluidly with `clamp()`, hiding steps on narrow mobile screens to avoid visual collision.
+    - Adjusted `.hero-visual` bottom margin to `32px–38px` so the overlapping Currently Building card floats with breathing room above `.hero-content`.
+  - **Compact Button & Action Stacking** (`assets/css/responsive.css`):
+    - On screens `<= 480px`, `.hero-actions` stacks cleanly with full-width primary button and evenly spaced social pill links (`flex: 1 1 0`).
+  - **TODO List Tracking** (`README.md`):
+    - Marked item `- [x] Fix and improve profile responsiveness (profile first before info)`.
+- **Verification**: All 11 JavaScript modules pass `node -c` with zero syntax errors, verified HTTP 200 OK on both `http://localhost/lollipop/` and `http://localhost/lollipop/about.html`.
+
+## 2026-09-19: "More About Me" CTA & Homepage / About Page Section Swap
+- **Objective**: Replace the Hero primary CTA button with "More About Me" linking to `about.html`, relocate the Certificates & Certifications section onto `index.html` (as section `04`), and move the About Me bio and snapshot grid to `about.html` while ensuring the Tech Stack remains intact.
+- **Key Deliverables**:
+  - **Hero CTA Transformation** (`components/hero.html`):
+    - Replaced the primary CTA button text with `"More About Me"` and redirected its destination to `about.html`.
+  - **Homepage Section 04: Verified Certificates** (`components/certificates.html`, `assets/js/components.js`, `assets/css/sections.css`):
+    - Cut `about-preview` from `HOMEPAGE_MANIFEST` and mounted `certificates`.
+    - Added `<span class="section-kicker-num">04</span>`, heading, and verified summary pill to `components/certificates.html`.
+    - Applied desktop full-height styling (`min-height: 100vh; min-height: 100dvh; display: flex; align-items: center;`) with responsive collapse for mobile/tablet in `assets/css/responsive.css`.
+    - Dynamic certificate grid populated automatically by `renderCertificates()` with credential modal inspection triggers.
+  - **About Page: Dedicated About Me Snapshot & Preserved Tech Stack** (`assets/js/components.js`, `components/about-page-hero.html`, `components/about.html`):
+    - Cut `certificates` from `ABOUT_MANIFEST` and mounted `about` (`components/about.html`) directly after Tech Stack (`stack`), preserving the full tech stack section.
+    - Cleaned up redundant `.about-secondary-meta` from `components/about-page-hero.html` so that Education, Focus, Currently Learning, and Technical Interests are exclusively presented in the dedicated About Me component.
+    - Aligned Focus and Interests in `components/about.html` to reflect Karl's backend, web development, and generative AI interests.
+  - **Search & Navigation Synchronization** (`assets/js/search.js`):
+    - Updated `aboutSections` lookup so section `about` maps to `about.html#about` and `certificates` smoothly targets `index.html#certificates`.
+  - **TODO List Tracking** (`README.md`):
+    - Marked item `- [x] Replace "View Projects" with "More About Me" and swap certificates / about me sections between index and about pages`.
+- **Verification**: All JavaScript files validated syntax (`node -c`), verified HTTP 200 OK across both `http://localhost/lollipop/` and `http://localhost/lollipop/about.html`.
+
+## 2026-09-19: Universal Blueprint Grid Lines Background Across All Sections (Excluding Footer)
+- **Objective**: Apply the subtle technical blueprint / editorial grid lines ("the line thing") site-wide across all sections (excluding the global footer), creating a cohesive, architectural aesthetic throughout the entire portfolio while keeping the footer clean and grounded.
+- **Key Deliverables**:
+  - **Universal Grid Lines Pseudo-Element** (`assets/css/base.css`):
+    - Configured `section::before, .editorial-grid-bg` with `position: absolute; inset: 0; background-image: linear-gradient(to right, var(--border-subtle) 1px, transparent 1px), linear-gradient(to bottom, var(--border-subtle) 1px, transparent 1px); background-size: 80px 80px; opacity: 0.35; pointer-events: none; z-index: 0;`.
+    - Applied `position: relative;` to all `section` elements.
+    - Set `section > .container { position: relative; z-index: 1; }` so all content, cards, badges, text, and interactions sit cleanly above the grid lines.
+    - Explicitly excluded `.site-footer` so the footer maintains its solid, refined base styling.
+    - Cleaned up redundant manual grid `<div>` in `components/hero.html` to maintain uniform line weight and opacity everywhere.
+  - **Coverage Across Site**:
+    - Homepage: Hero, 01 Currently Building, 02 Selected Work, 03 GitHub Activity, 04 About Me Preview, and 05 Contact.
+    - About Page: About Hero, Development Journey, Tech Stack, and Certificates.
+    - 404 Error Page: Error showcase card and background.
+  - **Theme-Adaptive**:
+    - Lines automatically synchronize with light mode (`#ECEEF2`) and dark mode (`#1E293B`) via CSS custom properties.
+- **Verification**: Zero syntax errors in CSS/JS (`node -c`), verified both `http://localhost/lollipop/` and `http://localhost/lollipop/about.html` return `HTTP 200 OK`.
+
+## 2026-09-19: High-Impact Desktop Visual Scaling & Reference Layout Alignment
+- **Objective**: Scale up the visual hierarchy and layout elements across desktop displays so they look prominent, commanding, and fill the screen with stature (matching the reference layout of Logan M. Panucat), eliminating undersized elements and vast empty spaces.
+- **Key Deliverables**:
+  - **Wider Container Footprint** (`assets/css/variables.css`):
+    - Expanded `--container-max` from `1320px` to `1520px`, allowing content to spread naturally across desktop displays while keeping balanced side margins.
+  - **Monumental Typography & Actions** (`assets/css/sections.css`):
+    - `.hero-title`: Scaled up to `clamp(3.25rem, 5.2vw, 5.5rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.035em;`.
+    - `.hero-intro`: Enlarged to `clamp(1.25rem, 1.8vw, 1.65rem); font-weight: 500; max-width: 640px;`.
+    - `.hero-supporting`: Elevated to `1.0625rem; line-height: 1.65; max-width: 580px;`.
+    - `.hero-cta-btn`: Scaled to `padding: 13px 28px; font-size: 1rem; border-radius: var(--radius-full); box-shadow: 0 4px 14px rgba(37,99,235,0.28);`.
+    - `.hero-text-link`: Transformed secondary links into interactive pill buttons (`padding: 10px 18px; border-radius: var(--radius-full); background: var(--surface); border: 1px solid var(--border);`).
+  - **Right Visual Collage Enlargement** (`assets/css/sections.css`, `assets/css/components.css`, `components/hero.html`):
+    - `.hero-photo-card`: Scaled up from 268x334px to `340px x 430px` (image `height: 396px;`) with a rich elevation shadow (`0 24px 50px -12px rgba(15, 23, 42, 0.25)`).
+    - `.php-snippet-card`: Expanded to `290px` wide and styled with an authentic IDE window header with window dots (`.dot-red`, `.dot-yellow`, `.dot-green`) and `Student.php` label.
+    - `.currently-building-card`: Scaled up to `280px` max-width with larger typography and badges.
+    - Handwritten Annotations: Scaled up to `1.65rem` and `1.5rem` for prominent editorial personality.
+    - Added subtle blueprint grid background (`.editorial-grid-bg`) to `.hero-section`.
+  - **Section Headings & Currently Building Scaling** (`assets/css/sections.css`):
+    - `.section-heading`: Scaled to `clamp(2.25rem, 3.8vw, 3.25rem); font-weight: 700;`.
+    - `.cb-statement`: Scaled to `1.35rem; max-width: 580px;`.
+    - `.cb-compact-card` & body: Scaled up with richer padding (`24px 28px`) and `1.35rem` title.
+- **Verification**: Zero syntax errors in CSS/JS (`node -c`), verified both `http://localhost/lollipop/` and `http://localhost/lollipop/about.html` return `HTTP 200 OK`.
+
+## 2026-09-19: Full-Screen Height (100vh) Desktop Layout for All Sections
+- **Objective**: Widen and elevate each section on desktop so that each section fills the entire screen height (`100vh`) with dedicated focus, eliminating awkward vertical viewport sharing (where Hero and 01 Currently Building previously shared one screen and cut off content) and removing unnecessary empty spaces.
+- **Key Deliverables**:
+  - **Homepage Sections Full-Screen Desktop Geometry** (`assets/css/sections.css`):
+    - `.hero-section`: Configured with `min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; padding-top: var(--header-height); padding-bottom: 24px; box-sizing: border-box; scroll-margin-top: 0;`.
+    - `.currently-building-section`: Configured with `min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; padding-top: calc(var(--header-height) + 24px); padding-bottom: 40px; box-sizing: border-box; border-top: 1px solid var(--border); scroll-margin-top: 0;`.
+    - `.selected-work-section`: Configured with `min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; padding-top: calc(var(--header-height) + 32px); padding-bottom: 56px; box-sizing: border-box; border-top: 1px solid var(--border); scroll-margin-top: 0;`.
+    - `.activity-section`: Configured with `min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; padding-top: calc(var(--header-height) + 24px); padding-bottom: 48px; box-sizing: border-box; scroll-margin-top: 0;`.
+    - `.about-preview-section`: Configured with `min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding-top: calc(var(--header-height) + 24px); padding-bottom: 48px; box-sizing: border-box; border-top: 1px solid var(--border); scroll-margin-top: 0;`.
+    - `.contact-section`: Configured with `min-height: calc(100vh - var(--header-height)); min-height: calc(100dvh - var(--header-height)); display: flex; align-items: center; padding-top: calc(var(--header-height) + 24px); padding-bottom: 48px; box-sizing: border-box; scroll-margin-top: 0;`.
+    - Added `> .container { width: 100%; }` to each section flex parent to ensure container widths and responsive bounds remain robust.
+  - **About Page Full-Screen Geometry** (`assets/css/sections.css`):
+    - `.about-hero-section` and `.journey-section`: Enhanced with `min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; padding-top: calc(var(--header-height) + 32px); scroll-margin-top: 0;`.
+  - **Fluid Tablet and Mobile Resets** (`assets/css/responsive.css`):
+    - Under `@media (max-width: 868px)`, reset all sections to `min-height: auto; display: block;` with standard responsive padding (`48px 0`) to preserve natural scrolling without mobile URL-bar layout shifts.
+- **Verification**: Zero syntax errors in CSS and JS (`node -c`), verified both `http://localhost/lollipop/` and `http://localhost/lollipop/about.html` return `HTTP 200 OK`.
+
 ## 2026-09-19: Error State Design Enhancement & Custom 404 Showcase Experience
 - **Objective**: Redesign the bare 404 error page into an editorial, developer-crafted showcase that seamlessly aligns with Karl Evan's portfolio design language (masking tape strip, watermarked serif numeral, syntax-highlighted PHP terminal snippet card, handwritten annotation, and multi-option recovery paths), integrated with site-wide header, footer, search modal, and theme manager.
 - **Key Deliverables**:

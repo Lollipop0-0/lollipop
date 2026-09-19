@@ -6,13 +6,16 @@
 ---
 
 ## Active Task Summary
-- **Task**: Error State Design Enhancement & Custom 404 Showcase Experience
-- **Context**: Designed a rich, developer-crafted 404 error experience (`components/error-404.html`) and dynamic error state card matching Karl Evan's signature editorial portfolio aesthetic. Features masking tape strip (`.tape-strip`), watermarked serif `404` numeral, HTTP status pill (`● HTTP 404 · ROUTE NOT FOUND`), Newsreader serif headline ("Lost in the codebase?"), syntax-highlighted PHP terminal debug card (`routing_exception.log`), Caveat handwritten doodle ("don't worry, here's the way back ⤸"), multiple recovery action pathways (`[ Back to Home → ]`, `[ View Selected Work ]`, `[ Search Portfolio (Ctrl+K) ]`), and quick jump links. Unified `404.html` with site-wide header, footer, search modal, and theme manager via `ComponentLoader` (`ERROR_404_MANIFEST`).
+- **Task**: Fix Navigation Scroll-Spy & Active Highlight for Certificates Section
+- **Context**:
+  1. Updated `components/header.html` in both desktop (`.desktop-nav`) and mobile drawer (`.mobile-nav-links`): changed `certificates.html#certificates` to `index.html#certificates` so navigation stays on the active page instead of triggering a 404.
+  2. Upgraded `updateActiveLink()` in `assets/js/navigation.js` to extract and match hashes (`linkHash === currentSectionId`) across any link format (`#certificates`, `index.html#certificates`), ensuring the Certificates link is highlighted with `var(--primary)` and the active indicator bar whenever the user scrolls through `#certificates`.
+  3. Added bottom-of-page boundary detection and mapped `currently-building` to `selected-work` so navigation state remains continuous across all sections.
 
 ---
 
 ## Applied Homepage Sequence (01 to 05)
-1. **Hero**: Minimal student intro (`components/hero.html` with primary button to `#currently-building`).
+1. **Hero**: Minimal student intro (`components/hero.html` with primary button "More About Me" linking to `about.html`).
 2. **01 — Currently Building** (`components/currently-building-section.html`, kicker `01`):
    - Celestine University of the Pacific
    - System Integration Architecture · Collaborative Project
@@ -23,14 +26,23 @@
    - 3. Inventory Management System (`02`)
    - 4. Library Management System (`03`)
    - 5. UI-SneakerHub (`04`)
-   - Each with image, title, one-line summary, tech pills, direct GitHub repository link, and modal inspection trigger.
 4. **03 — GitHub Activity** (`components/activity.html`, kicker `03`):
    - Original Code Activity layout: live matrix, profile badge, recent activity feed (`#github-activity-feed`), and top languages breakdown (`#github-languages-list`).
-5. **04 — About Me** (`components/about-preview.html`, kicker `04`):
-   - 2-sentence teaser narrative with `More about me →` linking to `about.html`.
+5. **04 — Certificates & Certifications** (`components/certificates.html`, kicker `04`):
+   - Verified Sololearn credentials in JavaScript, HTML, CSS, and C++ with dynamic rendering and credential inspection modal.
 6. **05 — Get in Touch** (`components/contact.html`, kicker `05`):
    - Original Message / Get in Touch section: contact methods list and interactive `#contact-form` with validation and error states.
 7. **Footer**: Single-tier refined bar with site visitor count pill and back-to-top button.
+
+---
+
+## Applied About Page Sequence
+1. **Header**: Global top navigation.
+2. **About Hero** (`components/about-page-hero.html`): Narrative introduction ("Who I am & how I build").
+3. **Development Journey** (`components/journey.html`): Milestones timeline & "Currently Figuring Things Out" card.
+4. **Tech Stack** (`components/stack.html`): Languages, frameworks, tools, and databases ("Things I Build With").
+5. **About Me Snapshot** (`components/about.html`): Personal bio, Education, Focus, Currently Learning, and Technical Interests cards.
+6. **Footer**: Refined footer bar.
 
 ---
 

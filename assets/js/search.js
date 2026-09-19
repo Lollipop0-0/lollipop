@@ -311,12 +311,14 @@ const SearchManager = (() => {
     const certSection = document.getElementById("certificates");
     if (certSection) {
       certSection.scrollIntoView({ behavior: "smooth" });
+      setTimeout(() => {
+        if (window.ModalManager && typeof window.ModalManager.openCertificate === "function") {
+          window.ModalManager.openCertificate(certId);
+        }
+      }, 400);
+    } else {
+      window.location.href = `index.html#certificates`;
     }
-    setTimeout(() => {
-      if (window.ModalManager && typeof window.ModalManager.openCertificate === "function") {
-        window.ModalManager.openCertificate(certId);
-      }
-    }, 400);
   }
 
   function scrollToSection(sectionId) {
@@ -325,7 +327,7 @@ const SearchManager = (() => {
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
     } else {
-      const aboutSections = ["about-intro", "journey", "stack", "certificates"];
+      const aboutSections = ["about-intro", "journey", "stack", "about"];
       if (aboutSections.includes(sectionId)) {
         window.location.href = `about.html#${sectionId}`;
       } else {

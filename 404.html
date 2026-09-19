@@ -4,23 +4,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <base href="/lollipop/">
+
   <title>404 — Page Not Found | Karl Evan Tabunda</title>
-  <meta name="description" content="The requested page could not be found on Karl Evan Tabunda's developer portfolio.">
+  <meta name="description"
+    content="The requested file, page, or repository route could not be found on Karl Evan Tabunda's portfolio.">
   <meta name="author" content="Karl Evan Tabunda">
   <meta name="robots" content="noindex, follow">
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+  <!-- Favicon / Tab Icon -->
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg?v=2">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon.png?v=2">
+  <link rel="icon" href="favicon.ico?v=2" sizes="any">
+  <link rel="apple-touch-icon" href="assets/images/favicon.png?v=2">
 
-  <!-- Google Fonts: Newsreader & JetBrains Mono -->
+  <!-- Google Fonts: Caveat (Handwritten), Inter (Body), JetBrains Mono (Terminal/Code), Newsreader (Serif Display) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&display=swap"
     rel="stylesheet">
 
-  <!-- Core Stylesheets -->
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="assets/css/variables.css">
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/components.css">
@@ -45,95 +51,49 @@
 </head>
 
 <body>
-  <!-- Header -->
-  <header class="site-header" role="banner">
-    <div class="container header-inner">
-      <a href="index.html" class="site-logo" aria-label="Karl Evan Tabunda Portfolio Home">
-        <span class="logo-mark">KE</span>
-        <span class="logo-divider">/</span>
-        <span class="logo-name">Karl Evan</span>
-      </a>
+  <!-- Accessible Skip Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-      <nav class="desktop-nav" aria-label="Primary Navigation">
-        <a href="index.html" class="nav-link">Home</a>
-        <a href="index.html#selected-work" class="nav-link">Work</a>
-        <a href="index.html#activity" class="nav-link">Activity</a>
-        <a href="about.html" class="nav-link">About</a>
-        <a href="index.html#contact" class="nav-link">Contact</a>
-      </nav>
-
-      <div class="nav-actions">
-        <button type="button" class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle dark mode"
-          title="Toggle color theme">
-          <svg class="theme-icon icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </svg>
-          <svg class="theme-icon icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Error Content -->
-  <main id="main-content">
-    <section class="error-page-section" aria-labelledby="error-page-title">
-      <div class="container error-page-container">
-        <div class="error-page-card">
-          <span class="error-page-kicker">404 CLIENT ERROR</span>
-          <h1 id="error-page-title" class="error-page-title">Page Not Found</h1>
-          <p class="error-page-subtitle">The page you're looking for doesn't exist.</p>
-          <div class="error-page-actions">
-            <a href="index.html" class="btn btn-primary">
-              <span>Back Home</span>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </a>
+  <!-- Application Shell Mounting Point for 404 Error Showcase -->
+  <div id="app" data-page="404">
+    <!-- ComponentLoader dynamically mounts: header.html, error-404.html, footer.html, project-modal.html -->
+    <noscript>
+      <section class="error-showcase-section">
+        <div class="container error-showcase-container">
+          <div class="error-showcase-card">
+            <div class="tape-strip tape-top-center" aria-hidden="true"></div>
+            <div class="error-watermark-num" aria-hidden="true">404</div>
+            <div class="error-showcase-content">
+              <div class="error-status-pill">
+                <span class="status-dot status-dot-warning" aria-hidden="true"></span>
+                <span>HTTP 404 · ROUTE NOT FOUND</span>
+              </div>
+              <h1 class="error-showcase-title">Lost in the codebase?</h1>
+              <p class="error-showcase-desc">The file, repository, or page you were looking for doesn't exist or was relocated.</p>
+              <div class="error-showcase-actions">
+                <a href="index.html" class="btn btn-primary">Back to Home →</a>
+                <a href="about.html" class="btn btn-secondary">About Karl</a>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-  </main>
+      </section>
+    </noscript>
+  </div>
 
-  <!-- Colophon Footer -->
-  <footer class="site-footer" role="contentinfo">
-    <div class="container footer-content">
-      <div class="footer-colophon">
-        <span class="footer-logo">KE</span>
-        <span class="footer-author">Karl Evan Tabunda</span>
-        <span class="footer-sep">•</span>
-        <span class="footer-meta">Information Technology Student</span>
-      </div>
-
-      <div class="footer-actions">
-        <span class="footer-copyright">© 2026 All rights reserved.</span>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Theme Script -->
+  <!-- Modular Scripts -->
+  <script src="assets/js/data.js"></script>
   <script src="assets/js/theme.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      if (window.ThemeManager) {
-        window.ThemeManager.init();
-      }
-    });
-  </script>
+  <script src="assets/js/navigation.js"></script>
+  <script src="assets/js/error-state.js"></script>
+  <script src="assets/js/modal.js"></script>
+  <script src="assets/js/projects.js"></script>
+  <script src="assets/js/github.js"></script>
+  <script src="assets/js/contact.js"></script>
+  <script src="assets/js/search.js"></script>
+  <script src="assets/js/components.js"></script>
+  <script src="assets/js/visitors.js"></script>
+  <script src="assets/js/app.js"></script>
 </body>
 
 </html>

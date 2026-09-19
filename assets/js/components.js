@@ -29,6 +29,14 @@ const ComponentLoader = (() => {
     { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
   ];
 
+  // Dedicated 404 error page manifest: Header, custom branded 404 error showcase, footer
+  const ERROR_404_MANIFEST = [
+    { name: "header", path: "components/header.html", isMainChild: false },
+    { name: "error-404", path: "components/error-404.html", isMainChild: true },
+    { name: "footer", path: "components/footer.html", isMainChild: false },
+    { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
+  ];
+
   /**
    * Fetch a single component HTML template
    * @param {string} path
@@ -58,11 +66,17 @@ const ComponentLoader = (() => {
     }
 
     // Determine active page manifest
+    const is404Page = appEl.getAttribute("data-page") === "404" ||
+      window.location.pathname.endsWith("404.html") ||
+      window.location.pathname.endsWith("/404");
+
     const isAboutPage = appEl.getAttribute("data-page") === "about" ||
       window.location.pathname.endsWith("about.html") ||
       window.location.pathname.endsWith("/about");
 
-    const manifest = isAboutPage ? ABOUT_MANIFEST : HOMEPAGE_MANIFEST;
+    const manifest = is404Page
+      ? ERROR_404_MANIFEST
+      : (isAboutPage ? ABOUT_MANIFEST : HOMEPAGE_MANIFEST);
 
     try {
       // Fetch all components concurrently
@@ -157,7 +171,8 @@ const ComponentLoader = (() => {
     loadAll,
     fetchComponent,
     HOMEPAGE_MANIFEST,
-    ABOUT_MANIFEST
+    ABOUT_MANIFEST,
+    ERROR_404_MANIFEST
   };
 })();
 

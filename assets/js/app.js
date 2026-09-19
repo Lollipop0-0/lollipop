@@ -51,6 +51,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 9. Initialize Portfolio Command Search
     if (window.SearchManager) {
       window.SearchManager.init();
+
+      // Hook up 404 error page search trigger if present
+      const errorSearchBtn = document.getElementById("error-search-btn");
+      if (errorSearchBtn) {
+        errorSearchBtn.addEventListener("click", () => {
+          window.SearchManager.open();
+        });
+      }
     }
 
     // 10. Initialize Visitor & Viewer Counter

@@ -224,3 +224,11 @@ Because this website operates as a pure frontend project without an active backe
    - Make sure your operating system has a default email handler assigned (e.g., Mail, Outlook, Thunderbird, or browser handler for Gmail). Alternatively, use the direct email link `tabunda.karlevan@ncst.edu.ph`.
 4. **Modal does not close with Escape:**
    - Ensure the modal or an element within the modal dialog has active focus.
+
+
+## TODO
+
+- [ ] Replace "View Projects" with "More About Me"
+- [ ] Fix and improve profile responsiveness
+- [ ] Remove unnecessary/redundant "IT Student" text
+- [ ] Keep the introduction concise and avoid repeating the same information

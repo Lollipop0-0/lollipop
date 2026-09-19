@@ -83,6 +83,17 @@ const NavigationManager = (() => {
    * Update active nav link based on current scroll position (Scroll-Spy)
    */
   function updateActiveLink() {
+    const is404Page = window.location.pathname.endsWith("404.html") ||
+      (document.getElementById("app") && document.getElementById("app").getAttribute("data-page") === "404");
+
+    if (is404Page) {
+      navLinks.forEach(link => {
+        link.classList.remove("is-active");
+        link.removeAttribute("aria-current");
+      });
+      return;
+    }
+
     const isAboutPage = window.location.pathname.endsWith("about.html") ||
       (document.getElementById("app") && document.getElementById("app").getAttribute("data-page") === "about");
 

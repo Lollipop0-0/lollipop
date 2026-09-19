@@ -1,0 +1,94 @@
+<!-- 404 Page Not Found Component -->
+<section class="error-showcase-section" aria-labelledby="error-showcase-title">
+  <div class="container error-showcase-container">
+    <div class="error-showcase-card">
+      <!-- Decorative Masking Tape at Top -->
+      <div class="tape-strip tape-top-center" aria-hidden="true"></div>
+
+      <!-- Watermark 404 Numeral -->
+      <div class="error-watermark-num" aria-hidden="true">404</div>
+
+      <!-- Content Layout -->
+      <div class="error-showcase-content">
+        <!-- Status Pill -->
+        <div class="error-status-pill">
+          <span class="status-dot status-dot-warning" aria-hidden="true"></span>
+          <span>HTTP 404 · ROUTE NOT FOUND</span>
+        </div>
+
+        <h1 id="error-showcase-title" class="error-showcase-title">Lost in the codebase?</h1>
+
+        <p class="error-showcase-desc">
+          The file, repository, or page you were looking for doesn't exist, was relocated, or took an unmapped route.
+        </p>
+
+        <!-- Developer Terminal Card -->
+        <div class="error-code-terminal" aria-label="Route failure debug snippet">
+          <div class="terminal-dots" aria-hidden="true">
+            <span class="terminal-dot dot-red"></span>
+            <span class="terminal-dot dot-yellow"></span>
+            <span class="terminal-dot dot-green"></span>
+            <span class="terminal-title">routing_exception.log</span>
+          </div>
+          <pre class="terminal-code"><code><span class="code-tag">&lt;?php</span>
+<span class="code-comment">// HTTP 404 — Route Not Found</span>
+$requested_path = <span class="code-func">$_SERVER</span>[<span class="code-string">'REQUEST_URI'</span>];
+
+<span class="code-keyword">if</span> (!Router::<span class="code-func">exists</span>($requested_path)) {
+    <span class="code-keyword">return</span> Response::<span class="code-func">status</span>(<span class="code-number">404</span>)
+        -&gt;<span class="code-func">suggest</span>([<span class="code-string">'/'</span>, <span class="code-string">'/about.html'</span>]);
+}
+<span class="code-tag">?&gt;</span></code></pre>
+        </div>
+
+        <!-- Handwritten Annotation -->
+        <div class="handwritten-note error-doodle" aria-hidden="true">
+          don't worry, here's the way back ⤸
+        </div>
+
+        <!-- Action Choices -->
+        <div class="error-showcase-actions">
+          <a href="index.html" class="btn btn-primary error-action-btn">
+            <span>Back to Home</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+
+          <a href="index.html#selected-work" class="btn btn-secondary error-action-btn">
+            <span>View Selected Work</span>
+          </a>
+
+          <button type="button" class="btn btn-outline error-action-btn error-search-trigger" id="error-search-btn"
+            aria-label="Search portfolio (Ctrl+K)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <span>Search Portfolio</span>
+            <kbd class="error-search-kbd">Ctrl K</kbd>
+          </button>
+        </div>
+
+        <!-- Helpful Quick Navigation -->
+        <div class="error-quick-destinations" aria-label="Suggested Destinations">
+          <span class="error-quick-label">Or jump directly to:</span>
+          <div class="error-quick-links">
+            <a href="index.html#currently-building" class="error-quick-link">Currently Building</a>
+            <span class="error-link-dot" aria-hidden="true">•</span>
+            <a href="index.html#selected-work" class="error-quick-link">Selected Work</a>
+            <span class="error-link-dot" aria-hidden="true">•</span>
+            <a href="index.html#activity" class="error-quick-link">Activity</a>
+            <span class="error-link-dot" aria-hidden="true">•</span>
+            <a href="about.html" class="error-quick-link">About Karl</a>
+            <span class="error-link-dot" aria-hidden="true">•</span>
+            <a href="index.html#contact" class="error-quick-link">Contact</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

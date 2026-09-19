@@ -2,6 +2,31 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-19: Error State Design Enhancement & Custom 404 Showcase Experience
+- **Objective**: Redesign the bare 404 error page into an editorial, developer-crafted showcase that seamlessly aligns with Karl Evan's portfolio design language (masking tape strip, watermarked serif numeral, syntax-highlighted PHP terminal snippet card, handwritten annotation, and multi-option recovery paths), integrated with site-wide header, footer, search modal, and theme manager.
+- **Key Deliverables**:
+  - **Showcase Error Component** (`components/error-404.html`):
+    - Masking tape strip (`.tape-strip.tape-top-center`).
+    - Watermarked `404` numeral in Newsreader serif at low opacity.
+    - Status pill badge: `● HTTP 404 · ROUTE NOT FOUND`.
+    - Serif headline: *"Lost in the codebase?"*.
+    - Syntax-highlighted PHP terminal snippet card (`routing_exception.log`) with colored dots (`#EF4444`, `#F59E0B`, `#10B981`) and formatted route fallback logic.
+    - Handwritten annotation note: *"don't worry, here's the way back ⤸"* in Caveat font.
+    - Direct action choices: Primary button `Back to Home →`, Secondary button `View Selected Work`, and quick search trigger `Search Portfolio [Ctrl K]`.
+    - Quick jump links list: Currently Building, Selected Work, Activity, About Karl, Contact.
+  - **Component Architecture Integration** (`assets/js/components.js`, `404.html`):
+    - Added `ERROR_404_MANIFEST` to mount standard site `header.html`, `error-404.html`, `footer.html`, and `project-modal.html`.
+    - Set base path `<base href="/lollipop/">` in `404.html` for clean relative asset loading on nested missing routes.
+    - Included all site-standard Google Fonts (`Caveat`, `Inter`, `JetBrains Mono`, `Newsreader`).
+  - **Active State & Search Navigation** (`assets/js/navigation.js`, `assets/js/app.js`):
+    - Added `is404Page` detection in `NavigationManager.updateActiveLink` to prevent false active link highlights.
+    - Bound `#error-search-btn` to `SearchManager.open()` for immediate modal search access.
+  - **ErrorState Module Upgrade** (`assets/js/error-state.js`):
+    - Upgraded `renderPage()` to generate the identical rich showcase card with tape strip, terminal snippet, and recovery buttons on any dynamic component or router error.
+  - **Styling Tokens & Dark Mode** (`assets/css/components.css`):
+    - Added full styles for `.error-showcase-section`, `.error-showcase-card`, `.error-watermark-num`, `.error-code-terminal`, `.terminal-dots`, `.terminal-code`, `.error-doodle`, `.error-showcase-actions`, `.error-quick-destinations` with full light/dark theme CSS variable support.
+- **Verification**: All JS modules validated with `node -c`, HTTP 200 returned on `404.html`, HTTP 404 returned on non-existent routes via `.htaccess`.
+
 ## 2026-09-19: HTTP Error Handling, Private Repository States & Custom 404 Routing
 - **Objective**: Implement comprehensive 4xx client-error, 5xx server-error, and private repository state handling throughout the portfolio without altering the existing visual identity, design aesthetics, or section layouts. Ensure all API requests fail gracefully with clean, portfolio-styled error states, provide retry actions where appropriate, and differentiate between private/restricted (403), missing (404), rate-limited (429), and server-error (5xx) states.
 - **Key Deliverables**:

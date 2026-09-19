@@ -541,34 +541,93 @@ const ErrorState = (() => {
   function renderPage(options = {}) {
     const statusCode = options.statusCode || 404;
     const is404 = statusCode === 404;
-    const badge = is404 ? "404 CLIENT ERROR" : `${statusCode} SERVER ERROR`;
-    const title = options.title || (is404 ? "Page Not Found" : "Something Went Wrong");
+    const badge = is404 ? "HTTP 404 · ROUTE NOT FOUND" : `HTTP ${statusCode} · SERVER ERROR`;
+    const title = options.title || (is404 ? "Lost in the codebase?" : "Something Went Wrong");
     const message = options.message || (is404
-      ? "The page you're looking for doesn't exist."
+      ? "The file, repository, or page you were looking for doesn't exist, was relocated, or took an unmapped route."
       : "The service couldn't complete this request right now.");
     const showHome = options.showHome !== false;
     const showRetry = options.showRetry === true;
 
     return `
-      <section class="error-page-section" aria-labelledby="error-page-title">
-        <div class="container error-page-container">
-          <div class="error-page-card">
-            <span class="error-page-kicker">${escapeHtml(badge)}</span>
-            <h1 id="error-page-title" class="error-page-title">${escapeHtml(title)}</h1>
-            <p class="error-page-subtitle">${escapeHtml(message)}</p>
-            <div class="error-page-actions">
-              ${showHome ? `
-                <a href="index.html" class="btn btn-primary">
-                  <span>Back Home</span>
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+      <section class="error-showcase-section" aria-labelledby="error-showcase-title">
+        <div class="container error-showcase-container">
+          <div class="error-showcase-card">
+            <!-- Decorative Masking Tape at Top -->
+            <div class="tape-strip tape-top-center" aria-hidden="true"></div>
+
+            <!-- Watermark Numeral -->
+            <div class="error-watermark-num" aria-hidden="true">${escapeHtml(String(statusCode))}</div>
+
+            <!-- Content Layout -->
+            <div class="error-showcase-content">
+              <div class="error-status-pill">
+                <span class="status-dot status-dot-warning" aria-hidden="true"></span>
+                <span>${escapeHtml(badge)}</span>
+              </div>
+
+              <h1 id="error-showcase-title" class="error-showcase-title">${escapeHtml(title)}</h1>
+
+              <p class="error-showcase-desc">${escapeHtml(message)}</p>
+
+              <!-- Developer Terminal Card -->
+              <div class="error-code-terminal" aria-label="Route failure debug snippet">
+                <div class="terminal-dots" aria-hidden="true">
+                  <span class="terminal-dot dot-red"></span>
+                  <span class="terminal-dot dot-yellow"></span>
+                  <span class="terminal-dot dot-green"></span>
+                  <span class="terminal-title">routing_exception.log</span>
+                </div>
+                <pre class="terminal-code"><code><span class="code-tag">&lt;?php</span>
+<span class="code-comment">// HTTP ${statusCode} Exception Handler</span>
+$request_path = <span class="code-func">$_SERVER</span>[<span class="code-string">'REQUEST_URI'</span>];
+
+<span class="code-keyword">if</span> (!Router::<span class="code-func">exists</span>($request_path)) {
+    <span class="code-keyword">return</span> Response::<span class="code-func">status</span>(<span class="code-number">${statusCode}</span>)
+        -&gt;<span class="code-func">suggest</span>([<span class="code-string">'/'</span>, <span class="code-string">'/about.html'</span>]);
+}
+<span class="code-tag">?&gt;</span></code></pre>
+              </div>
+
+              <!-- Handwritten Annotation -->
+              <div class="handwritten-note error-doodle" aria-hidden="true">
+                don't worry, here's the way back ⤸
+              </div>
+
+              <!-- Action Choices -->
+              <div class="error-showcase-actions">
+                ${showHome ? `
+                  <a href="index.html" class="btn btn-primary error-action-btn">
+                    <span>Back to Home</span>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                  </a>
+                ` : ""}
+                <a href="index.html#selected-work" class="btn btn-secondary error-action-btn">
+                  <span>View Selected Work</span>
                 </a>
-              ` : ""}
-              ${showRetry ? `
-                <button type="button" class="btn btn-outline error-page-retry-btn">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
-                  <span>Try Again</span>
-                </button>
-              ` : ""}
+                ${showRetry ? `
+                  <button type="button" class="btn btn-outline error-action-btn error-page-retry-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                    <span>Try Again</span>
+                  </button>
+                ` : ""}
+              </div>
+
+              <!-- Quick Destinations -->
+              <div class="error-quick-destinations" aria-label="Suggested Destinations">
+                <span class="error-quick-label">Or jump directly to:</span>
+                <div class="error-quick-links">
+                  <a href="index.html#currently-building" class="error-quick-link">Currently Building</a>
+                  <span class="error-link-dot" aria-hidden="true">•</span>
+                  <a href="index.html#selected-work" class="error-quick-link">Selected Work</a>
+                  <span class="error-link-dot" aria-hidden="true">•</span>
+                  <a href="index.html#activity" class="error-quick-link">Activity</a>
+                  <span class="error-link-dot" aria-hidden="true">•</span>
+                  <a href="about.html" class="error-quick-link">About Karl</a>
+                  <span class="error-link-dot" aria-hidden="true">•</span>
+                  <a href="index.html#contact" class="error-quick-link">Contact</a>
+                </div>
+              </div>
             </div>
           </div>
         </div>

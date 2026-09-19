@@ -6,8 +6,8 @@
 ---
 
 ## Active Task Summary
-- **Task**: Cut Contact Section from About Page (`about.html`) & Route Navigation Links
-- **Context**: The user requested removing the contact section from `about.html`. The About page now flows directly from the Verified Certificates gallery to the colophon footer. In the site header (`components/header.html`), Contact navigation links route to `index.html#contact` so clicking Contact from `about.html` directs visitors seamlessly to the full contact form on the homepage.
+- **Task**: HTTP Error Handling, Private Repository States & Custom 404 Routing
+- **Context**: Implemented unified 4xx and 5xx error handling, private repository states (`[ 🔒 Private Repository ]`), missing repository states (`[ Repository Unavailable ]`), reusable `ErrorState` component (`assets/js/error-state.js`), resilient GitHub Activity error card with retry action, safe API request parsing, and a custom portfolio-styled `404.html` with `.htaccess` error routing.
 
 ---
 

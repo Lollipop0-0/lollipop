@@ -9,6 +9,8 @@ This document provides a complete inventory of project files and their specific 
 |---|---|
 | `index.html` | Minimal application shell for Homepage Entry Point (WHO I AM → WHAT I BUILD → LET THE VISITOR EXPLORE). |
 | `about.html` | Standalone application shell for Detailed About page mounting `ABOUT_MANIFEST`. |
+| `404.html` | Standalone custom error page with theme switcher, Newsreader typography, and "Back Home" CTA. |
+| `.htaccess` | Apache configuration routing 404 and 500 error documents to `/lollipop/404.html` with security headers. |
 | `README.md` | Comprehensive project setup, execution guide, folder overview, and architectural reference. |
 | `.gitignore` | Git ignore rules for OS files, IDE configs, environment secrets, and node/temp artifacts. |
 | `.env` | Environment configuration file (e.g. optional GitHub token for local environments). |
@@ -55,6 +57,7 @@ This document provides a complete inventory of project files and their specific 
 | `assets/js/data.js` | Single source of truth for portfolio data: personal bio, featured project, archive projects, tech stack categories, timeline, and current studies (`PORTFOLIO_DATA`). |
 | `assets/js/theme.js` | `ThemeManager`: Light and dark mode toggling, `localStorage` persistence (`ket_portfolio_theme`), system preference detection, and contribution chart theme syncing. |
 | `assets/js/navigation.js` | `NavigationManager`: Smooth scrolling to section anchors, active section scrollspy, mobile navigation drawer open/close. |
+| `assets/js/error-state.js` | `ErrorState`: Reusable HTTP status handler, error card generator, repository status checking with 30-min cache, and full-page 404/500 rendering. |
 | `assets/js/projects.js` | `ProjectsManager`: Dynamic rendering of project cards from `PORTFOLIO_DATA`, active category filtering (`all`, `personal`, `collaborative`). |
 | `assets/js/modal.js` | `ModalManager`: WAI-ARIA accessible project details dialog, focus trapping, Escape key closing, body scroll lock. |
 | `assets/js/github.js` | `GitHubManager`: Multi-tier resilient data fetcher (PHP proxy, Netlify serverless function, static JSON cache) for real GitHub user metrics, languages, and contribution calendar. |

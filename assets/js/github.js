@@ -32,29 +32,41 @@ const GitHubManager = (() => {
   /**
    * Fetch real contribution calendar with multi-tier fallback (PHP -> Netlify Function -> Static JSON)
    * @returns {Promise<Object|null>}
+  let lastErrorStatus = 0;
+
+  /**
+   * Fetch real contribution calendar with multi-tier fallback (PHP -> Netlify Function -> Static JSON)
+   * Tracks HTTP status code for precise error diagnostics
+   * @returns {Promise<Object|null>}
    */
   async function fetchContributions() {
+    lastErrorStatus = 0;
+
     // Tier 1: Local PHP proxy (XAMPP) or Netlify rewritten endpoint
     try {
       const res = await fetch(`api/contributions.php?username=${encodeURIComponent(USERNAME)}`);
       if (res.ok) {
-        const data = await res.json();
+        const data = await res.json().catch(() => null);
         if (data && data.contributionCalendar && Array.isArray(data.contributionCalendar.weeks)) {
           return data.contributionCalendar;
         }
+      } else {
+        lastErrorStatus = res.status;
       }
     } catch (err) {
-      // Continue to next tier
+      lastErrorStatus = 0; // Network error
     }
 
     // Tier 2: Direct Netlify Serverless Function
     try {
       const res = await fetch(`/.netlify/functions/contributions?username=${encodeURIComponent(USERNAME)}`);
       if (res.ok) {
-        const data = await res.json();
+        const data = await res.json().catch(() => null);
         if (data && data.contributionCalendar && Array.isArray(data.contributionCalendar.weeks)) {
           return data.contributionCalendar;
         }
+      } else if (!lastErrorStatus) {
+        lastErrorStatus = res.status;
       }
     } catch (err) {
       // Continue to next tier
@@ -64,10 +76,12 @@ const GitHubManager = (() => {
     try {
       const res = await fetch(`cache/contributions_${encodeURIComponent(USERNAME.toLowerCase())}.json`);
       if (res.ok) {
-        const data = await res.json();
+        const data = await res.json().catch(() => null);
         if (data && data.contributionCalendar && Array.isArray(data.contributionCalendar.weeks)) {
           return data.contributionCalendar;
         }
+      } else if (!lastErrorStatus) {
+        lastErrorStatus = res.status;
       }
     } catch (err) {
       console.warn("All contribution sources failed:", err);
@@ -386,22 +400,58 @@ const GitHubManager = (() => {
 
   /**
    * Render clean error state if contribution retrieval fails
+   * Preserves section layout and provides an interactive retry button
    */
-  function renderMatrixError() {
+  function renderMatrixError(statusCode = null) {
     if (!matrixContainer) return;
-    matrixContainer.innerHTML = `
-      <div class="matrix-error-placeholder">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="8" x2="12" y2="12"></line>
-          <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </svg>
-        <span class="matrix-error-text">Unable to load GitHub contributions.</span>
-        <a href="https://github.com/${USERNAME}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">
-          View GitHub Profile
-        </a>
-      </div>
-    `;
+    const code = statusCode || lastErrorStatus || 503;
+
+    if (window.ErrorState) {
+      matrixContainer.innerHTML = window.ErrorState.renderCard({
+        statusCode: code,
+        title: code === 429
+          ? "GitHub Rate Limit Reached"
+          : (code >= 500 ? "GitHub Activity Unavailable" : "Unable to Load GitHub Activity"),
+        message: code === 429
+          ? "The public GitHub API rate limit has been reached. Please try again in a few moments."
+          : (code >= 500
+            ? "The activity service couldn't complete this request right now."
+            : "Unable to retrieve contribution calendar data. Please check your connection or try again."),
+        retryId: "retry-github-matrix",
+        retryText: "Retry Loading Activity",
+        showRetry: true
+      });
+
+      const retryBtn = matrixContainer.querySelector('.error-retry-btn[data-retry-id="retry-github-matrix"]');
+      if (retryBtn) {
+        retryBtn.addEventListener("click", async () => {
+          retryBtn.disabled = true;
+          retryBtn.innerHTML = `
+            <span class="matrix-spinner" style="width: 12px; height: 12px; border-width: 2px;" aria-hidden="true"></span>
+            <span>Retrying...</span>
+          `;
+          await loadCalendar();
+        });
+      }
+    } else {
+      matrixContainer.innerHTML = `
+        <div class="matrix-error-placeholder">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span class="matrix-error-text">Unable to load GitHub contributions.</span>
+          <button type="button" class="btn btn-outline btn-sm" id="gh-manual-retry-btn">
+            Retry
+          </button>
+        </div>
+      `;
+      const fallbackRetry = document.getElementById("gh-manual-retry-btn");
+      if (fallbackRetry) {
+        fallbackRetry.addEventListener("click", () => loadCalendar());
+      }
+    }
 
     if (totalContribsBadge) {
       totalContribsBadge.innerHTML = `
@@ -409,6 +459,20 @@ const GitHubManager = (() => {
           View activity on GitHub
         </a>
       `;
+    }
+  }
+
+  async function loadCalendar() {
+    try {
+      const calendarData = await fetchContributions();
+      if (calendarData) {
+        renderContributionMatrix(calendarData);
+      } else {
+        renderMatrixError();
+      }
+    } catch (err) {
+      console.warn("GitHub contribution calendar initialization error:", err);
+      renderMatrixError();
     }
   }
 
@@ -518,21 +582,12 @@ const GitHubManager = (() => {
     renderLanguages();
 
     // Fetch and render the public GitHub contribution calendar
-    try {
-      const calendarData = await fetchContributions();
-      if (calendarData) {
-        renderContributionMatrix(calendarData);
-      } else {
-        renderMatrixError();
-      }
-    } catch (err) {
-      console.warn("GitHub contribution calendar initialization error:", err);
-      renderMatrixError();
-    }
+    await loadCalendar();
   }
 
   return {
-    init
+    init,
+    loadCalendar
   };
 })();
 

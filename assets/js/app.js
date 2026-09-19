@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // 4. Render Selected Projects, Tech Stack, Journey, Figuring Out, and Certificates lists
     renderSelectedProjects();
+    verifyCurrentlyBuildingRepo();
     renderTechStack();
     renderCertificates();
     renderJourney();
@@ -130,9 +131,13 @@ function renderSelectedProjects() {
           <div class="selected-project-footer">
             <div class="selected-project-tech">${techPills}</div>
             <div class="selected-project-actions">
-              <a href="${escapeHtml(project.repository)}" target="_blank" rel="noopener noreferrer" class="selected-repo-link" aria-label="GitHub repository for ${escapeHtml(project.title)}" title="GitHub Repository">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-              </a>
+              <span class="selected-repo-action-wrap" data-project-id="${escapeHtml(project.id)}">
+                ${window.ErrorState ? window.ErrorState.renderAction(project) : `
+                  <a href="${escapeHtml(project.repository)}" target="_blank" rel="noopener noreferrer" class="selected-repo-link" aria-label="GitHub repository for ${escapeHtml(project.title)}" title="GitHub Repository">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                  </a>
+                `}
+              </span>
               <button type="button" class="selected-project-link" data-modal-project="${escapeHtml(project.id)}" aria-label="View case study for ${escapeHtml(project.title)}">
                 <span>View Case Study →</span>
               </button>
@@ -144,6 +149,50 @@ function renderSelectedProjects() {
   }).join("");
 
   container.innerHTML = html;
+
+  // Background repository status check for selected projects
+  if (window.ErrorState && typeof window.ErrorState.checkRepository === "function") {
+    selectedProjects.forEach(project => {
+      if (!project.repository) return;
+      window.ErrorState.checkRepository(project.repository, project).then(status => {
+        const wrap = container.querySelector(`.selected-repo-action-wrap[data-project-id="${project.id}"]`);
+        if (wrap && window.ErrorState) {
+          wrap.innerHTML = window.ErrorState.renderAction(project, status);
+        }
+      }).catch(() => {});
+    });
+  }
+}
+
+/**
+ * Verify Currently Building section repository status
+ */
+function verifyCurrentlyBuildingRepo() {
+  const cbRepoBtn = document.querySelector(".cb-compact-actions a[href*='github.com']");
+  if (!cbRepoBtn || !window.PORTFOLIO_DATA) return;
+
+  const featProj = window.PORTFOLIO_DATA.featuredProject;
+  if (!featProj || !featProj.repository) return;
+
+  if (window.ErrorState && typeof window.ErrorState.checkRepository === "function") {
+    window.ErrorState.checkRepository(featProj.repository, featProj).then(status => {
+      if (status.type === "private") {
+        cbRepoBtn.outerHTML = `
+          <span class="btn btn-sm btn-outline btn-disabled btn-private-repo" title="This repository isn't publicly accessible." aria-label="Private Repository">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <span>Private Repository</span>
+          </span>
+        `;
+      } else if (status.type === "not-found") {
+        cbRepoBtn.outerHTML = `
+          <span class="btn btn-sm btn-outline btn-disabled btn-unavailable-repo" title="This project may have been moved, renamed, or is not publicly available." aria-label="Repository Unavailable">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            <span>Repository Unavailable</span>
+          </span>
+        `;
+      }
+    }).catch(() => {});
+  }
 }
 
 /**

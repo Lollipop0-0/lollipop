@@ -36,6 +36,16 @@ const ModalManager = (() => {
 
     renderProjectContent(project);
 
+    // Asynchronously verify repository if not already verified
+    if (window.ErrorState && typeof window.ErrorState.checkRepository === "function" && project.repository) {
+      window.ErrorState.checkRepository(project.repository, project).then(status => {
+        const repoContainer = document.getElementById("modal-repo-action-container");
+        if (repoContainer && modal && modal.classList.contains("is-active")) {
+          repoContainer.innerHTML = window.ErrorState.renderModalAction(project, status);
+        }
+      }).catch(() => {});
+    }
+
     modal.classList.add("is-active");
     if (modalBackdrop) modalBackdrop.classList.add("is-active");
     document.body.classList.add("modal-locked");
@@ -196,16 +206,20 @@ const ModalManager = (() => {
 
           <div class="modal-actions-area">
             <h4 class="modal-section-heading">Repository & Links</h4>
-            <div class="modal-btn-group">
-              <a href="${escapeHtml(project.repository)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
-                <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                <span>GitHub Repository</span>
-              </a>
-              ${project.liveUrl ? `
-                <a href="${escapeHtml(project.liveUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm">
-                  <span>Live Demo</span>
-                </a>
-              ` : ""}
+            <div id="modal-repo-action-container">
+              ${window.ErrorState ? window.ErrorState.renderModalAction(project) : `
+                <div class="modal-btn-group">
+                  <a href="${escapeHtml(project.repository)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+                    <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                    <span>GitHub Repository</span>
+                  </a>
+                  ${project.liveUrl ? `
+                    <a href="${escapeHtml(project.liveUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm">
+                      <span>Live Demo</span>
+                    </a>
+                  ` : ""}
+                </div>
+              `}
             </div>
           </div>
         </div>

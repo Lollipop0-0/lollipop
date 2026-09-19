@@ -177,6 +177,22 @@ This document provides a detailed breakdown of all user-facing features, their b
 
 ---
 
+## 14. HTTP Error Handling & Private Repository States
+- **Location**: `assets/js/error-state.js`, `404.html`, `.htaccess`, `assets/js/modal.js`, `assets/js/projects.js`, `assets/js/github.js`, `assets/js/contact.js`, `assets/js/components.js`
+- **Styles**: `assets/css/components.css` (`.error-state-card`, `.selected-repo-status`, `.error-page-section`)
+- **Behavior**:
+  - Unified handling for 4xx client errors (400, 401, 403, 404, 429), 5xx server errors (500, 502, 503, 504), and network failures (0).
+  - **Strict Repository Status Logic**:
+    - **Private Repository** (`403` or verified metadata): Shows `[ 🔒 Private Repository ]` with lock icon and note: *"Private Repository: This repository isn't publicly accessible."*
+    - **Repository Unavailable** (`404` without private confirmation): Shows `[ Repository Unavailable ]` with note: *"Repository Not Found: This project may have been moved, renamed, or is not publicly available."*
+    - **Rate Limited** (`429`): Shows rate-limited notification.
+    - Project cards are strictly kept visible in the portfolio even when repositories are private or unavailable.
+  - **GitHub Recent Activity Resiliency**: If GitHub contribution fetching fails, only the matrix is replaced by a styled error card with an interactive "Retry" button. Profile badge, activity feed, and languages breakdown remain 100% intact.
+  - **API Safety**: FormSubmit contact inquiries inspect HTTP response status and provide a direct mailto fallback on failure.
+  - **Dedicated 404 Error Route**: `404.html` with `.htaccess` fallback provides an editorial, dark/light theme compatible error view with a "Back Home" CTA.
+
+---
+
 ## Cross References
 - Architecture: [[Architecture]]
 - File Map: [[File Map]]

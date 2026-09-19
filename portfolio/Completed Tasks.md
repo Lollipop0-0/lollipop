@@ -2,6 +2,35 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-19: HTTP Error Handling, Private Repository States & Custom 404 Routing
+- **Objective**: Implement comprehensive 4xx client-error, 5xx server-error, and private repository state handling throughout the portfolio without altering the existing visual identity, design aesthetics, or section layouts. Ensure all API requests fail gracefully with clean, portfolio-styled error states, provide retry actions where appropriate, and differentiate between private/restricted (403), missing (404), rate-limited (429), and server-error (5xx) states.
+- **Key Deliverables**:
+  - **Reusable ErrorState Module** (`assets/js/error-state.js`):
+    - Diagnostic mappings for 400, 401, 403, 404, 429, 500, 502, 503, 504, and 0 (Network Error).
+    - `renderCard`: Developer-oriented error box with status badge, title, explanation, and interactive retry button.
+    - `renderAction`: Distinctive repository action rendering (`[ 🔒 Private Repository ]`, `[ Repository Unavailable ]`, or active public link).
+    - `renderModalAction`: In-modal repository action with explanatory status note.
+    - `checkRepository`: Asynchronous status inspection with persistent 30-minute `sessionStorage` cache to safeguard against unauthenticated GitHub API rate limits.
+    - `renderPage`: Full-page custom error view for 404 / 500 boundaries.
+  - **Repository States on Project Cards**:
+    - `assets/js/app.js`: Updated `renderSelectedProjects()` to render status pills and asynchronously verify repository availability. Updated `Currently Building` repository button to reflect status.
+    - `assets/js/projects.js`: Updated `createProjectCardHtml` and `render` to preserve project cards while swapping the repository action to `[ 🔒 Private Repository ]` or `[ Repository Unavailable ]`.
+    - `assets/js/modal.js`: Integrated `ErrorState.renderModalAction` with live status indicators in the "Repository & Links" area.
+  - **GitHub Recent Activity Resiliency** (`assets/js/github.js`):
+    - Preserved existing section layout (profile badge, activity feed, top languages breakdown).
+    - If contribution calendar retrieval fails, replaces only the matrix container with a styled `ErrorState` card with an interactive "Retry Loading Activity" button.
+  - **Contact Form & Component Loader API Safety**:
+    - `assets/js/contact.js`: Added HTTP status inspection (400, 429, 5xx, network) with safe JSON parsing and mailto fallback.
+    - `assets/js/components.js`: Replaced plain unstyled error with `ErrorState.renderPage` and retry action.
+  - **Custom 404 Error Page & Server Routing**:
+    - `404.html`: Standalone portfolio-styled 404 error page with theme switcher, Newsreader headline, and "Back Home" CTA.
+    - `.htaccess`: Added Apache `ErrorDocument 404 /lollipop/404.html` and `ErrorDocument 500 /lollipop/404.html`.
+  - **Design System Tokens** (`assets/css/components.css`):
+    - Added clean error state cards, status badges, repository pills, and full-page error layout with automatic dark/light theme support.
+- **Verification**: All 12 JS modules pass `node -c`, ErrorState unit test passed, Apache 200/404 routes verified.
+
+---
+
 ## 2026-09-19: Remove Contact Section from About Page & Route Contact Nav Links to Homepage
 - **Objective**: Remove the contact section (`components/contact.html`) from the dedicated About page (`about.html`), letting the page transition cleanly from the Verified Certificates gallery to the colophon footer. Route the header navigation Contact links (`components/header.html`) to `index.html#contact` so clicking Contact from `about.html` navigates directly to the contact form on the homepage.
 - **Changes**:

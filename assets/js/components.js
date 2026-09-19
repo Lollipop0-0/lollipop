@@ -115,13 +115,40 @@ const ComponentLoader = (() => {
       }
     } catch (err) {
       console.error("ComponentLoader: Error assembling components:", err);
-      appEl.innerHTML = `
-        <div style="padding: 40px; text-align: center; font-family: sans-serif;">
-          <h2>Unable to load website components.</h2>
-          <p>Please make sure you are running the website through a local web server (e.g. XAMPP Apache or python -m http.server).</p>
-          <p style="color: #64748b; font-size: 0.875rem;">Error: ${err.message}</p>
-        </div>
-      `;
+      const is404 = err.message && err.message.includes("404");
+      const statusCode = is404 ? 404 : 500;
+
+      if (window.ErrorState) {
+        appEl.innerHTML = window.ErrorState.renderPage({
+          statusCode: statusCode,
+          title: is404 ? "Page Component Not Found" : "Something Went Wrong",
+          message: is404
+            ? "A required portfolio template could not be located on the server."
+            : "The application encountered an unexpected issue assembling page components.",
+          showHome: true,
+          showRetry: !is404
+        });
+
+        const retryBtn = appEl.querySelector(".error-page-retry-btn");
+        if (retryBtn) {
+          retryBtn.addEventListener("click", () => {
+            retryBtn.disabled = true;
+            retryBtn.innerHTML = "<span>Retrying...</span>";
+            loadAll(targetSelector).catch(() => {});
+          });
+        }
+      } else {
+        appEl.innerHTML = `
+          <section class="error-page-section">
+            <div class="error-page-card">
+              <span class="error-page-kicker">${statusCode} ERROR</span>
+              <h2 class="error-page-title">${is404 ? "Page Not Found" : "Something Went Wrong"}</h2>
+              <p class="error-page-subtitle">Unable to load website components. Please make sure you are running through a local web server.</p>
+              <a href="index.html" class="btn btn-primary">Back Home</a>
+            </div>
+          </section>
+        `;
+      }
       throw err;
     }
   }

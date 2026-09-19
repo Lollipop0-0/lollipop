@@ -149,6 +149,9 @@ const ContactManager = (() => {
       statusArea.innerHTML = "";
     }
 
+    let errorTitle = "Direct delivery could not be completed online.";
+    let errorExplanation = `Please <a href="#" class="direct-mail-btn fallback-link">click here to send via your email client</a> directly to <code>${TARGET_EMAIL}</code>.`;
+
     try {
       const response = await fetch(FORMSUBMIT_ENDPOINT, {
         method: "POST",
@@ -166,7 +169,8 @@ const ContactManager = (() => {
         })
       });
 
-      const result = await response.json();
+      const statusCode = response.status;
+      const result = await response.json().catch(() => ({}));
 
       if (response.ok && (result.success === "true" || result.success === true || result.message)) {
         // Success: Message sent directly to Karl Evan's email
@@ -187,11 +191,26 @@ const ContactManager = (() => {
           `;
         }
         form.reset();
-      } else {
-        throw new Error(result.message || "Delivery failed");
+        return;
       }
+
+      // Diagnose specific HTTP status code
+      if (statusCode === 429) {
+        errorTitle = "Rate limit reached (429)";
+        errorExplanation = `Too many message attempts. Please wait a few moments or <a href="#" class="direct-mail-btn fallback-link">send directly via email</a>.`;
+      } else if (statusCode === 400) {
+        errorTitle = "Invalid request format (400)";
+        errorExplanation = `The submission could not be processed. You can <a href="#" class="direct-mail-btn fallback-link">send directly via email</a>.`;
+      } else if (statusCode >= 500) {
+        errorTitle = `Service temporarily unavailable (${statusCode})`;
+        errorExplanation = `The delivery service is experiencing downtime. Please <a href="#" class="direct-mail-btn fallback-link">send directly via email</a>.`;
+      } else {
+        errorTitle = `Unable to send message (${statusCode || "Client Error"})`;
+      }
+
+      throw new Error(result.message || `HTTP ${statusCode}`);
     } catch (err) {
-      console.warn("Direct message delivery failed, presenting mailto fallback:", err);
+      console.warn("Direct message delivery fallback engaged:", err.message);
 
       const subject = encodeURIComponent(`Portfolio Inquiry from ${name}`);
       const body = encodeURIComponent(
@@ -210,11 +229,16 @@ const ContactManager = (() => {
               </svg>
             </div>
             <div class="contact-notice-content">
-              <p><strong>Direct delivery could not be completed online.</strong></p>
-              <p>Please <a href="${mailtoUrl}" class="direct-mail-btn">click here to send via your email client</a> directly to <code>${TARGET_EMAIL}</code>.</p>
+              <p><strong>${escapeHtml(errorTitle)}</strong></p>
+              <p>${errorExplanation}</p>
             </div>
           </div>
         `;
+
+        const fallbackLink = statusArea.querySelector(".fallback-link");
+        if (fallbackLink) {
+          fallbackLink.setAttribute("href", mailtoUrl);
+        }
       }
     } finally {
       setLoading(false);

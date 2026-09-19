@@ -1,0 +1,11 @@
+# Apache Configuration for Karl Evan Tabunda Portfolio
+# Custom Error Routing
+
+ErrorDocument 404 /lollipop/404.html
+ErrorDocument 500 /lollipop/404.html
+
+<IfModule mod_headers.c>
+    # Security & cache headers
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+</IfModule>

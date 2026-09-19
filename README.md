@@ -232,3 +232,4 @@ Because this website operates as a pure frontend project without an active backe
 - [ ] Fix and improve profile responsiveness
 - [ ] Remove unnecessary/redundant "IT Student" text
 - [ ] Keep the introduction concise and avoid repeating the same information
+- [ ] Error State Design

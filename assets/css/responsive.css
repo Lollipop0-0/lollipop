@@ -191,8 +191,8 @@
 
   /* Hero Section - Tablet & Medium Screens: Profile First, Info Second */
   .hero-section {
-    padding-top: calc(var(--header-height) + 20px);
-    padding-bottom: 36px;
+    padding-top: calc(var(--header-height) + 55px);
+    padding-bottom: 75px;
   }
 
   .hero-grid {

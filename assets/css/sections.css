@@ -2231,8 +2231,13 @@
 
 /* Pause animation on hover or keyboard focus anywhere inside track */
 .cert-marquee-container:hover .cert-marquee-group,
-.cert-marquee-container:focus-within .cert-marquee-group {
+.cert-marquee-container:has(:focus-visible) .cert-marquee-group {
     animation-play-state: paused;
+}
+
+/* Ensure animation continues immediately when exiting/closing modal */
+.cert-marquee-container.is-resuming .cert-marquee-group {
+    animation-play-state: running !important;
 }
 
 @keyframes cert-marquee-slide {

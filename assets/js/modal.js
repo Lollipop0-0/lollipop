@@ -260,7 +260,32 @@ const ModalManager = (() => {
     document.body.classList.remove("modal-locked");
     modal.setAttribute("aria-hidden", "true");
 
-    if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
+    // Check if the trigger was a certificate card in the auto-scrolling marquee
+    const isCertCard = lastFocusedElement && lastFocusedElement.closest && (
+      lastFocusedElement.closest("[data-modal-certificate]") ||
+      lastFocusedElement.closest(".cert-marquee-container")
+    );
+
+    if (isCertCard) {
+      // Blur the certificate card so :focus-within does not keep the carousel paused,
+      // allowing the animation to continue immediately upon closing.
+      if (typeof lastFocusedElement.blur === "function") {
+        lastFocusedElement.blur();
+      }
+      if (document.activeElement && typeof document.activeElement.blur === "function") {
+        document.activeElement.blur();
+      }
+      lastFocusedElement = null;
+
+      // Force resume on the marquee container so the carousel continues scrolling
+      const marqueeContainer = document.getElementById("cert-marquee-container");
+      if (marqueeContainer) {
+        marqueeContainer.classList.add("is-resuming");
+        setTimeout(() => {
+          marqueeContainer.classList.remove("is-resuming");
+        }, 1200);
+      }
+    } else if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
       lastFocusedElement.focus();
     }
   }

@@ -2,6 +2,31 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-21: Cut Hero Metrics, Dedicated Certificates Page, Explore CTA, & Home in Navbar
+- **Objective**: Remove the 4 metric cards row from `projects-hero.html`, create a dedicated standalone Certificates Archive Page (`certificates.html`), add an "Explore All Certificates (4) →" call-to-action button below the marquee carousel on the homepage, and add "Home" back to the global navbar.
+- **Key Deliverables**:
+  - **Removed Metric Cards (`components/projects-hero.html`)**:
+    - Cut `.projects-metrics-row` (Total Projects, Active Development, Practical Systems, Core Focus) as requested in user's attached screenshot.
+  - **Dedicated Standalone Certificates Page (`certificates.html`)**:
+    - Created `certificates.html` standalone page shell mounting `CERTIFICATES_MANIFEST`.
+    - Created `components/certificates-hero.html` with kicker `03 • CREDENTIALS & CERTIFICATIONS`, headline, and narrative subtext.
+    - Created `components/certificates-gallery.html` hosting `#certificates-grid`.
+    - Updated `assets/js/components.js` with `CERTIFICATES_MANIFEST` and `data-page="certificates"` route mounting.
+    - Updated `renderCertificates()` in `assets/js/app.js` to render all 4 Sololearn certificate cards in the responsive grid with full modal inspector integration.
+  - **Explore All Certificates CTA (`components/certificates.html`)**:
+    - Added `<a href="certificates.html" class="btn btn-outline" id="view-all-certificates-btn"><span>Explore All Certificates (4) →</span></a>` directly below `#cert-marquee-container` on the homepage.
+  - **Global Header & Navigation (`components/header.html`, `assets/js/navigation.js`)**:
+    - Added `Home` (`index.html#home`) back to desktop navigation (`.desktop-nav`) and mobile drawer (`.mobile-nav-links`).
+    - The navbar now links to: `Home`, `About`, `Projects`, `Certificates`.
+    - Updated `assets/js/navigation.js` to highlight `Home` on `index.html`, `About` on `about.html`, `Projects` on `projects.html`, and `Certificates` on `certificates.html`.
+    - Added Certificates page to Command+K search index in `assets/js/search.js`.
+  - **Verification**:
+    - Automated Chrome CDP tests confirmed:
+      - `projects.html`: 0 metric cards, `Projects` link is active.
+      - `certificates.html`: Hero present, 4 certificate cards in grid, modal inspection functional, `Certificates` link is active.
+      - `index.html`: `Home` is active, explore certificates button present and links to `certificates.html`.
+      - Captured screenshots: `projects_hero_without_metrics.png`, `certificates_page_desktop.png`, `index_with_explore_certificates.png`.
+
 ## 2026-09-21: Focused Navbar (About, Projects, Certificates) & Reordered Homepage Sequence
 - **Objective**: Configure navbar to contain strictly **About**, **Projects**, and **Certificates**, and reorder the homepage sequence to enumerate: **Home**, **Projects**, **Certificates**, **GitHub**, and **Contact**.
 - **Key Deliverables**:

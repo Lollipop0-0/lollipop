@@ -142,6 +142,15 @@ const SearchManager = (() => {
       action: () => scrollToSection("certificates")
     },
     {
+      id: "page-certificates",
+      type: "section",
+      badge: "Page",
+      title: "Certificates Archive Page",
+      desc: "Comprehensive showcase of verified course credentials in JavaScript, HTML, CSS, and C++ from Sololearn",
+      keywords: ["certificates", "certifications", "credentials", "sololearn", "courses", "verified", "archive", "page"],
+      action: () => { window.location.href = "certificates.html"; }
+    },
+    {
       id: "sec-journey",
       type: "section",
       badge: "Section",

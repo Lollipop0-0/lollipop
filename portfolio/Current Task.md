@@ -6,32 +6,29 @@
 ---
 
 ## Active Task Summary
-- **Task**: Focused Navbar (About, Projects, Certificates) & Reordered Homepage Sequence (Home, Projects, Certificates, GitHub, Contact)
+- **Task**: Cut Hero Metrics, Dedicated Certificates Page, Explore CTA, & Home in Navbar
 - **Context & Implementation**:
-  1. **Navbar Configuration (`components/header.html`)**:
-     - Desktop navigation (`.desktop-nav`) and mobile drawer (`.mobile-nav-links`) strictly contain:
-       1. `About` (`about.html`)
-       2. `Projects` (`projects.html`)
-       3. `Certificates` (`index.html#certificates`)
-     - Desktop and mobile drawer brand logos link to `index.html#home`.
-  2. **Homepage Sequence Reordering (`assets/js/components.js`, `components/certificates.html`, `components/activity.html`)**:
-     - The homepage sequence now cleanly enumerates:
-       1. **Home**: Minimal student intro (`components/hero.html` with primary button "More About Me" linking to `about.html`).
-       2. **01 — Currently Building** & **02 — Selected Work** (Projects): Flagship CUP system + archive with mobile 3D fanned deck & "Explore All Projects (6) →" button.
-       3. **03 — Certificates & Certifications** (`components/certificates.html`, kicker `03 • CREDENTIALS`): Infinite auto-scrolling marquee carousel with verified Sololearn credentials.
-       4. **04 — GitHub Activity** (`components/activity.html`, kicker `04`): Live contribution matrix, profile badge, and languages breakdown.
-       5. **05 — Get in Touch** (`components/contact.html`, kicker `05`): Contact channels and validated message form.
-  3. **Active Link Highlighting (`assets/js/navigation.js`)**:
-     - Automatically highlights `About` on `about.html`.
-     - Automatically highlights `Projects` on `projects.html`.
-     - Dynamically highlights `Certificates` when viewing the `#certificates` section on `index.html`.
-  4. **Verification**:
-     - Automated Chrome CDP tests confirmed:
-       - Navbar has strictly `About`, `Projects`, `Certificates` on desktop and mobile.
-       - Sections are ordered in DOM: `home` → `currently-building` → `selected-work` → `certificates` → `activity` → `contact`.
-       - Kickers: `01`, `02`, `03`, `04`, `05`.
-       - In-page scroll to `#certificates` activates `Certificates` nav link.
-       - Captured screenshot `homepage_new_navbar.png`.
+  1. **Removed Metric Cards (`components/projects-hero.html`)**:
+     - Removed `.projects-metrics-row` (Total Projects, Active Development, Practical Systems, Core Focus) per user request.
+  2. **Dedicated Standalone Certificates Archive Page (`certificates.html`)**:
+     - Standalone SPA shell mounting `CERTIFICATES_MANIFEST` into `<div id="app" data-page="certificates">`.
+     - Editorial hero header (`components/certificates-hero.html`) with kicker `03 • CREDENTIALS & CERTIFICATIONS`, headline, and narrative.
+     - Responsive certificate gallery grid (`components/certificates-gallery.html`) hosting `#certificates-grid`.
+     - Updated `assets/js/components.js` with `CERTIFICATES_MANIFEST` and route detection.
+     - Updated `renderCertificates()` in `assets/js/app.js` to render all 4 Sololearn cards into `#certificates-grid` with full modal inspector integration.
+  3. **Explore All Certificates CTA (`components/certificates.html`)**:
+     - Added `<div class="section-footer-action"><a href="certificates.html" class="btn btn-outline" id="view-all-certificates-btn"><span>Explore All Certificates (4) →</span></a></div>` directly below `#cert-marquee-container` on the homepage.
+  4. **Global Navbar (`components/header.html`, `assets/js/navigation.js`)**:
+     - Added `Home` (`index.html#home`) to desktop navigation (`.desktop-nav`) and mobile drawer (`.mobile-nav-links`).
+     - Navbar now links to: `Home`, `About`, `Projects`, `Certificates`.
+     - Updated `assets/js/navigation.js` to highlight `Home` on `index.html`, `About` on `about.html`, `Projects` on `projects.html`, and `Certificates` on `certificates.html`.
+     - Added Certificates page to Command+K search index in `assets/js/search.js`.
+  5. **Verification**:
+     - Chrome CDP automated tests confirmed:
+       - `projects.html`: Metric cards removed (count = 0), `Projects` link active.
+       - `certificates.html`: Hero present, 4 certificate cards in grid, modal inspection functional, `Certificates` link active.
+       - `index.html`: `Home` active, explore button present and links to `certificates.html`.
+       - Screenshots saved: `projects_hero_without_metrics.png`, `certificates_page_desktop.png`, `index_with_explore_certificates.png`.
      - All JavaScript files pass syntax check (`node -c`).
 
 ---
@@ -48,22 +45,15 @@
    - 3. Inventory Management System (`02`)
    - 4. Library Management System (`03`)
    - 5. UI-SneakerHub (`04`)
+   - "Explore All Projects (6) →" button linking to `projects.html`
 4. **03 — Certificates & Certifications** (`components/certificates.html`, kicker `03`):
    - Verified Sololearn credentials in JavaScript, HTML, CSS, and C++ with dynamic marquee and credential inspection modal.
+   - "Explore All Certificates (4) →" button linking to `certificates.html`
 5. **04 — GitHub Activity** (`components/activity.html`, kicker `04`):
    - Live contribution matrix, profile badge, recent activity feed (`#github-activity-feed`), and top languages breakdown (`#github-languages-list`).
 6. **05 — Get in Touch** (`components/contact.html`, kicker `05`):
    - Contact methods list and interactive `#contact-form` with validation and error states.
 7. **Footer**: Single-tier refined bar with site visitor count pill and back-to-top button.
-
----
-
-## Applied About Page Sequence
-1. **Header**: Global top navigation (About, Projects, Certificates).
-2. **About Hero** (`components/about-page-hero.html`): Narrative introduction ("Who I am & how I build").
-3. **Development Journey** (`components/journey.html`): Milestones timeline & "Currently Figuring Things Out" card.
-4. **Tech Stack** (`components/stack.html`): Languages, frameworks, tools, and databases ("Things I Build With").
-5. **Footer**: Refined footer bar.
 
 ---
 

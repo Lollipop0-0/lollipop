@@ -37,6 +37,15 @@ const ComponentLoader = (() => {
     { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
   ];
 
+  // Dedicated Certificates archive page manifest: Header, certificates-hero, certificates-gallery, footer, project-modal
+  const CERTIFICATES_MANIFEST = [
+    { name: "header", path: "components/header.html", isMainChild: false },
+    { name: "certificates-hero", path: "components/certificates-hero.html", isMainChild: true },
+    { name: "certificates-gallery", path: "components/certificates-gallery.html", isMainChild: true },
+    { name: "footer", path: "components/footer.html", isMainChild: false },
+    { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
+  ];
+
   // Dedicated 404 error page manifest: Header, custom branded 404 error showcase, footer
   const ERROR_404_MANIFEST = [
     { name: "header", path: "components/header.html", isMainChild: false },
@@ -86,9 +95,19 @@ const ComponentLoader = (() => {
       window.location.pathname.endsWith("projects.html") ||
       window.location.pathname.endsWith("/projects");
 
+    const isCertificatesPage = appEl.getAttribute("data-page") === "certificates" ||
+      window.location.pathname.endsWith("certificates.html") ||
+      window.location.pathname.endsWith("/certificates");
+
     const manifest = is404Page
       ? ERROR_404_MANIFEST
-      : (isAboutPage ? ABOUT_MANIFEST : (isProjectsPage ? PROJECTS_MANIFEST : HOMEPAGE_MANIFEST));
+      : (isAboutPage
+          ? ABOUT_MANIFEST
+          : (isProjectsPage
+              ? PROJECTS_MANIFEST
+              : (isCertificatesPage
+                  ? CERTIFICATES_MANIFEST
+                  : HOMEPAGE_MANIFEST)));
 
     try {
       // Fetch all components concurrently

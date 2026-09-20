@@ -7,7 +7,9 @@ This document provides a complete inventory of project files and their specific 
 ## Root Files
 | File | Responsibility |
 |---|---|
-| `index.html` | Minimal application shell for Homepage Entry Point (WHO I AM → WHAT I BUILD → LET THE VISITOR EXPLORE). |
+| `index.html` | Minimal application shell for Homepage Entry Point (Hero → Currently Building & Selected Work → Certificates → GitHub → Contact). |
+| `projects.html` | Standalone application shell for Dedicated Projects Archive page mounting `PROJECTS_MANIFEST`. |
+| `certificates.html` | Standalone application shell for Dedicated Certificates Directory mounting `CERTIFICATES_MANIFEST`. |
 | `about.html` | Standalone application shell for Detailed About page mounting `ABOUT_MANIFEST`. |
 | `404.html` | Standalone custom error page with theme switcher, Newsreader typography, and "Back Home" CTA. |
 | `.htaccess` | Apache configuration routing 404 and 500 error documents to `/lollipop/404.html` with security headers. |
@@ -28,8 +30,10 @@ This document provides a complete inventory of project files and their specific 
 | `components/about-preview.html` | Section 04: A Little About Me 2-sentence teaser with "More about me →" button linking to `about.html`. |
 | `components/contact-cta.html` | Clean closing contact card with direct NCST email link and social pills. |
 | `components/about-page-hero.html` | Detailed About page narrative ("Who I am & how I build"). |
-| `components/projects-hero.html` | Projects archive page hero header with key metrics and archive kicker. |
+| `components/projects-hero.html` | Projects archive page hero header with archive kicker and title. |
 | `components/projects-gallery.html` | Comprehensive project archive gallery with real-time category filters and search. |
+| `components/certificates-hero.html` | Certificates archive page hero header with credentials kicker and title. |
+| `components/certificates-gallery.html` | Dedicated certificates directory gallery showcasing verified Sololearn credentials. |
 | `components/work.html` | Featured Project deep dive (Celestine University of the Pacific) and categorized Project Archive with filtering tabs. |
 | `components/activity.html` | GitHub activity overview, live profile stats, languages breakdown, and interactive contribution calendar matrix. |
 | `components/stack.html` | "Things I Build With" container hosting categorized technology and tool cards. |

@@ -48,11 +48,12 @@ The portfolio is structured as a **client-side single-page application (SPA)** b
 Instead of hardcoding a monolithic 2,000-line HTML file, sections are separated into standalone HTML templates inside the `components/` directory.
 
 - **Manifests**: Managed in `assets/js/components.js`:
-  - `HOMEPAGE_MANIFEST`: Header, Hero, Currently Building, Selected Work, Activity, Certificates, Contact, Footer, Project Modal.
+  - `HOMEPAGE_MANIFEST`: Header, Hero, Currently Building, Selected Work, Certificates, Activity, Contact, Footer, Project Modal.
   - `ABOUT_MANIFEST`: Header, About Hero, Journey, Stack, Footer, Project Modal.
   - `PROJECTS_MANIFEST`: Header, Projects Hero, Projects Gallery, Footer, Project Modal.
+  - `CERTIFICATES_MANIFEST`: Header, Certificates Hero, Certificates Gallery, Footer, Project Modal.
 - **Top Navigation Architecture**:
-  - Global Header (`components/header.html`) provides a streamlined 3-page navigation: **Home**, **Projects**, and **About**.
+  - Global Header (`components/header.html`) provides a focused 4-page navigation: **Home**, **About**, **Projects**, and **Certificates**.
   - Route state is managed cleanly in `assets/js/navigation.js`.
 - **Main Container Wrapping**: Components with `isMainChild: true` are wrapped in a semantic `<main id="main-content">` landmark.
 

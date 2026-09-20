@@ -128,22 +128,34 @@ const NavigationManager = (() => {
       return;
     }
 
-    // On homepage, highlight Certificates when scrolled into the Certificates section
-    const certSection = document.getElementById("certificates");
-    let isViewingCertificates = false;
-    if (certSection) {
-      const scrollPos = window.scrollY + 180;
-      const top = certSection.offsetTop;
-      const height = certSection.offsetHeight;
-      if (scrollPos >= top && scrollPos < top + height) {
-        isViewingCertificates = true;
-      }
+    const isCertificatesPage = window.location.pathname.endsWith("certificates.html") ||
+      (document.getElementById("app") && document.getElementById("app").getAttribute("data-page") === "certificates");
+
+    if (isCertificatesPage) {
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href") || "";
+        if (href === "certificates.html" || href === "/certificates" || href.endsWith("/certificates.html")) {
+          link.classList.add("is-active");
+          link.setAttribute("aria-current", "page");
+        } else {
+          link.classList.remove("is-active");
+          link.removeAttribute("aria-current");
+        }
+      });
+      return;
     }
 
+    // On homepage, Home navigation link remains active
     const allLinks = navLinks && navLinks.length ? navLinks : document.querySelectorAll(".nav-link, .mobile-nav-link");
     allLinks.forEach(link => {
       const href = link.getAttribute("href") || "";
-      if (isViewingCertificates && (href === "index.html#certificates" || href === "#certificates" || href.endsWith("#certificates"))) {
+      if (
+        href === "index.html#home" ||
+        href === "#home" ||
+        href === "index.html" ||
+        href.endsWith("/index.html") ||
+        href === "/"
+      ) {
         link.classList.add("is-active");
         link.setAttribute("aria-current", "page");
       } else {

@@ -505,8 +505,9 @@ function renderFiguringOut() {
  * Render Verified Certificates Grid or Infinite Marquee Track
  */
 function renderCertificates() {
-  const container = document.getElementById("certificates-track") || document.getElementById("certificates-grid");
-  if (!container || !window.PORTFOLIO_DATA || !Array.isArray(window.PORTFOLIO_DATA.certificates)) return;
+  const track = document.getElementById("certificates-track");
+  const grid = document.getElementById("certificates-grid");
+  if ((!track && !grid) || !window.PORTFOLIO_DATA || !Array.isArray(window.PORTFOLIO_DATA.certificates)) return;
 
   const certs = window.PORTFOLIO_DATA.certificates;
   if (!certs.length) return;
@@ -563,20 +564,19 @@ function renderCertificates() {
     `;
   }).join("");
 
-  const isMarquee = container.id === "certificates-track" || container.classList.contains("cert-marquee-track");
-
-  if (isMarquee) {
+  if (track) {
     // 2 synchronized marquee groups each with 2 sets of certs = 8 cards per group.
-    // Seamless sliding from 0% to calc(-100% - 24px) guarantees perfect infinite loop.
     const setCards = buildCards([...certs, ...certs], false);
     const cloneCards = buildCards([...certs, ...certs], true);
 
-    container.innerHTML = `
+    track.innerHTML = `
       <div class="cert-marquee-group">${setCards}</div>
       <div class="cert-marquee-group" aria-hidden="true">${cloneCards}</div>
     `;
-  } else {
-    container.innerHTML = buildCards(certs, false);
+  }
+
+  if (grid) {
+    grid.innerHTML = buildCards(certs, false);
   }
 }
 

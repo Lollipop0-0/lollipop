@@ -111,6 +111,23 @@ const NavigationManager = (() => {
       return;
     }
 
+    const isProjectsPage = window.location.pathname.endsWith("projects.html") ||
+      (document.getElementById("app") && document.getElementById("app").getAttribute("data-page") === "projects");
+
+    if (isProjectsPage) {
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href") || "";
+        if (href === "projects.html" || href === "/projects" || href.endsWith("/projects.html")) {
+          link.classList.add("is-active");
+          link.setAttribute("aria-current", "page");
+        } else {
+          link.classList.remove("is-active");
+          link.removeAttribute("aria-current");
+        }
+      });
+      return;
+    }
+
     // On homepage, dynamically detect current active section
     const allSections = sections && sections.length ? sections : document.querySelectorAll("section[id], header[id]");
     const allLinks = navLinks && navLinks.length ? navLinks : document.querySelectorAll(".nav-link, .mobile-nav-link");

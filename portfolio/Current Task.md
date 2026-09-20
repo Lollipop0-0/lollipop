@@ -6,22 +6,31 @@
 ---
 
 ## Active Task Summary
-- **Task**: Placement of Technologies Used and Key Competencies Tested Below the Modal Preview Images
+- **Task**: Mobile 3D Fanned Card Deck for Projects & Dedicated Standalone Projects Page (`projects.html`)
 - **Context & Implementation**:
-  1. **Certificate Modal** (`assets/js/modal.js`):
-     - Moved "Key Competencies Tested" (`.modal-media-tags-block`) into `.modal-split-media-col` directly below the preview image frame and action buttons (`View Full Image`, `Download`).
-     - Right column contains issuer badges, description summary, and Credential Information.
-  2. **Project Modal** (`assets/js/modal.js`):
-     - Moved "Technologies Used" (`.modal-media-tags-block`) into `.modal-split-media-col` directly below the screenshot preview and action buttons (`GitHub Repository`, `Live Demo`).
-     - Right column contains project badges, summary, and Key Architecture & Features.
-  3. **Visual Aesthetics & Component Styling** (`assets/css/components.css`):
-     - Added `.modal-media-tags-block` with top border divider, uppercase label typography, and micro-interaction hover states on `.tech-pill`.
-     - Achieves near-perfect vertical height parity between the left and right columns on desktop window view (`>= 900px`).
-  4. **Mobile & Tablet Preservation (`< 900px`)**:
-     - Naturally flows top-to-bottom: Media -> Actions -> Technologies -> Detailed Information.
-  5. **Verification**:
-     - Chrome CDP automated tests confirmed correct DOM placement and attributes for both Certificate and Project modals.
-     - Full-resolution screenshots captured (`cert_modal_tags_below_image.png`, `project_modal_tags_below_image.png`).
+  1. **Mobile 3D Fanned Card Deck (`< 768px`)** (`components/selected-work.html`, `assets/css/sections.css`, `assets/js/app.js`):
+     - Implemented fanned 3D card deck matching the user's reference image for Section 02 (*Selected Work*) on mobile devices.
+     - Each card features:
+       - Top monospace bracket badge (`< #06 COLLABORATIVE >`) + outline tag pills.
+       - App icon in rounded square container (`border-radius: 12px`) + title in monospace typography + tagline.
+       - 2-line clamped summary description.
+       - Dual app-store style action buttons (Repository status button + "View Details" modal button).
+     - 3D layout: Active center card with elevated shadow, left tilted peek card (-7.5deg), right tilted peek card (+7.5deg).
+     - Touch swipe gestures (`touchstart`/`touchend`), side-card tap navigation, prev/next circular buttons, and active pill pagination dots.
+     - Desktop view (`>= 768px`) preserves the clean multi-column selected work grid.
+  2. **Dedicated Standalone Projects Page (`projects.html`)**:
+     - Standalone SPA page shell with `<div id="app" data-page="projects">` and complete SEO/schema metadata.
+     - Editorial hero header (`components/projects-hero.html`) with kicker `02 • ARCHIVE & WORKS`, headline `Projects & Case Studies.`, and 4 metric cards.
+     - Interactive filter gallery (`components/projects-gallery.html`) with category tabs (`All (6)`, `Collaborative (2)`, `Personal (4)`, `PHP & Backend (5)`, `Frontend & 3D (2)`), live search input, clear button, and empty state.
+     - All 6 projects (`01 CUP`, `06 SmartSpace`, `05 Hotel`, `02 Inventory`, `03 Library`, `04 UI SneakerHub`) dynamically rendered with repository status checks and modal triggers.
+  3. **Navigation & Search Integration**:
+     - Global header (`components/header.html`) updated with `Projects` in desktop nav and mobile drawer.
+     - Route detection in `assets/js/navigation.js` highlights `Projects` when viewing `projects.html`.
+     - Section 02 homepage footer button updated to `Explore All Projects (6) →` linking to `projects.html`.
+     - Command+K search index (`assets/js/search.js`) updated with direct link to `projects.html`.
+  4. **Verification**:
+     - Chrome CDP automated tests verified deck interactivity on 390x844 mobile viewport and complete gallery functionality on `projects.html`.
+     - Screenshots captured: `mobile_deck_screenshot.png`, `projects_page_desktop.png`, `projects_page_mobile.png`.
      - All JavaScript files pass syntax check (0 errors).
 
 ---

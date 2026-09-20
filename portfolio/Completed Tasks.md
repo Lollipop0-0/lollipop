@@ -2,6 +2,36 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-21: Mobile 3D Fanned Card Deck & Dedicated Projects Archive Page (projects.html)
+- **Objective**: Apply the user-provided mobile design reference (3D fanned/stacked card deck with tilted peek cards, bracket badge pills, app identity, narrative description, and dual app-store style action buttons) to the mobile view of Selected Work (`< 768px`), and introduce a standalone, complete Projects Archive Page (`projects.html`).
+- **Key Deliverables**:
+  - **Mobile 3D Fanned Card Deck** (`components/selected-work.html`, `assets/css/sections.css`, `assets/js/app.js`):
+    - Replaced the mobile stacked cards in Section 02 (*Selected Work*) with `.mobile-projects-deck-wrapper` active only on mobile screens (`< 768px`), while desktop screens (`>= 768px`) retain the multi-column grid.
+    - Designed 3D card layout matching the user's reference:
+      - **Top Badges**: Solid monospace bracket pill (`< #06 COLLABORATIVE >` or `< #02 PERSONAL >`) paired with clean outline pills (`3D ROOM PLANNER`, `HOTEL RESERVATION`, etc.).
+      - **App Identity Row**: Rounded square project icon (`border-radius: 12px`) + bold monospace title (`font-family: var(--font-mono)`).
+      - **Narrative Description**: Readable 2-line clamped summary paragraph.
+      - **Dual Action Badge Buttons**: Sleek app-store style buttons: GitHub Repo button (`REPOSITORY`) + View Details modal trigger (`CASE STUDY`).
+      - **3D Perspective Deck State**: Center card (`is-active`, 0deg, scale 1.0, elevated shadow), left tilted peek card (`is-prev`, -7.5deg, -38px X, +14px Y, scale 0.91), right tilted peek card (`is-next`, +7.5deg, +38px X, +14px Y, scale 0.91).
+    - **Gestures & Controls**: Touch swipe gesture support (`touchstart`/`touchend` with horizontal threshold), side card tap-to-focus navigation, previous/next circular buttons, and active dot pagination pills.
+  - **Dedicated Standalone Projects Page (`projects.html`)**:
+    - Created `projects.html` using the SPA shell architecture (`<div id="app" data-page="projects">`), full SEO metadata, JSON-LD schema, and anti-flash theme detection.
+    - Created `components/projects-hero.html` featuring editorial headline `Projects & Case Studies.`, subtitle, and 4 quick metric badges (Total Projects, Active Development, Practical Systems, Core Focus).
+    - Created `components/projects-gallery.html` featuring interactive category filter pills with live counters (`All Projects (6)`, `Collaborative (2)`, `Personal Works (4)`, `PHP & Backend (5)`, `Frontend & 3D (2)`), real-time search input filter, clear button, and empty search feedback state.
+    - Integrated all 6 projects (`01 CUP`, `06 SmartSpace`, `05 Hotel`, `02 Inventory`, `03 Library`, `04 UI SneakerHub`) with dynamic cards, repository status checks, and project modal triggers.
+  - **Global Navigation & ComponentLoader Integration**:
+    - Added `PROJECTS_MANIFEST` in `assets/js/components.js`.
+    - Added `Projects` link in global header (`components/header.html`) across desktop nav and mobile drawer.
+    - Added active route detection in `assets/js/navigation.js` highlighting `Projects` on `projects.html`.
+    - Updated Section 02 footer link on homepage: `Explore All Projects (6) →` linking directly to `projects.html`.
+    - Added `projects.html` to Command+K search modal index in `assets/js/search.js`.
+- **Verification**:
+  - Automated Chrome CDP tests confirmed:
+    - On mobile (390x844): `#selected-projects-grid` hidden, `#mobile-projects-deck` visible, cards correctly fan out with active/prev/next classes, touch/arrow navigation works smoothly.
+    - On `projects.html`: all 6 projects render, category filtering and real-time text search work seamlessly, modal opens on click, and navigation highlights `Projects`.
+  - Captured full-resolution screenshots: `mobile_deck_screenshot.png`, `projects_page_desktop.png`, `projects_page_mobile.png`.
+  - All JavaScript modules pass syntax check (0 errors).
+
 ## 2026-09-21: Modal Media Column Alignment — Technologies & Key Competencies Below Image
 - **Objective**: Relocate "Technologies Used" (Project Modal) and "Key Competencies Tested" (Certificate Modal) into the left media column directly below the image preview and action buttons, creating optimal visual symmetry and height parity across columns.
 - **Key Deliverables**:

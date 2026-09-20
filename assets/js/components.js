@@ -29,6 +29,15 @@ const ComponentLoader = (() => {
     { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
   ];
 
+  // Dedicated Projects archive page manifest: Header, projects-hero, projects-gallery, footer, project-modal
+  const PROJECTS_MANIFEST = [
+    { name: "header", path: "components/header.html", isMainChild: false },
+    { name: "projects-hero", path: "components/projects-hero.html", isMainChild: true },
+    { name: "projects-gallery", path: "components/projects-gallery.html", isMainChild: true },
+    { name: "footer", path: "components/footer.html", isMainChild: false },
+    { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
+  ];
+
   // Dedicated 404 error page manifest: Header, custom branded 404 error showcase, footer
   const ERROR_404_MANIFEST = [
     { name: "header", path: "components/header.html", isMainChild: false },
@@ -74,9 +83,13 @@ const ComponentLoader = (() => {
       window.location.pathname.endsWith("about.html") ||
       window.location.pathname.endsWith("/about");
 
+    const isProjectsPage = appEl.getAttribute("data-page") === "projects" ||
+      window.location.pathname.endsWith("projects.html") ||
+      window.location.pathname.endsWith("/projects");
+
     const manifest = is404Page
       ? ERROR_404_MANIFEST
-      : (isAboutPage ? ABOUT_MANIFEST : HOMEPAGE_MANIFEST);
+      : (isAboutPage ? ABOUT_MANIFEST : (isProjectsPage ? PROJECTS_MANIFEST : HOMEPAGE_MANIFEST));
 
     try {
       // Fetch all components concurrently

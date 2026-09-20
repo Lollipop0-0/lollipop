@@ -1,0 +1,82 @@
+<!-- Projects Gallery & Interactive Filter Section -->
+<section id="projects-gallery-section" class="projects-gallery-section" aria-labelledby="gallery-section-heading">
+  <div class="container">
+    <h2 id="gallery-section-heading" class="sr-only">Complete Projects Archive</h2>
+
+    <!-- Controls Bar: Category Tabs & Real-Time Filter Search -->
+    <div class="projects-controls-bar">
+      <!-- Category Filter Pills -->
+      <div class="projects-filter-group" role="tablist" aria-label="Filter projects by category">
+        <button type="button" class="filter-btn is-active" data-filter="all" role="tab" aria-selected="true">
+          <span>All Projects</span>
+          <span class="filter-count" id="count-all">6</span>
+        </button>
+        <button type="button" class="filter-btn" data-filter="collaborative" role="tab" aria-selected="false">
+          <span>Collaborative</span>
+          <span class="filter-count" id="count-collaborative">2</span>
+        </button>
+        <button type="button" class="filter-btn" data-filter="personal" role="tab" aria-selected="false">
+          <span>Personal Works</span>
+          <span class="filter-count" id="count-personal">4</span>
+        </button>
+        <button type="button" class="filter-btn" data-filter="backend" role="tab" aria-selected="false">
+          <span>PHP &amp; Backend</span>
+          <span class="filter-count" id="count-backend">4</span>
+        </button>
+        <button type="button" class="filter-btn" data-filter="frontend" role="tab" aria-selected="false">
+          <span>Frontend &amp; 3D</span>
+          <span class="filter-count" id="count-frontend">2</span>
+        </button>
+      </div>
+
+      <!-- Real-Time Text Search Filter -->
+      <div class="projects-search-wrap">
+        <svg class="search-input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="projects-page-search-input" class="projects-page-search-field" placeholder="Filter by keyword, tech, or title..." aria-label="Filter projects">
+        <button type="button" id="projects-search-clear" class="projects-search-clear-btn" aria-label="Clear filter" style="display: none;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Filter Status Indicator -->
+    <div class="projects-status-bar" id="projects-status-bar">
+      <span id="projects-showing-count">Showing 6 of 6 projects</span>
+    </div>
+
+    <!-- Dynamic Projects Gallery Grid -->
+    <div id="projects-gallery-grid" class="projects-gallery-grid" aria-live="polite">
+      <!-- Injected dynamically by ProjectsManager.renderProjectsPageGallery() -->
+    </div>
+
+    <!-- Empty State Container -->
+    <div id="projects-gallery-empty" class="projects-empty-state" style="display: none;">
+      <div class="empty-state-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </div>
+      <h3 class="empty-state-title">No matching projects found</h3>
+      <p class="empty-state-desc">Try clearing your search query or selecting a different category filter.</p>
+      <button type="button" class="btn btn-secondary btn-sm" id="projects-reset-filter-btn">
+        <span>Reset Filters</span>
+      </button>
+    </div>
+
+    <!-- Bottom Action & Back Link -->
+    <div class="projects-footer-cta">
+      <a href="index.html#home" class="btn btn-secondary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        <span>Back to Homepage</span>
+      </a>
+      <a href="https://github.com/Lollipop0-0?tab=repositories" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        <span>GitHub Repositories Archive →</span>
+      </a>
+    </div>
+  </div>
+</section>

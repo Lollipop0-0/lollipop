@@ -106,6 +106,15 @@ const SearchManager = (() => {
       action: () => scrollToSection("work")
     },
     {
+      id: "page-projects",
+      type: "section",
+      badge: "Page",
+      title: "Projects & Archive Page",
+      desc: "Comprehensive archive and gallery of all 6 software projects with real-time category filters",
+      keywords: ["projects", "archive", "gallery", "case studies", "works", "systems", "filter"],
+      action: () => { window.location.href = "projects.html"; }
+    },
+    {
       id: "sec-activity",
       type: "section",
       badge: "Section",

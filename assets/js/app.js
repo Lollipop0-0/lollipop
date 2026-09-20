@@ -33,9 +33,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       window.NavigationManager.initScrollReveal();
     }
 
-    // 5. Initialize Projects (Archive filtering, card rendering)
+    // 5. Initialize Projects (Archive filtering, card rendering, and dedicated projects page)
     if (window.ProjectsManager) {
       window.ProjectsManager.init();
+      if (typeof window.ProjectsManager.initProjectsPage === "function") {
+        window.ProjectsManager.initProjectsPage();
+      }
     }
 
     // 6. Initialize Modal (Accessible project details modal)
@@ -163,6 +166,9 @@ function renderSelectedProjects() {
 
   container.innerHTML = html;
 
+  // Render 3D fanned card deck for mobile view (< 768px)
+  renderMobileProjectsDeck(selectedProjects);
+
   // Background repository status check for selected projects
   if (window.ErrorState && typeof window.ErrorState.checkRepository === "function") {
     selectedProjects.forEach(project => {
@@ -174,6 +180,212 @@ function renderSelectedProjects() {
         }
       }).catch(() => {});
     });
+  }
+}
+
+/**
+ * Render and initialize the interactive 3D fanned card deck for mobile view
+ * Matching the mobile app card deck design reference:
+ * - Active center card with bracket badge, outline pill, app icon, title, description, and dual app-store style buttons
+ * - Tilted peek cards on left (-7.5deg) and right (+7.5deg) with smooth 3D perspective transitions
+ * - Swipe gestures, side-card tap navigation, and pagination dots
+ * @param {Array<Object>} selectedProjects
+ */
+function renderMobileProjectsDeck(selectedProjects) {
+  const deckWrapper = document.getElementById("mobile-projects-deck");
+  if (!deckWrapper || !selectedProjects || !selectedProjects.length) return;
+
+  const N = selectedProjects.length;
+  let activeIndex = 0;
+
+  const cardsHtml = selectedProjects.map((project, idx) => {
+    const isCollab = project.category === "collaborative" || project.isCollaborative;
+    const bracketBadge = `<span class="deck-pill-bracket">&lt; #${escapeHtml(project.badgeNumber || project.id)} ${isCollab ? "COLLABORATIVE" : "PERSONAL"} &gt;</span>`;
+
+    const tag1 = project.tagline ? project.tagline.split("&")[0].split("—")[0].trim() : (isCollab ? "TEAM PROJECT" : "SOLO SYSTEM");
+    const techLead = (project.technologies || []).slice(0, 2).join(" + ");
+
+    const outlineBadge1 = `<span class="deck-pill-outline">${escapeHtml(tag1)}</span>`;
+    const outlineBadge2 = techLead ? `<span class="deck-pill-outline">${escapeHtml(techLead)}</span>` : "";
+
+    const status = window.ErrorState ? window.ErrorState.getRepositoryStatus(project) : { type: "public" };
+    const isPrivate = status.type === "private";
+
+    const repoBtnHtml = isPrivate
+      ? `<span class="deck-action-btn deck-action-disabled" title="Private Repository — This repository isn't publicly accessible." aria-label="Private Repository">
+           <svg class="deck-action-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+           <div class="deck-action-text">
+             <span class="deck-action-sub">REPOSITORY</span>
+             <span class="deck-action-main">Private</span>
+           </div>
+         </span>`
+      : `<a href="${escapeHtml(project.repository)}" target="_blank" rel="noopener noreferrer" class="deck-action-btn" aria-label="GitHub Repository for ${escapeHtml(project.title)}">
+           <svg class="deck-action-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+           <div class="deck-action-text">
+             <span class="deck-action-sub">REPOSITORY</span>
+             <span class="deck-action-main">GitHub Repo</span>
+           </div>
+         </a>`;
+
+    return `
+      <article class="mobile-deck-card" data-deck-index="${idx}" data-project-id="${escapeHtml(project.id)}">
+        <div class="mobile-deck-badges">
+          ${bracketBadge}
+          ${outlineBadge1}
+          ${outlineBadge2}
+        </div>
+
+        <div class="mobile-deck-identity">
+          <div class="mobile-deck-icon-wrap">
+            <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)} icon" class="mobile-deck-icon" loading="lazy">
+          </div>
+          <div class="mobile-deck-title-group">
+            <h3 class="mobile-deck-title">${escapeHtml(project.title)}</h3>
+            <span class="mobile-deck-tagline">${escapeHtml(project.tagline || "")}</span>
+          </div>
+        </div>
+
+        <p class="mobile-deck-desc">${escapeHtml(project.description)}</p>
+
+        <div class="mobile-deck-actions">
+          ${repoBtnHtml}
+          <button type="button" class="deck-action-btn deck-action-primary" data-modal-project="${escapeHtml(project.id)}" aria-label="View case study for ${escapeHtml(project.title)}">
+            <svg class="deck-action-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            <div class="deck-action-text">
+              <span class="deck-action-sub">EXPLORE</span>
+              <span class="deck-action-main">View Details</span>
+            </div>
+          </button>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  const dotsHtml = selectedProjects.map((_, i) =>
+    `<button type="button" class="mobile-deck-dot ${i === 0 ? "is-active" : ""}" data-dot-index="${i}" aria-label="Go to project slide ${i + 1}"></button>`
+  ).join("");
+
+  deckWrapper.innerHTML = `
+    <div class="mobile-deck-stage" id="mobile-deck-stage">
+      ${cardsHtml}
+    </div>
+    <div class="mobile-deck-controls">
+      <button type="button" class="mobile-deck-nav-btn prev-btn" id="mobile-deck-prev" aria-label="Previous project">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <div class="mobile-deck-dots" id="mobile-deck-dots">
+        ${dotsHtml}
+      </div>
+      <button type="button" class="mobile-deck-nav-btn next-btn" id="mobile-deck-next" aria-label="Next project">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </div>
+    <div class="mobile-deck-hint">
+      <span>Swipe or tap side cards to explore</span>
+    </div>
+  `;
+
+  const cards = deckWrapper.querySelectorAll(".mobile-deck-card");
+  const dots = deckWrapper.querySelectorAll(".mobile-deck-dot");
+  const prevBtn = deckWrapper.querySelector("#mobile-deck-prev");
+  const nextBtn = deckWrapper.querySelector("#mobile-deck-next");
+  const stage = deckWrapper.querySelector("#mobile-deck-stage");
+
+  function updateDeck() {
+    cards.forEach((card, idx) => {
+      card.classList.remove("is-active", "is-prev", "is-next", "is-hidden-prev", "is-hidden-next");
+
+      const prevIdx = (activeIndex - 1 + N) % N;
+      const nextIdx = (activeIndex + 1) % N;
+
+      if (idx === activeIndex) {
+        card.classList.add("is-active");
+      } else if (idx === prevIdx) {
+        card.classList.add("is-prev");
+      } else if (idx === nextIdx) {
+        card.classList.add("is-next");
+      } else {
+        const diff = (idx - activeIndex + N) % N;
+        if (diff > N / 2) {
+          card.classList.add("is-hidden-prev");
+        } else {
+          card.classList.add("is-hidden-next");
+        }
+      }
+    });
+
+    dots.forEach((dot, idx) => {
+      dot.classList.toggle("is-active", idx === activeIndex);
+    });
+  }
+
+  // Initial deck layout
+  updateDeck();
+
+  function goPrev() {
+    activeIndex = (activeIndex - 1 + N) % N;
+    updateDeck();
+  }
+
+  function goNext() {
+    activeIndex = (activeIndex + 1) % N;
+    updateDeck();
+  }
+
+  if (prevBtn) prevBtn.addEventListener("click", goPrev);
+  if (nextBtn) nextBtn.addEventListener("click", goNext);
+
+  dots.forEach(dot => {
+    dot.addEventListener("click", () => {
+      const idx = parseInt(dot.getAttribute("data-dot-index"), 10);
+      if (!isNaN(idx)) {
+        activeIndex = idx;
+        updateDeck();
+      }
+    });
+  });
+
+  // Tap on side cards brings them to center
+  cards.forEach(card => {
+    card.addEventListener("click", e => {
+      if (card.classList.contains("is-prev")) {
+        e.preventDefault();
+        goPrev();
+      } else if (card.classList.contains("is-next")) {
+        e.preventDefault();
+        goNext();
+      }
+    });
+  });
+
+  // Touch Swipe Gesture Support
+  let touchStartX = 0;
+  let touchStartY = 0;
+
+  if (stage) {
+    stage.addEventListener("touchstart", e => {
+      if (e.touches && e.touches.length) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }
+    }, { passive: true });
+
+    stage.addEventListener("touchend", e => {
+      if (!e.changedTouches || !e.changedTouches.length) return;
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = touchEndY - touchStartY;
+
+      if (Math.abs(deltaX) > 35 && Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (deltaX < 0) {
+          goNext();
+        } else {
+          goPrev();
+        }
+      }
+    }, { passive: true });
   }
 }
 

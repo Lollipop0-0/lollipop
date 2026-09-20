@@ -221,8 +221,193 @@ const ProjectsManager = (() => {
     render();
   }
 
+  /**
+   * Dedicated Projects Archive Page Initialization (projects.html)
+   */
+  function initProjectsPage() {
+    const galleryContainer = document.getElementById("projects-gallery-grid");
+    if (!galleryContainer || !window.PORTFOLIO_DATA) return;
+
+    // Collect all projects: 01 (CUP), 06 (SmartSpace), 05 (Hotel), 02 (Inventory), 03 (Library), 04 (SneakerHub)
+    const allProjects = [];
+    if (window.PORTFOLIO_DATA.featuredProject) {
+      allProjects.push(window.PORTFOLIO_DATA.featuredProject);
+    }
+    if (Array.isArray(window.PORTFOLIO_DATA.projects)) {
+      const order = ["01", "06", "05", "02", "03", "04"];
+      const remaining = [...window.PORTFOLIO_DATA.projects].sort((a, b) => {
+        const idxA = order.indexOf(a.id);
+        const idxB = order.indexOf(b.id);
+        return (idxA === -1 ? 99 : idxA) - (idxB === -1 ? 99 : idxB);
+      });
+      allProjects.push(...remaining);
+    }
+
+    const uniqueProjects = Array.from(new Map(allProjects.map(p => [p.id, p])).values());
+
+    // Update count badges
+    const countAllEl = document.getElementById("count-all");
+    const countCollabEl = document.getElementById("count-collaborative");
+    const countPersonalEl = document.getElementById("count-personal");
+    const countBackendEl = document.getElementById("count-backend");
+    const countFrontendEl = document.getElementById("count-frontend");
+
+    const collabCount = uniqueProjects.filter(p => p.category === "collaborative" || p.isCollaborative).length;
+    const personalCount = uniqueProjects.filter(p => p.category === "personal" && !p.isCollaborative).length;
+    const backendCount = uniqueProjects.filter(p => (p.technologies || []).some(t => ["PHP", "MySQL", "Laravel"].includes(t))).length;
+    const frontendCount = uniqueProjects.filter(p => (p.technologies || []).some(t => ["Three.js", "HTML", "CSS"].includes(t))).length;
+
+    if (countAllEl) countAllEl.textContent = String(uniqueProjects.length);
+    if (countCollabEl) countCollabEl.textContent = String(collabCount);
+    if (countPersonalEl) countPersonalEl.textContent = String(personalCount);
+    if (countBackendEl) countBackendEl.textContent = String(backendCount);
+    if (countFrontendEl) countFrontendEl.textContent = String(frontendCount);
+
+    let activeFilter = "all";
+    let searchQuery = "";
+
+    const filterBtns = document.querySelectorAll(".projects-filter-group .filter-btn");
+    const searchInput = document.getElementById("projects-page-search-input") || document.getElementById("projects-page-search-field");
+    const searchClearBtn = document.getElementById("projects-search-clear");
+    const emptyState = document.getElementById("projects-gallery-empty");
+    const statusCountEl = document.getElementById("projects-showing-count");
+    const resetBtn = document.getElementById("projects-reset-filter-btn");
+
+    function filterAndRender() {
+      const filtered = uniqueProjects.filter(p => {
+        // Category filter
+        let matchesCategory = true;
+        if (activeFilter === "collaborative") {
+          matchesCategory = p.category === "collaborative" || p.isCollaborative;
+        } else if (activeFilter === "personal") {
+          matchesCategory = p.category === "personal" && !p.isCollaborative;
+        } else if (activeFilter === "backend") {
+          matchesCategory = (p.technologies || []).some(t => ["PHP", "MySQL", "Laravel"].includes(t));
+        } else if (activeFilter === "frontend") {
+          matchesCategory = (p.technologies || []).some(t => ["Three.js", "HTML", "CSS"].includes(t));
+        }
+
+        if (!matchesCategory) return false;
+
+        // Search text query
+        if (searchQuery.trim()) {
+          const q = searchQuery.toLowerCase();
+          const title = (p.title || "").toLowerCase();
+          const desc = (p.description || "").toLowerCase();
+          const tagline = (p.tagline || "").toLowerCase();
+          const techs = (p.technologies || []).join(" ").toLowerCase();
+          const highlights = (p.highlights || []).join(" ").toLowerCase();
+
+          return title.includes(q) || desc.includes(q) || tagline.includes(q) || techs.includes(q) || highlights.includes(q);
+        }
+
+        return true;
+      });
+
+      if (statusCountEl) {
+        statusCountEl.textContent = `Showing ${filtered.length} of ${uniqueProjects.length} projects`;
+      }
+
+      if (filtered.length === 0) {
+        galleryContainer.innerHTML = "";
+        if (emptyState) emptyState.style.display = "block";
+        return;
+      }
+
+      if (emptyState) emptyState.style.display = "none";
+
+      galleryContainer.innerHTML = filtered.map(createProjectCardHtml).join("");
+
+      // Background repo check
+      if (window.ErrorState && typeof window.ErrorState.checkRepository === "function") {
+        filtered.forEach(project => {
+          if (!project.repository) return;
+          window.ErrorState.checkRepository(project.repository, project).then(status => {
+            if (status.type !== "public") {
+              const card = galleryContainer.querySelector(`.project-card[data-id="${project.id}"]`);
+              if (card) {
+                const overlayWrap = card.querySelector(".project-card-overlay");
+                const slugWrap = card.querySelector(".project-card-repo-slug");
+                if (overlayWrap) {
+                  const existingBtn = overlayWrap.querySelector("a[href*='github.com'], .btn-private-overlay, .btn-unavailable-overlay");
+                  if (existingBtn) {
+                    if (status.type === "private") {
+                      existingBtn.outerHTML = `<span class="btn btn-sm btn-glass-icon btn-private-overlay" title="Private Repository — This repository isn't publicly accessible." aria-label="Private Repository"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>`;
+                    } else if (status.type === "not-found") {
+                      existingBtn.outerHTML = `<span class="btn btn-sm btn-glass-icon btn-unavailable-overlay" title="Repository Unavailable — This project may have been moved, renamed, or is not publicly available." aria-label="Repository Unavailable"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></span>`;
+                    }
+                  }
+                }
+                if (slugWrap) {
+                  if (status.type === "private") {
+                    slugWrap.innerHTML = `<span class="selected-repo-status status-private"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> <span>Private Repository</span></span>`;
+                  } else if (status.type === "not-found") {
+                    slugWrap.innerHTML = `<span class="selected-repo-status status-unavailable"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> <span>Repository Unavailable</span></span>`;
+                  }
+                }
+              }
+            }
+          }).catch(() => {});
+        });
+      }
+    }
+
+    // Category button clicks
+    filterBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        activeFilter = btn.getAttribute("data-filter") || "all";
+        filterBtns.forEach(b => {
+          const isMatch = b === btn;
+          b.classList.toggle("is-active", isMatch);
+          b.setAttribute("aria-selected", String(isMatch));
+        });
+        filterAndRender();
+      });
+    });
+
+    // Real-time search filter input
+    if (searchInput) {
+      searchInput.addEventListener("input", e => {
+        searchQuery = e.target.value;
+        if (searchClearBtn) {
+          searchClearBtn.style.display = searchQuery ? "flex" : "none";
+        }
+        filterAndRender();
+      });
+    }
+
+    if (searchClearBtn && searchInput) {
+      searchClearBtn.addEventListener("click", () => {
+        searchInput.value = "";
+        searchQuery = "";
+        searchClearBtn.style.display = "none";
+        searchInput.focus();
+        filterAndRender();
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener("click", () => {
+        activeFilter = "all";
+        searchQuery = "";
+        if (searchInput) searchInput.value = "";
+        if (searchClearBtn) searchClearBtn.style.display = "none";
+        filterBtns.forEach(b => {
+          const isAll = b.getAttribute("data-filter") === "all";
+          b.classList.toggle("is-active", isAll);
+          b.setAttribute("aria-selected", String(isAll));
+        });
+        filterAndRender();
+      });
+    }
+
+    // Initial render
+    filterAndRender();
+  }
+
   return {
     init,
+    initProjectsPage,
     render,
     setFilter
   };

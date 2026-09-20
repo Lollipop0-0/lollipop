@@ -2,6 +2,20 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-20: Deployed Navbar About Link Routing & Netlify Rewrite Fix
+- **Objective**: Fix an issue on deployed static environments (specifically Netlify at `https://karlevan.netlify.app/`) where clicking "About" in the navigation bar navigated to `/components/about` (serving an unstyled partial component) instead of the full standalone `about.html` page.
+- **Key Deliverables**:
+  - **Identified Netlify Pretty URL Rewriting**:
+    - Netlify's automatic post-processor evaluated `<a href="about.html">` inside `components/header.html` as a relative path to the physical file `components/about.html` located inside the same folder, stripping the `.html` extension to produce `<a class='nav-link' href='/components/about'>About</a>`.
+  - **Component Disambiguation** (`components/about-snapshot.html`, `assets/js/components.js`):
+    - Renamed the section partial from `components/about.html` to `components/about-snapshot.html` and updated `ABOUT_MANIFEST` in `assets/js/components.js`. Since no `about.html` file exists in `/components/`, static hosts will never confuse the root page with a component partial.
+  - **Netlify Build Processing & 301 Redirects** (`netlify.toml`):
+    - Configured `[build.processing] skip_processing = true` and `[build.processing.html] pretty_urls = false`.
+    - Added explicit 301 redirect rules for `/components/about` and `/components/about.html` targeting `/about.html`.
+  - **Client-Side DOM Sanitization** (`assets/js/navigation.js`):
+    - Added an automated guard in `init()` and `updateActiveLink()` that normalizes any link containing `components/about` back to `about.html`.
+- **Verification**: Verified zero syntax errors via `node -c`, verified both `http://localhost/lollipop/` and `http://localhost/lollipop/about.html` mount all partials and resolve active links correctly via headless Chrome CDP.
+
 ## 2026-09-20: Responsive Navigation Collision & Hero Collage Boundary Fixes
 - **Objective**: Identify and resolve responsiveness errors across viewport widths, specifically fixing header navigation collision between brand, navigation links, and action triggers on tablet landscape/medium screens, as well as fixing hero visual collage element drift and offscreen clipping on stacked tablet and mobile viewports.
 - **Key Deliverables**:

@@ -24,7 +24,7 @@ const ComponentLoader = (() => {
     { name: "about-hero", path: "components/about-page-hero.html", isMainChild: true },
     { name: "journey", path: "components/journey.html", isMainChild: true },
     { name: "stack", path: "components/stack.html", isMainChild: true },
-    { name: "about", path: "components/about.html", isMainChild: true },
+    { name: "about", path: "components/about-snapshot.html", isMainChild: true },
     { name: "footer", path: "components/footer.html", isMainChild: false },
     { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
   ];

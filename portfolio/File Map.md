@@ -28,7 +28,7 @@ This document provides a complete inventory of project files and their specific 
 | `components/about-preview.html` | Section 04: A Little About Me 2-sentence teaser with "More about me →" button linking to `about.html`. |
 | `components/contact-cta.html` | Clean closing contact card with direct NCST email link and social pills. |
 | `components/about-page-hero.html` | Detailed About page narrative, 2-paragraph personal journey, and secondary background cards (Education, Focus, Currently Learning, Interests). |
-| `components/about.html` | Academic background at NCST, developer biography, philosophy, and quick snapshot statistics (legacy). |
+| `components/about-snapshot.html` | Academic background at NCST, developer biography, philosophy, and quick snapshot statistics (Education, Focus, Currently Learning, Interests). |
 | `components/work.html` | Featured Project deep dive (Celestine University of the Pacific) and categorized Project Archive with filtering tabs. |
 | `components/activity.html` | GitHub activity overview, live profile stats, languages breakdown, and interactive contribution calendar matrix. |
 | `components/stack.html` | "Things I Build With" container hosting categorized technology and tool cards. |

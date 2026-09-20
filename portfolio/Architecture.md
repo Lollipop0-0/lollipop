@@ -52,7 +52,7 @@ Instead of hardcoding a monolithic 2,000-line HTML file, sections are separated 
   const COMPONENT_MANIFEST = [
     { name: "header", path: "components/header.html", isMainChild: false },
     { name: "hero", path: "components/hero.html", isMainChild: true },
-    { name: "about", path: "components/about.html", isMainChild: true },
+    { name: "about", path: "components/about-snapshot.html", isMainChild: true },
     { name: "work", path: "components/work.html", isMainChild: true },
     { name: "activity", path: "components/activity.html", isMainChild: true },
     { name: "stack", path: "components/stack.html", isMainChild: true },

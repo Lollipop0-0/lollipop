@@ -100,7 +100,7 @@ const NavigationManager = (() => {
     if (isAboutPage) {
       navLinks.forEach(link => {
         const href = link.getAttribute("href");
-        if (href === "about.html" || href === "/about" || href.endsWith("/about.html")) {
+        if (href === "about.html" || href === "/about" || href.endsWith("/about.html") || href.includes("components/about")) {
           link.classList.add("is-active");
           link.setAttribute("aria-current", "page");
         } else {
@@ -178,6 +178,11 @@ const NavigationManager = (() => {
     closeDrawerBtn = document.querySelector(".mobile-nav-close");
     navLinks = document.querySelectorAll(".nav-link, .mobile-nav-link");
     sections = document.querySelectorAll("section[id], header[id]");
+
+    // Ensure About navigation always targets root about.html (guard against static host pretty-url rewrites)
+    document.querySelectorAll('a[href*="components/about"]').forEach(link => {
+      link.setAttribute("href", "about.html");
+    });
 
     // Mobile toggle & close bindings
     if (mobileToggle) {

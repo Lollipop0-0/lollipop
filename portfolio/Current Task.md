@@ -6,21 +6,22 @@
 ---
 
 ## Active Task Summary
-- **Task**: Fix Responsive Navigation Collision & Hero Collage Boundary Issues
+- **Task**: Fix Deployed Navbar About Link Routing to `/components/about`
 - **Context & Diagnosis**:
-  1. **Header Navigation Collision (868px to 991px)**:
-     - Following the addition of the "Certificates" link to `.desktop-nav`, the total width demanded by the desktop header (Brand: ~145px, 6 Nav Links: ~440px, Actions + Search + Resume: ~350px, Container padding: 48px) totaled ~980px.
-     - The previous responsive drawer breakpoint broke at `868px`. On viewports between 869px and 991px (e.g. tablet landscape, iPad Pro portrait, small laptops), the desktop navigation collided with the brand title and search trigger.
-     - Standardized the mobile drawer breakpoint to `@media (max-width: 991px)`, perfectly matching `sections.css` line 841 (`.code-activity-grid`).
-     - Added `@media (min-width: 992px) and (max-width: 1120px)` with `gap: 16px` on `.desktop-nav` and collapsed search placeholder text, providing ~90px of clean breathing room on medium desktop screens.
-  2. **Hero Collage Sizing & Coordinate Disconnect**:
-     - On stacked tablet/mobile viewports where `.hero-visual` switched to single-column (`order: 1`), lacking an explicit `max-width` caused `.hero-visual` to expand to 100% width (up to 736px–836px wide).
-     - Its absolute children (`.php-snippet-card` and `.currently-building-card`) floated out to the extreme edges (e.g. `left: -11px` offscreen), leaving the photo card detached in the center.
-     - Bounded `.hero-visual` with responsive `max-width` tiers: `max-width: 380px` on tablet (`<= 991px`), `max-width: 320px` on mobile (`<= 600px`), and `max-width: 275px` on small devices (`<= 480px`).
-     - Centered the collage with `margin: 12px auto 44px auto`, and tuned `.php-snippet-card` (`left: -12px`) and `.currently-building-card` (`right: -10px`) so they hug the photo tightly with 0 offscreen clipping.
-  3. **Multi-Viewport Headless Validation**:
-     - Audited both `index.html` and `about.html` across 320px, 360px, 375px, 480px, 600px, 768px, 868px, 900px, 991px, 992px, 1024px, and 1200px via Chrome CDP.
-     - Confirmed 0 horizontal scrollbar overflow, 0 header collisions, and verified `hero-visual` reliably renders first before info (`order: 1`) on all stacked viewports.
+  1. **Root Cause**:
+     - On localhost, clicking the "About" link in the navbar loaded `/about.html`.
+     - On the deployed site (Netlify at `https://karlevan.netlify.app/`), Netlify's automatic HTML post-processing / Pretty URLs feature inspected `components/header.html` during deploy.
+     - Because `components/header.html` is located inside `/components/` and contains `<a href="about.html">`, Netlify resolved `about.html` relative to `/components/` as `/components/about.html`.
+     - Because a physical partial file named `components/about.html` existed on disk, Netlify stripped `.html` into a "pretty URL" and rewrote the link to `<a class='nav-link' href='/components/about'>About</a>`.
+     - When clicked on the live site, `/components/about` served the raw component partial (unstyled snapshot card) instead of the full standalone `about.html` page.
+  2. **Three-Layer Solution Applied**:
+     - **Component Disambiguation**: Renamed partial `components/about.html` to `components/about-snapshot.html` and updated `ABOUT_MANIFEST` in `assets/js/components.js`. Since no `about.html` exists inside `/components/`, static hosts will never confuse the root page with a component partial.
+     - **Netlify Post-Processing & Redirects** (`netlify.toml`): Disabled HTML pretty-URL rewriting via `[build.processing] skip_processing = true` and `[build.processing.html] pretty_urls = false`. Added a 301 redirect rule forwarding any request to `/components/about` or `/components/about.html` directly to `/about.html`.
+     - **Client-Side Sanitization** (`assets/js/navigation.js`): Added an automated DOM guard during navigation initialization that normalizes any link containing `components/about` back to `about.html`.
+  3. **Verification**:
+     - Verified all 12 JS modules with `node -c`.
+     - Headless Chrome CDP tests on localhost confirmed that `index.html` and `about.html` mount all sections and navigation links point to `about.html`.
+     - Verified active link highlighting on `about.html`.
 
 ---
 
@@ -51,7 +52,7 @@
 2. **About Hero** (`components/about-page-hero.html`): Narrative introduction ("Who I am & how I build").
 3. **Development Journey** (`components/journey.html`): Milestones timeline & "Currently Figuring Things Out" card.
 4. **Tech Stack** (`components/stack.html`): Languages, frameworks, tools, and databases ("Things I Build With").
-5. **About Me Snapshot** (`components/about.html`): Personal bio, Education, Focus, Currently Learning, and Technical Interests cards.
+5. **About Me Snapshot** (`components/about-snapshot.html`): Personal bio, Education, Focus, Currently Learning, and Technical Interests cards.
 6. **Footer**: Refined footer bar.
 
 ---
@@ -59,6 +60,6 @@
 ## Verification & Status
 - All 12 JS modules pass `node -c` with zero syntax errors.
 - Both `http://localhost/lollipop/` and `http://localhost/lollipop/about.html` return `HTTP 200 OK`.
-- Chrome CDP audit across all viewports (320px–1200px) reports 0 overflow and 0 collisions.
+- Chrome CDP audit confirms zero overflow, zero collision, and correct link resolution.
 - Branch: `main`.
 - Project Rules: No screenshots or generated pictures.

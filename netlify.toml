@@ -2,6 +2,25 @@
   publish = "."
   functions = "netlify/functions"
 
+[build.processing]
+  skip_processing = true
+
+[build.processing.html]
+  pretty_urls = false
+
+# Redirect old /components/about path to the real about page
+[[redirects]]
+  from = "/components/about"
+  to = "/about.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/components/about.html"
+  to = "/about.html"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/api/contributions.php"
   to = "/.netlify/functions/contributions"

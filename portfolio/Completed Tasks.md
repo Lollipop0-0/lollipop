@@ -2,6 +2,16 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-21: Cut Hero Status Pill ("IT STUDENT")
+- **Objective**: Remove the redundant status pill element (`<div class="status-pill"><span class="status-dot"></span><span>IT STUDENT</span></div>`) above the hero headline "Karl Evan Tabunda".
+- **Key Deliverables**:
+  - **Component Template (`components/hero.html`)**:
+    - Cut `.hero-status-wrap` and `.status-pill` so the headline `Karl Evan Tabunda` immediately anchors the hero content.
+    - Preserves clean layout leading directly into the dynamic role rotator (`IT Student / Software Developer / ...`).
+  - **Verification**:
+    - Headless Chrome CDP verified `.hero-content .status-pill` in hero is `false`.
+    - Captured visual verification screenshots: `hero_no_status_pill_light.png`, `hero_no_status_pill_dark.png`.
+
 ## 2026-09-21: Dynamic Hero Word Rotator (Blur Flip Animation & Electric Gradient)
 - **Objective**: Implement the dynamic rotating word design demonstrated in `Screen Recording 2026-09-21 022846.mp4` on the hero intro heading on "IT Student" ("IT student who enjoys building software and figuring out how things work.").
 - **Key Deliverables**:

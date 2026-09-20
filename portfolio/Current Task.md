@@ -6,23 +6,16 @@
 ---
 
 ## Active Task Summary
-- **Task**: Dynamic Hero Word Rotator (Blur Flip Animation & Electric Gradient)
+- **Task**: Cut Hero Status Pill ("IT STUDENT")
 - **Context & Implementation**:
-  1. **Structure (`components/hero.html`)**:
-     - Wrapped "IT Student" with `<span class="hero-rotator-wrapper"><span class="hero-rotator-text" id="hero-rotating-word" aria-live="polite">IT Student</span></span>`.
-  2. **Styling & Physics (`assets/css/sections.css`)**:
-     - Vibrant electric blue-to-violet gradient in light mode; glowing cyan-to-purple in dark mode.
-     - Upward translation (`translateY(-8px)`), blur (`filter: blur(8px)`), and fade (`opacity: 0`) exit transition.
-     - Entering from below (`translateY(8px)`), unblurring and fading in smoothly over 380ms.
-     - Smooth wrapper width transition (`transition: width 0.35s`) preventing abrupt shifts in trailing text.
-     - Natural typographical spacing with `margin-right: 0.28em`.
-  3. **Module Logic (`assets/js/app.js`, `assets/js/data.js`)**:
-     - Rotates roles: `IT Student` → `Software Developer` → `Backend Developer` → `Web Developer`.
-     - 2.8s natural dwell time.
-     - Page Visibility API integration to pause when tab is inactive.
-     - Hover pause and responsive resize recalculation.
-  4. **Verification**:
-     - Chrome CDP headless test validated all cycles, dark mode, light mode, and mobile (390px).
+  1. **Component Template (`components/hero.html`)**:
+     - Removed `.hero-status-wrap` containing the `<div class="status-pill">` above Karl Evan Tabunda.
+     - The hero content now immediately leads with the headline and dynamic role rotator.
+  2. **Verification**:
+     - Headless Chrome CDP confirmed:
+       - `.hero-content .status-pill` present: `false`.
+       - `.hero-status-wrap` present: `false`.
+     - Saved visual verification screenshots: `hero_no_status_pill_light.png`, `hero_no_status_pill_dark.png`.
      - All 12 JavaScript files pass syntax check (`node -c`).
 
 ---

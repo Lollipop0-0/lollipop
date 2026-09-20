@@ -203,6 +203,81 @@
     margin: 2px 0 0 0;
 }
 
+/* Hero Dynamic Word Rotator (Blur Flip Animation) */
+.hero-rotator-wrapper {
+    display: inline-block;
+    vertical-align: baseline;
+    position: relative;
+    white-space: nowrap;
+    margin-right: 0.28em;
+    transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-rotator-text {
+    display: inline-block;
+    font-weight: 700;
+    white-space: nowrap;
+    /* Electric Royal Blue to Indigo/Purple Gradient matching reference recording */
+    background: linear-gradient(135deg, #1d63ff 0%, #4f46e5 45%, #7c3aed 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    will-change: transform, opacity, filter;
+    transform: translateY(0);
+    opacity: 1;
+    filter: blur(0px);
+    transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] .hero-rotator-text {
+    /* Glowing Cyan/Sky to Azure to Radiant Purple Gradient for Dark Mode */
+    background: linear-gradient(135deg, #38bdf8 0%, #60a5fa 35%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Exit state: slides up slightly, blurs out, and fades */
+.hero-rotator-text.is-exiting {
+    transform: translateY(-8px);
+    opacity: 0;
+    filter: blur(8px);
+    transition: transform 0.28s ease-in,
+                opacity 0.28s ease-in,
+                filter 0.28s ease-in;
+}
+
+/* Prep state: primed below, blurred, and invisible */
+.hero-rotator-text.is-entering-prep {
+    transform: translateY(8px);
+    opacity: 0;
+    filter: blur(8px);
+    transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-rotator-wrapper {
+        transition: none !important;
+    }
+    .hero-rotator-text {
+        transform: none !important;
+        filter: none !important;
+        transition: opacity 0.3s ease !important;
+    }
+    .hero-rotator-text.is-exiting {
+        transform: none !important;
+        filter: none !important;
+        opacity: 0;
+    }
+    .hero-rotator-text.is-entering-prep {
+        transform: none !important;
+        filter: none !important;
+        opacity: 0;
+    }
+}
+
 .hero-supporting {
     font-size: 1.0625rem;
     color: var(--secondary);

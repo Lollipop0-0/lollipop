@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderCertificates();
     renderJourney();
     renderFiguringOut();
+    initHeroWordRotator();
 
     // 4.5. Initialize Scroll Reveal for dynamically rendered cards
     if (window.NavigationManager && typeof window.NavigationManager.initScrollReveal === "function") {
@@ -592,3 +593,89 @@ function escapeHtml(str) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
+
+/**
+ * Hero Word Rotator (Flip / Blur Text Animation)
+ * Cycles roles with electric blue-to-purple gradient, smooth blur, and translation physics.
+ * Adheres to reference design from Screen Recording 2026-09-21 022846.mp4.
+ */
+function initHeroWordRotator() {
+  const wordEl = document.getElementById("hero-rotating-word");
+  if (!wordEl) return;
+
+  const wrapper = wordEl.closest(".hero-rotator-wrapper");
+  const roles = (window.PORTFOLIO_DATA && window.PORTFOLIO_DATA.personal && Array.isArray(window.PORTFOLIO_DATA.personal.rotatingRoles))
+    ? window.PORTFOLIO_DATA.personal.rotatingRoles
+    : ["IT Student", "Software Developer", "Backend Developer", "Web Developer"];
+
+  if (roles.length < 2) return;
+
+  let currentIndex = 0;
+  let isPaused = false;
+  let timeoutId = null;
+
+  // Pause when user hovers over intro text
+  const heroIntro = wordEl.closest(".hero-intro");
+  if (heroIntro) {
+    heroIntro.addEventListener("mouseenter", () => { isPaused = true; });
+    heroIntro.addEventListener("mouseleave", () => { isPaused = false; });
+  }
+
+  // Initialize wrapper width to match initial role
+  if (wrapper) {
+    wrapper.style.width = `${wordEl.offsetWidth}px`;
+  }
+
+  // Handle window resize dynamically
+  window.addEventListener("resize", () => {
+    if (wrapper && wordEl) {
+      wrapper.style.width = "auto";
+      const w = wordEl.offsetWidth;
+      wrapper.style.width = `${w}px`;
+    }
+  }, { passive: true });
+
+  function rotate() {
+    if (isPaused) {
+      timeoutId = setTimeout(rotate, 800);
+      return;
+    }
+
+    const nextIndex = (currentIndex + 1) % roles.length;
+    const nextRole = roles[nextIndex];
+
+    // Phase 1: Exit - slide up slightly, blur, fade out
+    wordEl.classList.remove("is-entering-prep");
+    wordEl.classList.add("is-exiting");
+
+    setTimeout(() => {
+      // Phase 2: Swap content while invisible, position below
+      wordEl.textContent = nextRole;
+      wordEl.classList.remove("is-exiting");
+      wordEl.classList.add("is-entering-prep");
+
+      // Animate container width smoothly to avoid jarring jump in following text
+      if (wrapper) {
+        const prevWidth = wrapper.style.width;
+        wrapper.style.width = "auto";
+        const targetWidth = wordEl.offsetWidth;
+        wrapper.style.width = prevWidth;
+        void wrapper.offsetWidth; // force reflow
+        wrapper.style.width = `${targetWidth}px`;
+      }
+
+      // Phase 3: In next frames, animate to resting state (slide up, unblur, fade in)
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          wordEl.classList.remove("is-entering-prep");
+          currentIndex = nextIndex;
+          timeoutId = setTimeout(rotate, 2600);
+        });
+      });
+    }, 280);
+  }
+
+  // Initial delay before first rotation
+  timeoutId = setTimeout(rotate, 2600);
+}
+

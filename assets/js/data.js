@@ -8,6 +8,12 @@ const PORTFOLIO_DATA = {
     name: "Karl Evan Tabunda",
     role: "IT Student & Developer",
     status: "IT STUDENT",
+    rotatingRoles: [
+      "IT Student",
+      "Software Developer",
+      "Backend Developer",
+      "Web Developer"
+    ],
     education: "BS Information Technology",
     school: "National College of Science and Technology (NCST)",
     graduationYear: "2027",

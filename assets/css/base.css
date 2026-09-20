@@ -174,7 +174,7 @@ section::before,
 }
 
 /* Ensure all content inside sections sits cleanly above the decorative grid lines */
-section > .container {
+section>.container {
   position: relative;
   z-index: 1;
 }

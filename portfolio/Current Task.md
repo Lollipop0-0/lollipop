@@ -6,24 +6,23 @@
 ---
 
 ## Active Task Summary
-- **Task**: Desktop Window View Side-by-Side Split Modal Layout (Certificates & Projects)
+- **Task**: Placement of Technologies Used and Key Competencies Tested Below the Modal Preview Images
 - **Context & Implementation**:
-  1. **Side-by-Side 2-Column Split Layout on Desktop Window View (`>= 900px`)** (`assets/css/components.css`):
-     - Modal dialog expands to `max-width: 980px`.
-     - `.modal-split-layout` renders a balanced 2-column grid (`grid-template-columns: 1.15fr 1fr; gap: 32px;`).
-     - **Left Column**: Visual media (certificate or project preview screenshot) with zoom overlay, paired with action buttons.
-     - **Right Column**: Verification badges, summary description, architectural/credential details, and technology/competency pills.
-  2. **Preserved Mobile & Tablet View (`< 900px`)** (`assets/css/components.css`):
-     - Keeps the clean single-column stacked format (`display: flex; flex-direction: column;`).
-  3. **Certificate Modal Implementation** (`assets/js/modal.js`):
-     - Image preview frame on the left with zoom pill, plus full-width "View Full Image" and "Download" buttons.
-     - Structured credential information list and key competencies on the right.
-  4. **Project Modal Implementation** (`assets/js/modal.js`):
-     - Project screenshot on the left with zoom pill, plus "GitHub Repository" and "Live Demo" buttons.
-     - Tagline badges, summary, key architecture features, and tech stack pills on the right.
+  1. **Certificate Modal** (`assets/js/modal.js`):
+     - Moved "Key Competencies Tested" (`.modal-media-tags-block`) into `.modal-split-media-col` directly below the preview image frame and action buttons (`View Full Image`, `Download`).
+     - Right column contains issuer badges, description summary, and Credential Information.
+  2. **Project Modal** (`assets/js/modal.js`):
+     - Moved "Technologies Used" (`.modal-media-tags-block`) into `.modal-split-media-col` directly below the screenshot preview and action buttons (`GitHub Repository`, `Live Demo`).
+     - Right column contains project badges, summary, and Key Architecture & Features.
+  3. **Visual Aesthetics & Component Styling** (`assets/css/components.css`):
+     - Added `.modal-media-tags-block` with top border divider, uppercase label typography, and micro-interaction hover states on `.tech-pill`.
+     - Achieves near-perfect vertical height parity between the left and right columns on desktop window view (`>= 900px`).
+  4. **Mobile & Tablet Preservation (`< 900px`)**:
+     - Naturally flows top-to-bottom: Media -> Actions -> Technologies -> Detailed Information.
   5. **Verification**:
-     - All 12 JS modules pass `node -c` (0 syntax errors).
-     - Headless Chrome CDP tests confirm 2-column grid (`980px`) on desktop window view, and single-column flex column on mobile view for both Certificate and Project modals.
+     - Chrome CDP automated tests confirmed correct DOM placement and attributes for both Certificate and Project modals.
+     - Full-resolution screenshots captured (`cert_modal_tags_below_image.png`, `project_modal_tags_below_image.png`).
+     - All JavaScript files pass syntax check (0 errors).
 
 ---
 

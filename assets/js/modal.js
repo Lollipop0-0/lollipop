@@ -108,7 +108,7 @@ const ModalManager = (() => {
 
     modalBody.innerHTML = `
       <div class="modal-split-layout modal-cert-split-layout">
-        <!-- Left Side: Certificate Preview Image & Quick Actions -->
+        <!-- Left Side: Certificate Preview Image, Actions & Key Competencies -->
         <div class="modal-split-media-col modal-cert-media-col">
           <a href="${escapeHtml(cert.image)}" target="_blank" rel="noopener noreferrer" class="modal-media-wrapper modal-cert-preview-frame modal-preview-zoomable" title="Click to view full high-res certificate image">
             <img src="${escapeHtml(cert.image)}" alt="${escapeHtml(cert.title)} Certificate preview" class="modal-cert-img" loading="lazy">
@@ -129,9 +129,16 @@ const ModalManager = (() => {
               <span>Download</span>
             </a>
           </div>
+
+          <div class="modal-detail-block modal-media-tags-block">
+            <h4 class="modal-section-heading">Key Competencies Tested</h4>
+            <div class="modal-tech-list">
+              ${skillBadges}
+            </div>
+          </div>
         </div>
 
-        <!-- Right Side: Structured Details, Credential Info & Competencies -->
+        <!-- Right Side: Structured Details & Credential Information -->
         <div class="modal-split-info-col modal-cert-info-col">
           <div class="modal-badges-row">
             <span class="badge badge-collaborative">
@@ -141,7 +148,7 @@ const ModalManager = (() => {
             <span class="badge badge-subtle">Issued: ${escapeHtml(cert.issueDate)}</span>
           </div>
 
-          <p class="modal-cert-summary">${escapeHtml(cert.description)}</p>
+          <p class="modal-project-summary modal-cert-summary">${escapeHtml(cert.description)}</p>
 
           <div class="modal-detail-block">
             <h4 class="modal-section-heading">Credential Information</h4>
@@ -152,13 +159,6 @@ const ModalManager = (() => {
               <li><span class="bullet-icon">✦</span> <span><strong>Issue Date:</strong> ${escapeHtml(cert.issueDate)}</span></li>
               <li><span class="bullet-icon">✦</span> <span><strong>Signatory:</strong> Yeva Hyusyan (Chief Executive Officer)</span></li>
             </ul>
-          </div>
-
-          <div class="modal-detail-block">
-            <h4 class="modal-section-heading">Key Competencies Tested</h4>
-            <div class="modal-tech-list">
-              ${skillBadges}
-            </div>
           </div>
         </div>
       </div>
@@ -197,7 +197,7 @@ const ModalManager = (() => {
 
     modalBody.innerHTML = `
       <div class="modal-split-layout modal-project-split-layout">
-        <!-- Left Side: Project Screenshot & Action Links -->
+        <!-- Left Side: Project Screenshot, Actions & Technologies Used -->
         <div class="modal-split-media-col">
           <a href="${escapeHtml(project.image)}" target="_blank" rel="noopener noreferrer" class="modal-media-wrapper modal-preview-zoomable" title="Click to view full screenshot">
             <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)} preview screenshot" class="modal-project-img" loading="lazy">
@@ -222,9 +222,16 @@ const ModalManager = (() => {
               `}
             </div>
           </div>
+
+          <div class="modal-detail-block modal-media-tags-block">
+            <h4 class="modal-section-heading">Technologies Used</h4>
+            <div class="modal-tech-list">
+              ${techBadges}
+            </div>
+          </div>
         </div>
 
-        <!-- Right Side: Badges, Summary, Architecture & Tech Stack -->
+        <!-- Right Side: Badges, Summary & Architecture Features -->
         <div class="modal-split-info-col">
           <div class="modal-badges-row">
             ${teamBadge}
@@ -238,13 +245,6 @@ const ModalManager = (() => {
             <ul class="modal-feature-list">
               ${highlightsList}
             </ul>
-          </div>
-
-          <div class="modal-detail-block" style="margin-top: 18px;">
-            <h4 class="modal-section-heading">Technologies Used</h4>
-            <div class="modal-tech-list">
-              ${techBadges}
-            </div>
           </div>
         </div>
       </div>

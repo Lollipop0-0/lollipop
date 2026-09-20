@@ -2,6 +2,26 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-21: Modal Media Column Alignment — Technologies & Key Competencies Below Image
+- **Objective**: Relocate "Technologies Used" (Project Modal) and "Key Competencies Tested" (Certificate Modal) into the left media column directly below the image preview and action buttons, creating optimal visual symmetry and height parity across columns.
+- **Key Deliverables**:
+  - **Certificate Modal Layout Update** (`assets/js/modal.js`):
+    - Positioned `.modal-media-tags-block` with "Key Competencies Tested" inside `.modal-split-media-col` below the high-res certificate image and action buttons (`View Full Image`, `Download`).
+    - The right column (`.modal-split-info-col`) now cleanly focuses on issuer badges, descriptive summary, and Credential Information.
+  - **Project Modal Layout Update** (`assets/js/modal.js`):
+    - Positioned `.modal-media-tags-block` with "Technologies Used" inside `.modal-split-media-col` below the project preview screenshot and repository/demo buttons.
+    - The right column (`.modal-split-info-col`) now focuses on project metadata badges, project summary, and Key Architecture & Features.
+  - **Component Styling & Micro-Interactions** (`assets/css/components.css`):
+    - Styled `.modal-media-tags-block` with `padding-top: 14px`, `border-top: 1px solid var(--border)`, and uppercase section heading (`0.8125rem`, bold, letter-spaced).
+    - Added subtle hover lift and accent illumination on `.tech-pill` tags (`transition`, `border-color: var(--accent)`, `transform: translateY(-1px)`).
+    - Perfect height parity between left and right columns on desktop window view (`>= 900px`).
+  - **Mobile & Tablet Adaptations**:
+    - Preserved linear reading hierarchy (`display: flex; flex-direction: column;`): Image -> Action Buttons -> Technologies/Competencies -> Description & Deep Dives.
+- **Verification**:
+  - Automated Chrome CDP tests verified DOM positioning: `competenciesInMediaCol: true`, `technologiesInMediaCol: true`, and `notinInfoCol: true` for both modals.
+  - Captured full-resolution screenshots (`cert_modal_tags_below_image.png` & `project_modal_tags_below_image.png`) confirming balanced side-by-side desktop rendering.
+  - Syntax check on all JS files passed (0 errors).
+
 ## 2026-09-21: Desktop Window View Side-by-Side Split Modal Layout (Certificates & Projects)
 - **Objective**: Implement the user's hand-drawn wireframe sketch for desktop/window view across both Certificate and Project modals: side-by-side 2-column layout (preview media on the left, structured details on the right), while preserving the single-column stacked layout on mobile and tablet.
 - **Key Deliverables**:
@@ -11,10 +31,10 @@ This changelog records completed features, refinements, fixes, and synchronizati
     - On mobile and tablet view (`< 900px`): automatically stays in clean single-column stacked format (`display: flex; flex-direction: column;`), preserving the mobile/tablet UX.
   - **Certificate Modal Implementation** (`assets/js/modal.js`, `assets/css/components.css`):
     - **Left Column**: Interactive certificate preview image with hover elevation and zoom overlay (`View High-Res`), paired with full-width action buttons (`View Full Image` and `Download`).
-    - **Right Column**: Verification badges row (`Sololearn Verified`, `Issued Date`), description summary, bulleted Credential Information list (Course, Issuer, ID, Date, Signatory), and Key Competencies Tested pills.
+    - **Right Column**: Verification badges row (`Sololearn Verified`, `Issued Date`), description summary, bulleted Credential Information list (Course, Issuer, ID, Date, Signatory).
   - **Project Modal Implementation** (`assets/js/modal.js`, `assets/css/components.css`):
     - **Left Column**: Project preview screenshot with zoom overlay, paired with GitHub Repository and Live Demo action buttons.
-    - **Right Column**: Category and tagline badges, description summary, Key Architecture & Features list, and Technologies Used pills.
+    - **Right Column**: Category and tagline badges, description summary, and Key Architecture & Features list.
 - **Verification**:
   - Tested across both Certificate and Project modals via automated Chrome CDP on Desktop (1440x900) and Mobile (480px).
   - Confirmed 2-column grid (`980px` width) on desktop window view, and single-column flex column (`456px` width) on mobile view.

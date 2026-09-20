@@ -90,11 +90,11 @@ const SearchManager = (() => {
     {
       id: "sec-about",
       type: "section",
-      badge: "Section",
+      badge: "Page",
       title: "About Me",
-      desc: "Background, education, focus, learning goals, and technical interests",
-      keywords: ["about", "me", "bio", "education", "focus", "interests", "learning", "ncst", "bsit"],
-      action: () => scrollToSection("about")
+      desc: "Background, narrative introduction, journey milestones, and tech stack",
+      keywords: ["about", "me", "bio", "education", "focus", "interests", "learning", "ncst", "bsit", "story", "stack", "journey"],
+      action: () => { window.location.href = "about.html"; }
     },
     {
       id: "sec-work",
@@ -336,9 +336,11 @@ const SearchManager = (() => {
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
     } else {
-      const aboutSections = ["about-intro", "journey", "stack", "about"];
+      const aboutSections = ["about-intro", "journey", "stack"];
       if (aboutSections.includes(sectionId)) {
         window.location.href = `about.html#${sectionId}`;
+      } else if (sectionId === "about") {
+        window.location.href = "about.html";
       } else {
         window.location.href = `index.html#${sectionId}`;
       }

@@ -2,6 +2,27 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-21: Streamlined 3-Item Navigation (Home, Projects, About) & Removed About Me Snapshot Cards
+- **Objective**: Cut `Work`, `Activity`, `Certificates`, and `Contact` links from both desktop and mobile drawer navigation bars, establishing a clean, focused 3-page navigation architecture (**Home**, **Projects**, **About**). Cut the user-attached "About Me" snapshot cards section (Education, Focus, Currently Learning, Interests).
+- **Key Deliverables**:
+  - **Global Header (`components/header.html`)**:
+    - Reduced `.desktop-nav` to strictly 3 links: `Home` (`index.html#home`), `Projects` (`projects.html`), and `About` (`about.html`).
+    - Reduced `.mobile-nav-links` inside `#mobile-drawer` to strictly 3 links: `Home`, `Projects`, and `About`.
+    - Updated desktop and mobile brand links to cleanly link to `index.html#home`.
+  - **Active Route Highlighting (`assets/js/navigation.js`)**:
+    - Configured homepage scroll handling to keep `Home` highlighted as the active page across all scroll positions on `index.html`.
+    - Maintained dedicated active page highlighting for `Projects` on `projects.html` and `About` on `about.html`.
+  - **Removed Snapshot Cards**:
+    - Removed `components/about-snapshot.html` from `ABOUT_MANIFEST` in `assets/js/components.js`.
+    - Removed `components/about-snapshot.html` from repository via `git rm`.
+    - Updated `assets/js/search.js` to direct "About Me" searches to `about.html`.
+  - **Verification**:
+    - Automated Chrome CDP tests confirmed:
+      - `index.html`: Desktop and mobile nav have exactly 3 links (`Home`, `Projects`, `About`), `Home` is active.
+      - `projects.html`: Desktop and mobile nav have exactly 3 links, `Projects` is active.
+      - `about.html`: Desktop and mobile nav have exactly 3 links, `About` is active. `#about` and `.snapshot-card` count is 0.
+      - Visual screenshot `about_page_without_snapshot.png` captured and verified.
+
 ## 2026-09-21: Mobile 3D Fanned Card Deck & Dedicated Projects Archive Page (projects.html)
 - **Objective**: Apply the user-provided mobile design reference (3D fanned/stacked card deck with tilted peek cards, bracket badge pills, app identity, narrative description, and dual app-store style action buttons) to the mobile view of Selected Work (`< 768px`), and introduce a standalone, complete Projects Archive Page (`projects.html`).
 - **Key Deliverables**:

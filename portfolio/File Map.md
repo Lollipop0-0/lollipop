@@ -27,8 +27,9 @@ This document provides a complete inventory of project files and their specific 
 | `components/activity-preview.html` | Section 03: GitHub Activity compact preview card with live commit matrix and "View activity →". |
 | `components/about-preview.html` | Section 04: A Little About Me 2-sentence teaser with "More about me →" button linking to `about.html`. |
 | `components/contact-cta.html` | Clean closing contact card with direct NCST email link and social pills. |
-| `components/about-page-hero.html` | Detailed About page narrative, 2-paragraph personal journey, and secondary background cards (Education, Focus, Currently Learning, Interests). |
-| `components/about-snapshot.html` | Academic background at NCST, developer biography, philosophy, and quick snapshot statistics (Education, Focus, Currently Learning, Interests). |
+| `components/about-page-hero.html` | Detailed About page narrative ("Who I am & how I build"). |
+| `components/projects-hero.html` | Projects archive page hero header with key metrics and archive kicker. |
+| `components/projects-gallery.html` | Comprehensive project archive gallery with real-time category filters and search. |
 | `components/work.html` | Featured Project deep dive (Celestine University of the Pacific) and categorized Project Archive with filtering tabs. |
 | `components/activity.html` | GitHub activity overview, live profile stats, languages breakdown, and interactive contribution calendar matrix. |
 | `components/stack.html` | "Things I Build With" container hosting categorized technology and tool cards. |

@@ -47,22 +47,13 @@ The portfolio is structured as a **client-side single-page application (SPA)** b
 
 Instead of hardcoding a monolithic 2,000-line HTML file, sections are separated into standalone HTML templates inside the `components/` directory.
 
-- **Manifest**: Managed in `assets/js/components.js`:
-  ```javascript
-  const COMPONENT_MANIFEST = [
-    { name: "header", path: "components/header.html", isMainChild: false },
-    { name: "hero", path: "components/hero.html", isMainChild: true },
-    { name: "about", path: "components/about-snapshot.html", isMainChild: true },
-    { name: "work", path: "components/work.html", isMainChild: true },
-    { name: "activity", path: "components/activity.html", isMainChild: true },
-    { name: "stack", path: "components/stack.html", isMainChild: true },
-    { name: "journey", path: "components/journey.html", isMainChild: true },
-    { name: "contact", path: "components/contact.html", isMainChild: true },
-    { name: "footer", path: "components/footer.html", isMainChild: false },
-    { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
-  ];
-  ```
-- **Execution**: All templates are fetched concurrently via `Promise.all` and injected into `<div id="app">`.
+- **Manifests**: Managed in `assets/js/components.js`:
+  - `HOMEPAGE_MANIFEST`: Header, Hero, Currently Building, Selected Work, Activity, Certificates, Contact, Footer, Project Modal.
+  - `ABOUT_MANIFEST`: Header, About Hero, Journey, Stack, Footer, Project Modal.
+  - `PROJECTS_MANIFEST`: Header, Projects Hero, Projects Gallery, Footer, Project Modal.
+- **Top Navigation Architecture**:
+  - Global Header (`components/header.html`) provides a streamlined 3-page navigation: **Home**, **Projects**, and **About**.
+  - Route state is managed cleanly in `assets/js/navigation.js`.
 - **Main Container Wrapping**: Components with `isMainChild: true` are wrapped in a semantic `<main id="main-content">` landmark.
 
 ---

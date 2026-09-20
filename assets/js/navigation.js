@@ -183,20 +183,6 @@ const NavigationManager = (() => {
       const scrollPercent = maxScroll > 0 ? (window.scrollY / maxScroll) * 100 : 0;
       progressBar.style.width = `${Math.min(100, Math.max(0, scrollPercent))}%`;
     }
-
-    // Reveal any elements that have entered the viewport or were scrolled past (e.g. anchor jump)
-    const unrevealed = document.querySelectorAll(".scroll-reveal:not(.is-revealed)");
-    if (unrevealed.length) {
-      unrevealed.forEach(el => {
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight - 30) {
-          el.classList.add("is-revealed");
-          if (scrollObserver) {
-            scrollObserver.unobserve(el);
-          }
-        }
-      });
-    }
   }
 
   /**
@@ -330,28 +316,23 @@ const NavigationManager = (() => {
       scrollObserver.disconnect();
     }
 
-    scrollObserver = new IntersectionObserver((entries, observer) => {
+    scrollObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting || entry.boundingClientRect.top < 0) {
+        if (entry.isIntersecting) {
           entry.target.classList.add("is-revealed");
-          observer.unobserve(entry.target);
+        } else {
+          entry.target.classList.remove("is-revealed");
         }
       });
     }, {
       root: null,
-      rootMargin: "0px 0px -40px 0px",
-      threshold: 0.08
+      rootMargin: "80px 0px -40px 0px",
+      threshold: 0.05
     });
 
     targets.forEach(el => {
       el.classList.add("scroll-reveal");
-      // If element is already within or above the viewport on load, reveal immediately
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight) {
-        el.classList.add("is-revealed");
-      } else {
-        scrollObserver.observe(el);
-      }
+      scrollObserver.observe(el);
     });
   }
 

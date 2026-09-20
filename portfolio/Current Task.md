@@ -12,11 +12,11 @@
      - Added capsule mouse scroll prompt at the bottom of the hero section with an anchor targeting `#currently-building`.
      - Keyframe animations: `@keyframes scroll-dot-slide` (sliding wheel dot), `@keyframes scroll-arrow-nudge` (subtle down arrow bounce), and `@keyframes scroll-indicator-float` (gentle breathing motion).
      - Responsive and direction-aware: smoothly fades out (`.is-scrolled-hidden`) when scrolling down past 60px, and returns when scrolling back to top.
-  2. **Scroll-Driven Reveal Animations on Scrolling Down** (`assets/css/sections.css`, `assets/js/navigation.js`, `assets/js/app.js`):
-     - Base `.scroll-reveal` and `.scroll-reveal.is-revealed` transitions with high-performance `cubic-bezier(0.16, 1, 0.3, 1)` easing.
-     - Staggered cascade delays for Selected Work, Verified Certificates, Tech Stack, and Journey Timeline cards.
-     - Native `IntersectionObserver` in `NavigationManager.initScrollReveal()` with progressive enhancement and pre-viewport checks.
-     - Dynamically re-scans after card rendering in `app.js`.
+  2. **Bidirectional Scroll-Driven Reveal Animations (Repeat on Scroll)** (`assets/css/sections.css`, `assets/js/navigation.js`, `assets/js/app.js`):
+     - Bidirectional `IntersectionObserver` (`rootMargin: "80px 0px -40px 0px"`, `threshold: 0.05`) smoothly adds `.is-revealed` on entry and removes it when scrolling offscreen.
+     - Entrance transition uses smooth deceleration `cubic-bezier(0.16, 1, 0.3, 1)` over `0.7s` (`opacity: 0 -> 1`, `translateY(26px) scale(0.985) -> translateY(0) scale(1)`).
+     - Exit transition smoothly fades out offscreen (`0.45s ease-out`) with zero delay, ready for the next scroll entrance.
+     - Staggered cascading delays apply on entrance for Selected Work, Verified Certificates, Tech Stack, and Journey Timeline cards.
   3. **Header Scroll Reading Progress Bar** (`components/header.html`, `assets/css/sections.css`, `assets/js/navigation.js`):
      - Pinned 2.5px progress bar (`#scroll-progress-bar`) at the very top of the sticky header (`top: 0; left: 0;`).
      - Styled with `var(--accent)` (`#2563EB` light / `#3B82F6` dark) to match the active navbar highlight bar (`.nav-link.is-active::after`).

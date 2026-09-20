@@ -669,13 +669,22 @@ function initHeroWordRotator() {
         requestAnimationFrame(() => {
           wordEl.classList.remove("is-entering-prep");
           currentIndex = nextIndex;
-          timeoutId = setTimeout(rotate, 2600);
+          timeoutId = setTimeout(rotate, 2800);
         });
       });
     }, 280);
   }
 
-  // Initial delay before first rotation
-  timeoutId = setTimeout(rotate, 2600);
+  // Page Visibility API: pause when tab hidden, resume cleanly when focused
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      if (timeoutId) clearTimeout(timeoutId);
+    } else {
+      if (!isPaused) timeoutId = setTimeout(rotate, 1200);
+    }
+  });
+
+  // Initial delay before first rotation (~2.8s)
+  timeoutId = setTimeout(rotate, 2800);
 }
 

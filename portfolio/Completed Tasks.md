@@ -2,6 +2,26 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-21: Dynamic Hero Word Rotator (Blur Flip Animation & Electric Gradient)
+- **Objective**: Implement the dynamic rotating word design demonstrated in `Screen Recording 2026-09-21 022846.mp4` on the hero intro heading on "IT Student" ("IT student who enjoys building software and figuring out how things work.").
+- **Key Deliverables**:
+  - **Component Structure (`components/hero.html`)**:
+    - Wrapped "IT Student" inside `<span class="hero-rotator-wrapper"><span class="hero-rotator-text" id="hero-rotating-word" aria-live="polite">IT Student</span></span>`.
+  - **Color & Motion Styling (`assets/css/sections.css`)**:
+    - Styled `.hero-rotator-text` with the reference electric royal-blue to violet/purple gradient (`linear-gradient(135deg, #1d63ff 0%, #4f46e5 45%, #7c3aed 100%)`).
+    - Added dark mode gradient (`linear-gradient(135deg, #38bdf8 0%, #60a5fa 35%, #a78bfa 100%)`) for high-contrast luminous rendering.
+    - Implemented upward slide (`translateY(-8px)`), blur (`filter: blur(8px)`), and fade (`opacity: 0`) exit transitions with smooth enter physics.
+    - Added `margin-right: 0.28em` and smooth width animation on `.hero-rotator-wrapper` (`transition: width 0.35s`) so subsequent words glide seamlessly without snapping.
+    - Added `@media (prefers-reduced-motion: reduce)` accessibility fallback.
+  - **Orchestration Module (`assets/js/app.js`, `assets/js/data.js`)**:
+    - Defined `rotatingRoles: ["IT Student", "Software Developer", "Backend Developer", "Web Developer"]` in `PORTFOLIO_DATA.personal`.
+    - Created `initHeroWordRotator()` with natural 2.8s dwell timing, hover pause, dynamic resize recalculation, and Page Visibility API integration.
+  - **Verification**:
+    - Verified all 4 roles cycle smoothly: `IT Student` → `Software Developer` → `Backend Developer` → `Web Developer`.
+    - Verified both Light and Dark modes.
+    - Verified mobile screen (390px) responsiveness with zero text overflow.
+    - Saved visual test captures: `rotation_cycle_0_IT Student.png`, `rotation_cycle_1_Software Developer.png`, `rotation_cycle_2_Backend Developer.png`, `hero_rotator_mid_blur.png`, `hero_rotator_mobile.png`.
+
 ## 2026-09-21: Cut Complete Projects Archive & Adjusted Controls to Headings
 - **Objective**: Remove the stray "Complete Projects Archive" heading from the Projects page (`projects.html`), eliminate the separator border and excessive vertical gap, adjust the filter buttons and search input directly beneath the hero narrative, and add `.sr-only` utility styles.
 - **Key Deliverables**:

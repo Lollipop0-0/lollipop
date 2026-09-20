@@ -6,26 +6,24 @@
 ---
 
 ## Active Task Summary
-- **Task**: Cut Complete Projects Archive & Adjusted Controls to Headings
+- **Task**: Dynamic Hero Word Rotator (Blur Flip Animation & Electric Gradient)
 - **Context & Implementation**:
-  1. **Removed Stray Heading (`components/projects-gallery.html`)**:
-     - Removed `<h2 id="gallery-section-heading" class="sr-only">Complete Projects Archive</h2>`.
-     - Set `aria-label="Projects Archive and Filter"` on the gallery section.
-  2. **Added `.sr-only` Utility (`assets/css/base.css`)**:
-     - Defined accessible screen-reader utility so any hidden headings/labels do not bleed into the visual presentation.
-  3. **Refined Spacing & Alignment (`assets/css/sections.css`)**:
-     - Removed separator border (`border-bottom: 1px solid var(--border)`) on `.projects-page-hero`.
-     - Reduced `.projects-page-hero` `padding-bottom` from `36px` to `20px`.
-     - Set `.projects-hero-subtext` margin to `0 auto` (removing `32px` bottom margin).
-     - Reduced `.projects-gallery-section` padding from `48px 0 80px` to `12px 0 80px`.
-     - Category filter pills and search bar now sit directly and smoothly beneath the hero heading and narrative.
+  1. **Structure (`components/hero.html`)**:
+     - Wrapped "IT Student" with `<span class="hero-rotator-wrapper"><span class="hero-rotator-text" id="hero-rotating-word" aria-live="polite">IT Student</span></span>`.
+  2. **Styling & Physics (`assets/css/sections.css`)**:
+     - Vibrant electric blue-to-violet gradient in light mode; glowing cyan-to-purple in dark mode.
+     - Upward translation (`translateY(-8px)`), blur (`filter: blur(8px)`), and fade (`opacity: 0`) exit transition.
+     - Entering from below (`translateY(8px)`), unblurring and fading in smoothly over 380ms.
+     - Smooth wrapper width transition (`transition: width 0.35s`) preventing abrupt shifts in trailing text.
+     - Natural typographical spacing with `margin-right: 0.28em`.
+  3. **Module Logic (`assets/js/app.js`, `assets/js/data.js`)**:
+     - Rotates roles: `IT Student` → `Software Developer` → `Backend Developer` → `Web Developer`.
+     - 2.8s natural dwell time.
+     - Page Visibility API integration to pause when tab is inactive.
+     - Hover pause and responsive resize recalculation.
   4. **Verification**:
-     - Chrome CDP headless test confirmed:
-       - `Complete Projects Archive` in DOM: `false`.
-       - Filter controls bar sits ~32px cleanly below the hero description.
-       - Mobile view adapts with full-width search and wrapping filter pills.
-       - Saved screenshots: `projects_adjusted_desktop.png`, `projects_adjusted_mobile.png`, `certificates_adjusted_desktop.png`.
-     - All JavaScript files pass syntax check (`node -c`).
+     - Chrome CDP headless test validated all cycles, dark mode, light mode, and mobile (390px).
+     - All 12 JavaScript files pass syntax check (`node -c`).
 
 ---
 

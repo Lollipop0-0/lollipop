@@ -60,5 +60,5 @@
 - All 12 JS modules pass `node -c` with zero syntax errors.
 - Both `http://localhost/lollipop/` and `http://localhost/lollipop/about.html` return `HTTP 200 OK`.
 - Chrome CDP audit across all viewports (320px–1200px) reports 0 overflow and 0 collisions.
-- Branch: `UI-2`.
+- Branch: `main`.
 - Project Rules: No screenshots or generated pictures.

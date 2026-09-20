@@ -6,24 +6,25 @@
 ---
 
 ## Active Task Summary
-- **Task**: Replace "site views" with "current views" and provide small animated developer profile avatars
+- **Task**: Implement comprehensive animations for scrolling down (Hero scroll indicator, scroll reveal, and header progress bar)
 - **Context & Implementation**:
-  1. **Monochrome Developer Sketch Avatars** (`components/footer.html`):
-     - Added `.viewer-avatar-stack` containing 4 circular vector sketch avatars matching the user's reference visual: Cap & Glasses, Wavy Hair, Curly Fringe Coder, and Headphones.
-     - Fully theme-reactive with `var(--surface)`, `var(--surface-alt)`, and `currentColor` adapting dynamically to Light and Dark modes.
-     - Layered left-to-right with descending z-indexes (`z-index: 4` to `1`) and overlapping negative margins (`margin-left: -7px`).
-  2. **Micro-Animations & Interactive Hover Effects** (`assets/css/sections.css`):
-     - Added `@keyframes viewer-avatar-float` with staggered animation delays creating an organic vertical wave motion.
-     - Interactive hover spread (`margin-left: -2.5px`) fanning out the avatars on pill hover, plus individual avatar pop (`scale(1.22)`, `translateY(-4px)`, accent border) on hover.
-  3. **Live Concurrent Viewers Orchestration** (`assets/js/visitors.js`):
-     - Displays live viewers count in `<strong data-current-views>4</strong> current views`.
-     - Simulates realistic natural viewer activity (natural drift between 3 and 5) while preserving full background visitor logging (local PHP `api/visitors.php` + public counter fallback + LocalStorage).
-     - Pill tooltip displays: `${currentViewers} people viewing now (${totalViews.toLocaleString()} total visits)`.
-  4. **Clean Code & Responsive Fixes** (`assets/css/responsive.css`):
-     - Normalized unitless CSS padding on line 190 (`padding: 48px 10;` -> `padding: 48px 0;`).
+  1. **Interactive Hero "Scroll Down" Indicator Animation** (`components/hero.html`):
+     - Added capsule mouse scroll prompt at the bottom of the hero section with an anchor targeting `#currently-building`.
+     - Keyframe animations: `@keyframes scroll-dot-slide` (sliding wheel dot), `@keyframes scroll-arrow-nudge` (subtle down arrow bounce), and `@keyframes scroll-indicator-float` (gentle breathing motion).
+     - Responsive and direction-aware: smoothly fades out (`.is-scrolled-hidden`) when scrolling down past 60px, and returns when scrolling back to top.
+  2. **Scroll-Driven Reveal Animations on Scrolling Down** (`assets/css/sections.css`, `assets/js/navigation.js`, `assets/js/app.js`):
+     - Base `.scroll-reveal` and `.scroll-reveal.is-revealed` transitions with high-performance `cubic-bezier(0.16, 1, 0.3, 1)` easing.
+     - Staggered cascade delays for Selected Work, Verified Certificates, Tech Stack, and Journey Timeline cards.
+     - Native `IntersectionObserver` in `NavigationManager.initScrollReveal()` with progressive enhancement and pre-viewport checks.
+     - Dynamically re-scans after card rendering in `app.js`.
+  3. **Header Scroll Reading Progress Bar** (`components/header.html`, `assets/css/sections.css`, `assets/js/navigation.js`):
+     - Pinned 2.5px accent gradient progress bar (`#scroll-progress-bar`) at the bottom of the sticky header.
+     - Updates with `requestAnimationFrame` on scroll from 0% to 100%.
+  4. **Accessibility & Reduced Motion** (`assets/css/responsive.css`):
+     - Complete `prefers-reduced-motion: reduce` compliance, immediately rendering elements and disabling infinite keyframes.
   5. **Verification**:
-     - Verified with `node -c` (0 syntax errors).
-     - Verified via Chrome CDP headless on both `http://localhost/lollipop/index.html` and `http://localhost/lollipop/about.html`, confirming 4 avatars, active animation, `4 current views` text, and zero console errors.
+     - All 12 JS modules pass `node -c` (0 syntax errors).
+     - Headless Chrome CDP verification confirms hero indicator existence, smooth fade-out on scroll, progress bar tracking, scroll reveal registration (12 elements on home, 20 on about), and zero console errors.
 
 ---
 

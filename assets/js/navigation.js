@@ -165,6 +165,24 @@ const NavigationManager = (() => {
         header.classList.remove("is-scrolled");
       }
     }
+
+    // Smoothly hide hero scroll indicator when scrolled down
+    const scrollIndicator = document.getElementById("hero-scroll-indicator");
+    if (scrollIndicator) {
+      if (window.scrollY > 60) {
+        scrollIndicator.classList.add("is-scrolled-hidden");
+      } else {
+        scrollIndicator.classList.remove("is-scrolled-hidden");
+      }
+    }
+
+    // Update top reading scroll progress bar
+    const progressBar = document.getElementById("scroll-progress-bar");
+    if (progressBar) {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = maxScroll > 0 ? (window.scrollY / maxScroll) * 100 : 0;
+      progressBar.style.width = `${Math.min(100, Math.max(0, scrollPercent))}%`;
+    }
   }
 
   /**
@@ -242,13 +260,83 @@ const NavigationManager = (() => {
 
     // Initial check
     updateActiveLink();
+
+    // Initial scroll reveal scan
+    initScrollReveal();
+  }
+
+  let scrollObserver = null;
+
+  /**
+   * Initialize or re-scan elements for IntersectionObserver scroll reveal
+   */
+  function initScrollReveal() {
+    // Select elements that should reveal on scroll
+    const selectors = [
+      ".scroll-reveal",
+      ".section-header-row",
+      ".cb-section-text",
+      ".cb-compact-card",
+      ".selected-project-card",
+      ".gh-profile-badge-card",
+      ".gh-matrix-card",
+      ".gh-feed-card",
+      ".gh-languages-card",
+      ".certificate-card",
+      ".contact-card",
+      ".contact-form-wrap",
+      ".contact-info-list",
+      ".about-hero-header",
+      ".journey-item",
+      ".stack-category-card",
+      ".snapshot-card"
+    ];
+
+    const targets = document.querySelectorAll(selectors.join(", "));
+    if (!targets.length) return;
+
+    // Graceful fallback if IntersectionObserver is unsupported
+    if (!("IntersectionObserver" in window)) {
+      targets.forEach(el => el.classList.add("is-revealed"));
+      return;
+    }
+
+    // Disconnect any existing observer if re-initializing
+    if (scrollObserver) {
+      scrollObserver.disconnect();
+    }
+
+    scrollObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-revealed");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: "0px 0px -40px 0px",
+      threshold: 0.08
+    });
+
+    targets.forEach(el => {
+      el.classList.add("scroll-reveal");
+      // Check if element is already within viewport on page load
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        el.classList.add("is-revealed");
+      } else {
+        scrollObserver.observe(el);
+      }
+    });
   }
 
   return {
     init,
     openDrawer,
     closeDrawer,
-    scrollToTarget
+    scrollToTarget,
+    initScrollReveal
   };
 })();
 

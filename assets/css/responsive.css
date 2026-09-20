@@ -992,6 +992,18 @@
     animation: none;
   }
 
+  .scroll-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .hero-scroll-down-btn,
+  .scroll-mouse-dot,
+  .scroll-down-arrow {
+    animation: none !important;
+  }
+
   .hero-photo-card:hover,
   .featured-mockup-img:hover,
   .project-card:hover,

@@ -2,6 +2,27 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-20: Animations for Scrolling Down (Hero Scroll Indicator, Scroll-Reveal & Progress Bar)
+- **Objective**: Implement comprehensive scrolling-down animations across the portfolio: an interactive hero scroll prompt, smooth scroll-triggered reveal animations for sections and cards, and a reading progress bar in the top navigation.
+- **Key Deliverables**:
+  - **Interactive Hero "Scroll Down" Indicator Animation** (`components/hero.html`, `assets/css/sections.css`, `assets/css/responsive.css`):
+    - Added floating capsule and mouse scroll indicator at the bottom of the hero section linking directly to `#currently-building`.
+    - Features continuous vertical sliding dot animation (`@keyframes scroll-dot-slide`), subtle downward bouncing chevron (`@keyframes scroll-arrow-nudge`), and gentle breathing motion (`@keyframes scroll-indicator-float`).
+    - Smoothly fades out and slides downward (`.is-scrolled-hidden`) when scrolling down past 60px; restores gracefully when returning to the top.
+  - **Scroll-Driven Reveal Animations on Scrolling Down** (`assets/css/sections.css`, `assets/js/navigation.js`, `assets/js/app.js`):
+    - Added high-performance `.scroll-reveal` and `.scroll-reveal.is-revealed` styles (`opacity: 0 -> 1`, `translateY(24px) -> 0`) using cubic-bezier easing.
+    - Added staggered delays for multi-card grids (Selected Work, Verified Certificates, Tech Stack, Journey Timeline) for a natural cascading entrance.
+    - Implemented native `IntersectionObserver` with `threshold: 0.08` and safe progressive fallback in `assets/js/navigation.js`.
+    - Automatically initializes after dynamic component assembly in `assets/js/app.js`.
+  - **Header Scroll Reading Progress Bar** (`components/header.html`, `assets/css/sections.css`, `assets/js/navigation.js`):
+    - Pinned 2.5px accent gradient progress bar (`#scroll-progress-bar`) at the bottom edge of `.site-header`.
+    - Dynamically fills from 0% to 100% as the visitor scrolls down the document.
+  - **Accessibility & Reduced Motion**:
+    - Full `prefers-reduced-motion: reduce` compliance in `assets/css/responsive.css`, disabling keyframes and immediately displaying all content without delay.
+- **Verification**:
+  - Passed `node -c` with zero syntax errors.
+  - Tested via headless Chrome CDP on both `index.html` and `about.html`, confirming hero indicator visibility, scroll fade-out, progress bar tracking, scroll reveal registration (12 elements on home, 20 on about), and zero console errors.
+
 ## 2026-09-20: Live "Current Views" Metric & Animated Sketch Developer Avatar Stack
 - **Objective**: Change footer colophon view counter from "site views" to "current views" and implement a horizontal cluster of 4 overlapping animated sketch developer profile avatars inspired by the user's reference mockup.
 - **Key Deliverables**:

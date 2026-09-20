@@ -28,6 +28,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderJourney();
     renderFiguringOut();
 
+    // 4.5. Initialize Scroll Reveal for dynamically rendered cards
+    if (window.NavigationManager && typeof window.NavigationManager.initScrollReveal === "function") {
+      window.NavigationManager.initScrollReveal();
+    }
+
     // 5. Initialize Projects (Archive filtering, card rendering)
     if (window.ProjectsManager) {
       window.ProjectsManager.init();

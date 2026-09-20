@@ -13,18 +13,19 @@ This changelog records completed features, refinements, fixes, and synchronizati
     - Replaced static grid markup with `.cert-marquee-container` and `#certificates-track.cert-marquee-track`.
     - Implemented dual-group synchronized scrolling structure (`.cert-marquee-group`) using `@keyframes cert-marquee-slide` (`translateX(0)` to `translateX(calc(-100% - 24px))`) for a mathematically seamless, stutter-free infinite loop.
     - Integrated edge gradient fade masks using `-webkit-mask-image` and `mask-image` (`linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)`) for elegant card dissolves on both screen edges.
-  - **Interactive Pause-on-Hover, Card Elevation & Modal Exit Auto-Resume** (`assets/css/sections.css`, `assets/js/modal.js`):
+  - **Interactive Pause-on-Hover, Card Elevation & Modal Lifecycle Sync** (`assets/css/sections.css`, `assets/js/modal.js`):
     - Added `animation-play-state: paused` on `:hover` and `:has(:focus-visible)` anywhere on the marquee container.
     - Added 3D card elevation on hover (`transform: translateY(-8px) scale(1.015)`), accent border illumination (`border-color: var(--accent)`), and deep ambient shadow (`box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.32), 0 0 0 1px rgba(56, 189, 248, 0.22)`).
     - Preserved instant click inspection opening Karl's verified credential modal via `ModalManager` (`data-modal-certificate`).
-    - Configured `close()` in `modal.js` to automatically blur certificate triggers and apply `.is-resuming` so that exiting or closing the modal (via Close button, backdrop click, or Escape key) immediately continues the marquee animation without getting stuck in a paused state.
+    - **Modal Synchronization**: Added `body.modal-locked .cert-marquee-group, body:has(#project-modal.is-active) .cert-marquee-group { animation-play-state: paused !important; }` so that while the modal is open on desktop/window or any viewport, the carousel stops running in the background behind the modal.
+    - **Auto-Resume on Close**: Configured `close()` in `modal.js` to automatically blur certificate triggers and apply `.is-resuming` so that exiting or closing the modal (via Close button, backdrop click, or Escape key) immediately continues the marquee animation smoothly from where it was paused.
   - **Accessibility & Motion Adaptations** (`assets/css/responsive.css`, `assets/js/navigation.js`):
     - Group 2 cards set to `aria-hidden="true"` and `tabindex="-1"` to eliminate duplicate screen reader announcements.
     - Under `@media (prefers-reduced-motion: reduce)`, auto-scroll is disabled and converted to accessible horizontal overflow scrolling (`overflow-x: auto`).
     - Responsive card width adapts from `320px` on desktop to `280px` on mobile viewports.
 - **Verification**:
   - Validated syntax with `node -c` across all JavaScript modules (0 errors).
-  - Headless Chrome CDP verification confirmed 16 rendered cards across 2 groups, active `cert-marquee-slide` animation, edge gradient masks, pause-on-hover behavior, verified that closing the modal across all 3 exit methods (Close button, backdrop click, Escape key) immediately resumes the animation (`playState: 'running'`), and confirmed zero console errors.
+  - Headless Chrome CDP verification confirmed 16 rendered cards across 2 groups, active `cert-marquee-slide` animation, edge gradient masks, pause-on-hover behavior, confirmed that the carousel halts while the modal is open (`playState: 'paused'`), and verified that closing the modal across all 3 exit methods (Close button, backdrop click, Escape key) immediately continues the animation (`playState: 'running'`), with zero console errors.
 
 
 ## 2026-09-20: Animations for Scrolling Down (Hero Scroll Indicator, Scroll-Reveal & Progress Bar)

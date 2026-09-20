@@ -2235,8 +2235,14 @@
     animation-play-state: paused;
 }
 
+/* Pause animation completely while modal dialog is open */
+body.modal-locked .cert-marquee-group,
+body:has(#project-modal.is-active) .cert-marquee-group {
+    animation-play-state: paused !important;
+}
+
 /* Ensure animation continues immediately when exiting/closing modal */
-.cert-marquee-container.is-resuming .cert-marquee-group {
+body:not(.modal-locked) .cert-marquee-container.is-resuming .cert-marquee-group {
     animation-play-state: running !important;
 }
 

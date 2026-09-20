@@ -14,18 +14,19 @@
      - Created `.cert-marquee-container` and `#certificates-track.cert-marquee-track`.
      - Dual-group synchronized loop (`.cert-marquee-group`) via `@keyframes cert-marquee-slide` (`translateX(0)` to `translateX(calc(-100% - 24px))`) for a mathematically seamless, gap-free infinite loop.
      - Smooth gradient edge fade masks (`linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)`).
-  3. **Interactive Pause-on-Hover, Card Elevation & Modal Exit Auto-Resume** (`assets/css/sections.css`, `assets/js/modal.js`):
+  3. **Interactive Pause-on-Hover, Card Elevation & Modal Synchronization** (`assets/css/sections.css`, `assets/js/modal.js`):
      - Pauses marquee animation on hover or keyboard focus anywhere in the carousel.
      - Card hover elevates (`translateY(-8px) scale(1.015)`), accent border illumination (`var(--accent)`), and deep ambient shadow.
      - Clicking any card opens the credential inspection modal (`ModalManager`).
-     - Exiting/closing the modal (Close button, backdrop click, Escape key) automatically blurs the card and resumes the animation immediately (`is-resuming` rule).
+     - **Paused while on modal**: The carousel is paused (`animation-play-state: paused !important;`) whenever the modal is open on window or any viewport.
+     - **Auto-resumed on exit**: Exiting/closing the modal (Close button, backdrop click, Escape key) automatically blurs the card and resumes the animation immediately (`is-resuming` rule).
   4. **Accessibility & Responsive Tweaks** (`assets/css/responsive.css`, `assets/js/navigation.js`):
      - Dual group clone has `aria-hidden="true"` and `tabindex="-1"`.
      - Complete `prefers-reduced-motion: reduce` fallback to static horizontal overflow.
      - Scroll reveal cleanly targets header and marquee container without interfering with card motion.
   5. **Verification**:
      - 0 syntax errors across JS files (`node -c`).
-     - Automated CDP audit confirms seamless animation, edge masks, pause-on-hover, verified that closing the modal via Close button, backdrop click, or Escape key immediately resumes the animation (`playState: 'running'`), and confirmed 0 console errors.
+     - Automated CDP audit confirms seamless animation, edge masks, pause-on-hover, verified that the carousel pauses while modal is open, and immediately resumes upon closing across all 3 exit methods (`playState: 'running'`), and confirmed 0 console errors.
 
 ---
 

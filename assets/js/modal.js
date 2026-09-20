@@ -22,6 +22,8 @@ const ModalManager = (() => {
     if (!modal) return;
     lastFocusedElement = triggerElement || document.activeElement;
 
+    if (modal) modal.classList.remove("modal-cert-mode");
+
     // Retrieve project data (check featured project or archive projects)
     let project = null;
     if (window.PORTFOLIO_DATA) {
@@ -74,6 +76,7 @@ const ModalManager = (() => {
 
     if (!cert) return;
 
+    modal.classList.add("modal-cert-mode");
     renderCertificateContent(cert);
 
     modal.classList.add("is-active");
@@ -89,6 +92,7 @@ const ModalManager = (() => {
 
   /**
    * Render structured certificate details inside modal body
+   * Side-by-side 2-column split layout matching user design
    * @param {Object} cert
    */
   function renderCertificateContent(cert) {
@@ -103,50 +107,57 @@ const ModalManager = (() => {
       .join("");
 
     modalBody.innerHTML = `
-      <div class="modal-project-header">
-        <div class="modal-badges-row">
-          <span class="badge badge-collaborative">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right: 4px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            ${escapeHtml(cert.issuer)} Verified
-          </span>
-          <span class="badge badge-subtle">Issued: ${escapeHtml(cert.issueDate)}</span>
-        </div>
-        <p class="modal-project-summary">${escapeHtml(cert.description)}</p>
-      </div>
-
-      <div class="modal-cert-preview-frame">
-        <img src="${escapeHtml(cert.image)}" alt="${escapeHtml(cert.title)} Certificate preview" class="modal-cert-img" loading="lazy">
-      </div>
-
-      <div class="modal-details-grid" style="margin-top: 24px;">
-        <div class="modal-detail-col">
-          <h4 class="modal-section-heading">Credential Information</h4>
-          <ul class="modal-feature-list">
-            <li><span class="bullet-icon">✦</span> <span><strong>Course:</strong> ${escapeHtml(cert.title)}</span></li>
-            <li><span class="bullet-icon">✦</span> <span><strong>Issuing Body:</strong> ${escapeHtml(cert.issuer)}</span></li>
-            <li><span class="bullet-icon">✦</span> <span><strong>Certificate ID:</strong> <code class="cert-code-highlight">${escapeHtml(cert.credentialId)}</code></span></li>
-            <li><span class="bullet-icon">✦</span> <span><strong>Issue Date:</strong> ${escapeHtml(cert.issueDate)}</span></li>
-            <li><span class="bullet-icon">✦</span> <span><strong>Signatory:</strong> Yeva Hyusyan (Chief Executive Officer)</span></li>
-          </ul>
+      <div class="modal-split-layout modal-cert-split-layout">
+        <!-- Left Side: Certificate Preview Image & Quick Actions -->
+        <div class="modal-split-media-col modal-cert-media-col">
+          <a href="${escapeHtml(cert.image)}" target="_blank" rel="noopener noreferrer" class="modal-media-wrapper modal-cert-preview-frame modal-preview-zoomable" title="Click to view full high-res certificate image">
+            <img src="${escapeHtml(cert.image)}" alt="${escapeHtml(cert.title)} Certificate preview" class="modal-cert-img" loading="lazy">
+            <div class="modal-preview-zoom-overlay">
+              <span class="modal-preview-zoom-pill">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                View High-Res
+              </span>
+            </div>
+          </a>
+          <div class="modal-btn-group modal-split-btn-group modal-cert-btn-group">
+            <a href="${escapeHtml(cert.image)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+              <svg class="btn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              <span>View Full Image</span>
+            </a>
+            <a href="${escapeHtml(cert.image)}" download="${escapeHtml(cert.id)}.png" class="btn btn-secondary btn-sm">
+              <svg class="btn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Download</span>
+            </a>
+          </div>
         </div>
 
-        <div class="modal-detail-col">
-          <h4 class="modal-section-heading">Key Competencies Tested</h4>
-          <div class="modal-tech-list">
-            ${skillBadges}
+        <!-- Right Side: Structured Details, Credential Info & Competencies -->
+        <div class="modal-split-info-col modal-cert-info-col">
+          <div class="modal-badges-row">
+            <span class="badge badge-collaborative">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right: 4px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              ${escapeHtml(cert.issuer)} Verified
+            </span>
+            <span class="badge badge-subtle">Issued: ${escapeHtml(cert.issueDate)}</span>
           </div>
 
-          <div class="modal-actions-area">
-            <h4 class="modal-section-heading">Credential Media</h4>
-            <div class="modal-btn-group">
-              <a href="${escapeHtml(cert.image)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
-                <svg class="btn-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                <span>View Full Image</span>
-              </a>
-              <a href="${escapeHtml(cert.image)}" download="${escapeHtml(cert.id)}.png" class="btn btn-secondary btn-sm">
-                <svg class="btn-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                <span>Download</span>
-              </a>
+          <p class="modal-cert-summary">${escapeHtml(cert.description)}</p>
+
+          <div class="modal-detail-block">
+            <h4 class="modal-section-heading">Credential Information</h4>
+            <ul class="modal-feature-list">
+              <li><span class="bullet-icon">✦</span> <span><strong>Course:</strong> ${escapeHtml(cert.title)}</span></li>
+              <li><span class="bullet-icon">✦</span> <span><strong>Issuing Body:</strong> ${escapeHtml(cert.issuer)}</span></li>
+              <li><span class="bullet-icon">✦</span> <span><strong>Certificate ID:</strong> <code class="cert-code-highlight">${escapeHtml(cert.credentialId)}</code></span></li>
+              <li><span class="bullet-icon">✦</span> <span><strong>Issue Date:</strong> ${escapeHtml(cert.issueDate)}</span></li>
+              <li><span class="bullet-icon">✦</span> <span><strong>Signatory:</strong> Yeva Hyusyan (Chief Executive Officer)</span></li>
+            </ul>
+          </div>
+
+          <div class="modal-detail-block">
+            <h4 class="modal-section-heading">Key Competencies Tested</h4>
+            <div class="modal-tech-list">
+              ${skillBadges}
             </div>
           </div>
         </div>
@@ -177,49 +188,62 @@ const ModalManager = (() => {
       ? `<span class="badge badge-collaborative">${escapeHtml(project.teamLabel || "Collaborative Project")}</span>`
       : `<span class="badge badge-personal">${escapeHtml(project.teamLabel || "Personal Project")}</span>`;
 
+    const liveBtnHtml = project.liveUrl
+      ? `<a href="${escapeHtml(project.liveUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm">
+           <svg class="btn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+           <span>Live Demo</span>
+         </a>`
+      : "";
+
     modalBody.innerHTML = `
-      <div class="modal-project-header">
-        <div class="modal-badges-row">
-          ${teamBadge}
-          <span class="badge badge-subtle">${escapeHtml(project.tagline || "")}</span>
-        </div>
-        <p class="modal-project-summary">${escapeHtml(project.longDescription || project.description)}</p>
-      </div>
+      <div class="modal-split-layout modal-project-split-layout">
+        <!-- Left Side: Project Screenshot & Action Links -->
+        <div class="modal-split-media-col">
+          <a href="${escapeHtml(project.image)}" target="_blank" rel="noopener noreferrer" class="modal-media-wrapper modal-preview-zoomable" title="Click to view full screenshot">
+            <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)} preview screenshot" class="modal-project-img" loading="lazy">
+            <div class="modal-preview-zoom-overlay">
+              <span class="modal-preview-zoom-pill">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                View Full Size
+              </span>
+            </div>
+          </a>
 
-      <div class="modal-media-wrapper">
-        <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)} preview screenshot" class="modal-project-img" loading="lazy">
-      </div>
-
-      <div class="modal-details-grid">
-        <div class="modal-detail-col">
-          <h4 class="modal-section-heading">Key Architecture & Features</h4>
-          <ul class="modal-feature-list">
-            ${highlightsList}
-          </ul>
-        </div>
-
-        <div class="modal-detail-col">
-          <h4 class="modal-section-heading">Technologies Used</h4>
-          <div class="modal-tech-list">
-            ${techBadges}
-          </div>
-
-          <div class="modal-actions-area">
-            <h4 class="modal-section-heading">Repository & Links</h4>
+          <div class="modal-media-actions-area">
             <div id="modal-repo-action-container">
               ${window.ErrorState ? window.ErrorState.renderModalAction(project) : `
-                <div class="modal-btn-group">
+                <div class="modal-btn-group modal-split-btn-group">
                   <a href="${escapeHtml(project.repository)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
-                    <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                    <svg class="btn-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
                     <span>GitHub Repository</span>
                   </a>
-                  ${project.liveUrl ? `
-                    <a href="${escapeHtml(project.liveUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm">
-                      <span>Live Demo</span>
-                    </a>
-                  ` : ""}
+                  ${liveBtnHtml}
                 </div>
               `}
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Badges, Summary, Architecture & Tech Stack -->
+        <div class="modal-split-info-col">
+          <div class="modal-badges-row">
+            ${teamBadge}
+            <span class="badge badge-subtle">${escapeHtml(project.tagline || "")}</span>
+          </div>
+
+          <p class="modal-project-summary">${escapeHtml(project.longDescription || project.description)}</p>
+
+          <div class="modal-detail-block">
+            <h4 class="modal-section-heading">Key Architecture & Features</h4>
+            <ul class="modal-feature-list">
+              ${highlightsList}
+            </ul>
+          </div>
+
+          <div class="modal-detail-block" style="margin-top: 18px;">
+            <h4 class="modal-section-heading">Technologies Used</h4>
+            <div class="modal-tech-list">
+              ${techBadges}
             </div>
           </div>
         </div>
@@ -257,6 +281,7 @@ const ModalManager = (() => {
     if (!modal || !modal.classList.contains("is-active")) return;
     modal.classList.remove("is-active");
     if (modalBackdrop) modalBackdrop.classList.remove("is-active");
+    modal.classList.remove("modal-cert-mode");
     document.body.classList.remove("modal-locked");
     modal.setAttribute("aria-hidden", "true");
 

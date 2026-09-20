@@ -1,32 +1,29 @@
 # Current Task
 
 ## Status: Complete / Idle
-**Last Updated**: September 20, 2026
+**Last Updated**: September 21, 2026
 
 ---
 
 ## Active Task Summary
-- **Task**: Infinite Auto-Scrolling Certificates Marquee Carousel (`Screen Recording 2026-09-19 235319.mp4`)
+- **Task**: Desktop Window View Side-by-Side Split Modal Layout (Certificates & Projects)
 - **Context & Implementation**:
-  1. **Centered Header Typography** (`components/certificates.html`, `assets/css/sections.css`):
-     - Added `.cert-header-centered` with `.cert-kicker-pill` (`04 • CREDENTIALS`), bold headline `Certifications.` (with accent period), and subtitle.
-  2. **Full-Bleed Infinite Auto-Scrolling Carousel** (`components/certificates.html`, `assets/css/sections.css`, `assets/js/app.js`):
-     - Created `.cert-marquee-container` and `#certificates-track.cert-marquee-track`.
-     - Dual-group synchronized loop (`.cert-marquee-group`) via `@keyframes cert-marquee-slide` (`translateX(0)` to `translateX(calc(-100% - 24px))`) for a mathematically seamless, gap-free infinite loop.
-     - Smooth gradient edge fade masks (`linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)`).
-  3. **Interactive Pause-on-Hover, Card Elevation & Modal Synchronization** (`assets/css/sections.css`, `assets/js/modal.js`):
-     - Pauses marquee animation on hover or keyboard focus anywhere in the carousel.
-     - Card hover elevates (`translateY(-8px) scale(1.015)`), accent border illumination (`var(--accent)`), and deep ambient shadow.
-     - Clicking any card opens the credential inspection modal (`ModalManager`).
-     - **Paused while on modal**: The carousel is paused (`animation-play-state: paused !important;`) whenever the modal is open on window or any viewport.
-     - **Auto-resumed on exit**: Exiting/closing the modal (Close button, backdrop click, Escape key) automatically blurs the card and resumes the animation immediately (`is-resuming` rule).
-  4. **Accessibility & Responsive Tweaks** (`assets/css/responsive.css`, `assets/js/navigation.js`):
-     - Dual group clone has `aria-hidden="true"` and `tabindex="-1"`.
-     - Complete `prefers-reduced-motion: reduce` fallback to static horizontal overflow.
-     - Scroll reveal cleanly targets header and marquee container without interfering with card motion.
+  1. **Side-by-Side 2-Column Split Layout on Desktop Window View (`>= 900px`)** (`assets/css/components.css`):
+     - Modal dialog expands to `max-width: 980px`.
+     - `.modal-split-layout` renders a balanced 2-column grid (`grid-template-columns: 1.15fr 1fr; gap: 32px;`).
+     - **Left Column**: Visual media (certificate or project preview screenshot) with zoom overlay, paired with action buttons.
+     - **Right Column**: Verification badges, summary description, architectural/credential details, and technology/competency pills.
+  2. **Preserved Mobile & Tablet View (`< 900px`)** (`assets/css/components.css`):
+     - Keeps the clean single-column stacked format (`display: flex; flex-direction: column;`).
+  3. **Certificate Modal Implementation** (`assets/js/modal.js`):
+     - Image preview frame on the left with zoom pill, plus full-width "View Full Image" and "Download" buttons.
+     - Structured credential information list and key competencies on the right.
+  4. **Project Modal Implementation** (`assets/js/modal.js`):
+     - Project screenshot on the left with zoom pill, plus "GitHub Repository" and "Live Demo" buttons.
+     - Tagline badges, summary, key architecture features, and tech stack pills on the right.
   5. **Verification**:
-     - 0 syntax errors across JS files (`node -c`).
-     - Automated CDP audit confirms seamless animation, edge masks, pause-on-hover, verified that the carousel pauses while modal is open, and immediately resumes upon closing across all 3 exit methods (`playState: 'running'`), and confirmed 0 console errors.
+     - All 12 JS modules pass `node -c` (0 syntax errors).
+     - Headless Chrome CDP tests confirm 2-column grid (`980px`) on desktop window view, and single-column flex column on mobile view for both Certificate and Project modals.
 
 ---
 

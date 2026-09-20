@@ -2,6 +2,24 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-21: Desktop Window View Side-by-Side Split Modal Layout (Certificates & Projects)
+- **Objective**: Implement the user's hand-drawn wireframe sketch for desktop/window view across both Certificate and Project modals: side-by-side 2-column layout (preview media on the left, structured details on the right), while preserving the single-column stacked layout on mobile and tablet.
+- **Key Deliverables**:
+  - **Unified Split Layout Architecture** (`assets/css/components.css`, `assets/js/modal.js`):
+    - Added `.modal-split-layout` with `.modal-split-media-col` (left) and `.modal-split-info-col` (right).
+    - On desktop/window view (`@media (min-width: 900px)`): dialog expands to `max-width: 980px`, rendering a balanced 2-column grid (`grid-template-columns: 1.15fr 1fr; gap: 32px;`).
+    - On mobile and tablet view (`< 900px`): automatically stays in clean single-column stacked format (`display: flex; flex-direction: column;`), preserving the mobile/tablet UX.
+  - **Certificate Modal Implementation** (`assets/js/modal.js`, `assets/css/components.css`):
+    - **Left Column**: Interactive certificate preview image with hover elevation and zoom overlay (`View High-Res`), paired with full-width action buttons (`View Full Image` and `Download`).
+    - **Right Column**: Verification badges row (`Sololearn Verified`, `Issued Date`), description summary, bulleted Credential Information list (Course, Issuer, ID, Date, Signatory), and Key Competencies Tested pills.
+  - **Project Modal Implementation** (`assets/js/modal.js`, `assets/css/components.css`):
+    - **Left Column**: Project preview screenshot with zoom overlay, paired with GitHub Repository and Live Demo action buttons.
+    - **Right Column**: Category and tagline badges, description summary, Key Architecture & Features list, and Technologies Used pills.
+- **Verification**:
+  - Tested across both Certificate and Project modals via automated Chrome CDP on Desktop (1440x900) and Mobile (480px).
+  - Confirmed 2-column grid (`980px` width) on desktop window view, and single-column flex column (`456px` width) on mobile view.
+  - Zero JavaScript syntax errors (`node -c` on all 12 modules).
+
 ## 2026-09-20: Infinite Auto-Scrolling Certificates Marquee Carousel
 - **Objective**: Analyze reference video `Screen Recording 2026-09-19 235319.mp4` and transform Section 04 (*Certificates & Certifications* / `CREDENTIALS`) into an interactive, full-bleed auto-scrolling marquee carousel with centered typography and hover elevation.
 - **Key Deliverables**:

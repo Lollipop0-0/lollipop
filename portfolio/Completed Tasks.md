@@ -2,6 +2,20 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-20: Responsive Navigation Collision & Hero Collage Boundary Fixes
+- **Objective**: Identify and resolve responsiveness errors across viewport widths, specifically fixing header navigation collision between brand, navigation links, and action triggers on tablet landscape/medium screens, as well as fixing hero visual collage element drift and offscreen clipping on stacked tablet and mobile viewports.
+- **Key Deliverables**:
+  - **Standardized Mobile Drawer Breakpoint** (`assets/css/responsive.css`):
+    - Changed the mobile drawer breakpoint from `868px` to `991px` (`@media (max-width: 991px)`), synchronizing it with `sections.css` line 841 (`.code-activity-grid`).
+    - With 6 navigation links (including Certificates) requiring ~980px total header width, breaking below 992px completely eliminates overlap between the brand monogram, navigation menu, and action buttons on viewports between 869px and 991px.
+  - **Medium Desktop Header Ergonomics** (`assets/css/responsive.css`):
+    - Added `@media (min-width: 992px) and (max-width: 1120px)` rule with condensed navigation link gaps (`gap: 16px` instead of `28px`) and collapsed search placeholder text, providing ~90px of clean breathing room on 13" laptops and iPad Pro landscape screens.
+  - **Bounded Hero Collage & Tight Frame** (`assets/css/responsive.css`):
+    - Set responsive `max-width` bounds on `.hero-visual` (`max-width: 380px` for tablet `<= 991px`, `max-width: 320px` for mobile `<= 600px`, and `max-width: 275px` for small devices `<= 480px`).
+    - Centered the collage with `margin: 12px auto 44px auto` so floating children (`.php-snippet-card`, `.currently-building-card`, handwritten annotations) remain tightly bound around the polaroid photo rather than drifting across an unbounded 100% wide container.
+    - Adjusted `.php-snippet-card` (`left: -12px`) and `.currently-building-card` (`right: -10px`) coordinates to prevent clipping against viewport edges.
+- **Verification**: Chrome CDP layout audit confirmed 0 overflow issues and 0 collisions across 320px, 360px, 375px, 480px, 600px, 768px, 868px, 900px, 991px, 992px, 1024px, and 1200px. All 12 JavaScript files validated with `node -c`. Both `http://localhost/lollipop/` and `http://localhost/lollipop/about.html` return HTTP 200 OK.
+
 ## 2026-09-19: Certificates Navigation Highlight & Scroll-Spy Synchronization
 - **Objective**: Fix the navigation link and active highlight state for the "Certificates" section in both desktop and mobile headers so it correctly highlights when scrolling through `#certificates` on the homepage and reliably smooth-scrolls to the section without 404 errors.
 - **Key Deliverables**:

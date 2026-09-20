@@ -120,10 +120,10 @@
 }
 
 /* ==========================================================================
-   Mobile Responsive Breakpoint (< 868px)
+   Mobile Responsive Breakpoint (< 991px)
    ========================================================================== */
 
-@media (max-width: 868px) {
+@media (max-width: 991px) {
 
   /* Navigation */
   .desktop-nav,
@@ -191,8 +191,8 @@
 
   /* Hero Section - Tablet & Medium Screens: Profile First, Info Second */
   .hero-section {
-    padding-top: calc(var(--header-height) + 55px);
-    padding-bottom: 75px;
+    padding-top: calc(var(--header-height) + 32px);
+    padding-bottom: 48px;
   }
 
   .hero-grid {
@@ -204,11 +204,11 @@
   .hero-visual {
     order: 1;
     width: 100%;
-    max-width: 100%;
+    max-width: 380px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 12px auto 38px auto;
+    margin: 12px auto 44px auto;
     padding: 0;
     min-height: auto;
     position: relative;
@@ -217,17 +217,21 @@
   .hero-content {
     order: 2;
     width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     gap: 16px;
   }
 
   .hero-photo-card {
-    width: clamp(240px, 36vw, 290px);
+    width: clamp(240px, 70vw, 290px);
     height: auto;
     aspect-ratio: 340 / 430;
     padding: 10px 10px 18px 10px;
     transform: rotate(1.5deg);
+    position: relative;
+    z-index: 2;
   }
 
   .hero-photo-img {
@@ -237,41 +241,44 @@
   }
 
   .hero-visual .php-snippet-card {
-    width: clamp(200px, 30vw, 250px);
-    left: clamp(-20px, -3vw, -10px);
+    width: clamp(175px, 48vw, 215px);
+    left: -12px;
     top: -8px;
-    font-size: clamp(0.68rem, 1.6vw, 0.76rem);
-    padding: 10px 14px;
+    font-size: clamp(0.65rem, 1.6vw, 0.74rem);
+    padding: 9px 12px;
     line-height: 1.45;
+    z-index: 1;
   }
 
   .hero-annotation-dream {
-    right: clamp(-15px, 2vw, 8px);
+    right: -10px;
     top: -16px;
-    font-size: clamp(1.2rem, 2.5vw, 1.4rem);
+    font-size: clamp(1.15rem, 2.5vw, 1.35rem);
+    z-index: 3;
   }
 
   .hero-annotation-steps {
     position: absolute;
     bottom: 35px;
-    left: clamp(-20px, -3vw, -8px);
+    left: -12px;
     transform: rotate(-8deg);
     font-size: clamp(0.95rem, 2vw, 1.15rem);
     display: block;
+    z-index: 3;
   }
 
   .currently-building-card {
     position: absolute;
-    right: clamp(-15px, 2vw, 12px);
+    right: -10px;
     bottom: -22px;
-    max-width: clamp(220px, 34vw, 260px);
+    max-width: clamp(200px, 54vw, 245px);
     padding: 10px 15px;
     z-index: 4;
     box-shadow: 0 12px 30px -6px rgba(15, 23, 42, 0.18);
   }
 
   .hero-title {
-    font-size: clamp(2.75rem, 5.5vw, 3.5rem);
+    font-size: clamp(2.5rem, 5.5vw, 3.25rem);
   }
 
   /* About Section - Tablet Side-by-Side */
@@ -460,6 +467,7 @@
   .hero-visual {
     order: 1;
     width: 100%;
+    max-width: 320px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -666,6 +674,7 @@
 /* Small mobile devices (< 480px) */
 @media (max-width: 480px) {
   .hero-visual {
+    max-width: 275px;
     margin: 6px auto 32px auto;
   }
 
@@ -753,6 +762,24 @@
 
   .featured-actions .btn {
     width: 100%;
+  }
+}
+
+/* ==========================================================================
+   Medium Desktop & Tablet Landscape Nav Ergonomics (992px to 1120px)
+   ========================================================================== */
+
+@media (min-width: 992px) and (max-width: 1120px) {
+  .desktop-nav {
+    gap: 16px;
+  }
+
+  .header-search-btn .search-placeholder {
+    display: none;
+  }
+
+  .header-search-btn {
+    padding: 0 10px;
   }
 }
 

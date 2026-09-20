@@ -30,18 +30,22 @@
     box-shadow: var(--shadow-sm);
 }
 
-/* Scroll Reading Progress Bar */
+/* Scroll Reading Progress Bar (Top of Header, matching navbar accent highlight) */
 .scroll-progress-bar {
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
     height: 2.5px;
     width: 0%;
-    background: linear-gradient(90deg, var(--accent) 0%, #6366f1 50%, #8b5cf6 100%);
-    box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
+    background-color: var(--accent);
+    box-shadow: 0 1px 6px rgba(37, 99, 235, 0.4);
     pointer-events: none;
     z-index: 1000;
     transition: width 0.08s linear;
+}
+
+[data-theme="dark"] .scroll-progress-bar {
+    box-shadow: 0 1px 8px rgba(59, 130, 246, 0.5);
 }
 
 .nav-container {

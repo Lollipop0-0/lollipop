@@ -18,7 +18,8 @@
      - Native `IntersectionObserver` in `NavigationManager.initScrollReveal()` with progressive enhancement and pre-viewport checks.
      - Dynamically re-scans after card rendering in `app.js`.
   3. **Header Scroll Reading Progress Bar** (`components/header.html`, `assets/css/sections.css`, `assets/js/navigation.js`):
-     - Pinned 2.5px accent gradient progress bar (`#scroll-progress-bar`) at the bottom of the sticky header.
+     - Pinned 2.5px progress bar (`#scroll-progress-bar`) at the very top of the sticky header (`top: 0; left: 0;`).
+     - Styled with `var(--accent)` (`#2563EB` light / `#3B82F6` dark) to match the active navbar highlight bar (`.nav-link.is-active::after`).
      - Updates with `requestAnimationFrame` on scroll from 0% to 100%.
   4. **Accessibility & Reduced Motion** (`assets/css/responsive.css`):
      - Complete `prefers-reduced-motion: reduce` compliance, immediately rendering elements and disabling infinite keyframes.
@@ -62,7 +63,6 @@
 
 ## Verification & Status
 - All 12 JS modules pass `node -c` with zero syntax errors.
-- Both `http://localhost/lollipop/` and `http://localhost/lollipop/about.html` return `HTTP 200 OK`.
 - Chrome CDP audit confirms zero overflow, zero collision, and correct link resolution.
 - Branch: `main`.
-- Project Rules: No screenshots or generated pictures.
+- Project Rules: No screenshots or generated pictures. NEVER run `git push` automatically; keep changes and commits local unless explicitly requested by the user.

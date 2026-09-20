@@ -6,16 +6,21 @@
 ---
 
 ## Active Task Summary
-- **Task**: Cut Hero Status Pill ("IT STUDENT")
+- **Task**: Dual Visitor Metrics Display & Real-Time Live Presence Engine
 - **Context & Implementation**:
-  1. **Component Template (`components/hero.html`)**:
-     - Removed `.hero-status-wrap` containing the `<div class="status-pill">` above Karl Evan Tabunda.
-     - The hero content now immediately leads with the headline and dynamic role rotator.
-  2. **Verification**:
-     - Headless Chrome CDP confirmed:
-       - `.hero-content .status-pill` present: `false`.
-       - `.hero-status-wrap` present: `false`.
-     - Saved visual verification screenshots: `hero_no_status_pill_light.png`, `hero_no_status_pill_dark.png`.
+  1. **Backend Engine (`api/visitors.php`, `cache/active_viewers.json`)**:
+     - Real-time heartbeat presence engine tracking active sessions with atomic file locking (`flock`) and automatic 25s staleness pruning.
+     - Supports `action=visit`, `action=heartbeat`, and `action=leave`.
+  2. **Client Module (`assets/js/visitors.js`)**:
+     - 10-second recurring heartbeat loop.
+     - `beforeunload` beacon for instant departure notification.
+     - Page Visibility API optimization (pauses when tab inactive, refreshes on focus).
+     - BroadcastChannel multi-tab instant sync.
+     - Dynamic avatar stack matching active viewer count.
+  3. **UI Layout (`components/footer.html`, `assets/css/sections.css`)**:
+     - Displays: `<strong data-current-views>1</strong> viewing now • <strong data-total-views>360</strong> total views`.
+  4. **Verification**:
+     - Chrome CDP simulated multi-tab lifecycle: Tab 1 alone (1) → Tab 2 opens (2 on both) → Tab 2 leaves (1 on Tab 1).
      - All 12 JavaScript files pass syntax check (`node -c`).
 
 ---

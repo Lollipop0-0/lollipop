@@ -1,8 +1,8 @@
 <?php
 /**
- * Karl Evan Tabunda - Site Visitors & Views Counter API
- * Privacy-friendly, zero external tracker, session-deduplicated hit counter.
- * Reads and updates: cache/visitors.json
+ * Karl Evan Tabunda - Site Visitors & Real-Time Views Counter API
+ * Privacy-friendly, zero external tracker, session-deduplicated hit counter & real-time presence engine.
+ * Reads and updates: cache/visitors.json and cache/active_viewers.json
  */
 
 declare(strict_types=1);
@@ -23,44 +23,103 @@ if (!is_dir($cacheDir)) {
 }
 
 $cacheFile = $cacheDir . '/visitors.json';
+$activeFile = $cacheDir . '/active_viewers.json';
 
-// Default initial metrics
+// Parse action and viewer ID
+$action = $_GET['action'] ?? $_POST['action'] ?? 'visit';
+$viewerId = $_GET['viewerId'] ?? $_POST['viewerId'] ?? null;
+
+// Validate or fallback viewer ID
+if (!$viewerId || !preg_match('/^[a-zA-Z0-9_-]{6,64}$/', $viewerId)) {
+    $remoteIp = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+    $viewerId = 'v_' . substr(md5($remoteIp . $userAgent), 0, 16);
+}
+
+// --------------------------------------------------------------------------
+// 1. Live Concurrent Viewers Tracking (cache/active_viewers.json)
+// --------------------------------------------------------------------------
+$activeTimeout = 25; // seconds considered active
+$now = time();
+$activeViewers = [];
+
+$afp = fopen($activeFile, 'c+');
+if ($afp) {
+    if (flock($afp, LOCK_EX)) {
+        $fsize = filesize($activeFile);
+        if ($fsize > 0) {
+            $contents = fread($afp, $fsize);
+            $decoded = json_decode($contents, true);
+            if (is_array($decoded)) {
+                $activeViewers = $decoded;
+            }
+        }
+
+        // Prune expired sessions older than $activeTimeout seconds
+        foreach ($activeViewers as $vid => $timestamp) {
+            if (($now - (int)$timestamp) > $activeTimeout) {
+                unset($activeViewers[$vid]);
+            }
+        }
+
+        if ($action === 'leave') {
+            unset($activeViewers[$viewerId]);
+        } else {
+            // Heartbeat or Visit: update active timestamp
+            $activeViewers[$viewerId] = $now;
+        }
+
+        // Rewrite active viewers file
+        ftruncate($afp, 0);
+        rewind($afp);
+        fwrite($afp, json_encode($activeViewers, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        flock($afp, LOCK_UN);
+    }
+    fclose($afp);
+}
+
+// Guarantee at least 1 active viewer if not explicitly a leave action
+$currentViewers = count($activeViewers);
+if ($action !== 'leave' && $currentViewers < 1) {
+    $currentViewers = 1;
+}
+
+// --------------------------------------------------------------------------
+// 2. Persistent Total Views & Unique Visitors (cache/visitors.json)
+// --------------------------------------------------------------------------
 $metrics = [
     'totalViews' => 268,
     'uniqueVisitors' => 94,
     'lastUpdated' => date('c')
 ];
 
-// Session / deduplication cookies (30 min session cooldown, 1 year unique ID)
 $sessionCookieName = 'ke_portfolio_sess';
 $uniqueCookieName = 'ke_portfolio_uid';
 
-$isNewSession = false;
-$isNewUnique = false;
+$isNewSession = empty($_COOKIE[$sessionCookieName]);
+$isNewUnique = empty($_COOKIE[$uniqueCookieName]);
 
-if (empty($_COOKIE[$sessionCookieName])) {
-    $isNewSession = true;
-    $sessId = bin2hex(random_bytes(16));
-    // Set 30-minute session cookie
-    setcookie($sessionCookieName, $sessId, [
-        'expires' => time() + 1800,
-        'path' => '/',
-        'samesite' => 'Lax'
-    ]);
+// Set cookies for real browser clients on visit
+if ($action === 'visit') {
+    if ($isNewSession) {
+        $sessId = bin2hex(random_bytes(16));
+        setcookie($sessionCookieName, $sessId, [
+            'expires' => time() + 1800, // 30-minute session cooldown
+            'path' => '/',
+            'samesite' => 'Lax'
+        ]);
+    }
+
+    if ($isNewUnique) {
+        $uid = bin2hex(random_bytes(16));
+        setcookie($uniqueCookieName, $uid, [
+            'expires' => time() + (365 * 24 * 3600), // 1-year unique ID
+            'path' => '/',
+            'samesite' => 'Lax'
+        ]);
+    }
 }
 
-if (empty($_COOKIE[$uniqueCookieName])) {
-    $isNewUnique = true;
-    $uid = bin2hex(random_bytes(16));
-    // Set 1-year visitor cookie
-    setcookie($uniqueCookieName, $uid, [
-        'expires' => time() + (365 * 24 * 3600),
-        'path' => '/',
-        'samesite' => 'Lax'
-    ]);
-}
-
-// Read and update atomically
 $fp = fopen($cacheFile, 'c+');
 if ($fp) {
     if (flock($fp, LOCK_EX)) {
@@ -74,8 +133,8 @@ if ($fp) {
             }
         }
 
-        // Only increment if it's a new session or explicitly forced via query param
-        $shouldIncrement = $isNewSession || (isset($_GET['increment']) && $_GET['increment'] === '1');
+        // Only increment persistent visits if it is a new visit session (not heartbeat / leave)
+        $shouldIncrement = ($action === 'visit' && $isNewSession) || (isset($_GET['increment']) && $_GET['increment'] === '1');
         
         if ($shouldIncrement) {
             $metrics['totalViews']++;
@@ -84,7 +143,6 @@ if ($fp) {
             }
             $metrics['lastUpdated'] = date('c');
 
-            // Rewrite file
             ftruncate($fp, 0);
             rewind($fp);
             fwrite($fp, json_encode($metrics, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
@@ -95,16 +153,17 @@ if ($fp) {
     fclose($fp);
 }
 
-// Format numbers nicely (e.g. 1,234)
+// Format numbers
 $formattedViews = number_format($metrics['totalViews']);
 $formattedUniques = number_format($metrics['uniqueVisitors']);
 
 echo json_encode([
     'success' => true,
+    'currentViewers' => $currentViewers,
     'totalViews' => $metrics['totalViews'],
     'uniqueVisitors' => $metrics['uniqueVisitors'],
     'formattedViews' => $formattedViews,
     'formattedUniques' => $formattedUniques,
     'lastUpdated' => $metrics['lastUpdated'],
-    'isNewVisit' => $isNewSession
+    'action' => $action
 ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);

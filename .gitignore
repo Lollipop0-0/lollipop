@@ -22,3 +22,6 @@ yarn-error.log*
 .env
 .env.*
 *.env
+
+# Runtime Cache Files
+cache/active_viewers.json

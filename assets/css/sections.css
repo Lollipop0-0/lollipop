@@ -2108,6 +2108,21 @@
     font-variant-numeric: tabular-nums;
 }
 
+.footer-visitor-sep {
+    display: inline-block;
+    margin: 0 4px;
+    opacity: 0.45;
+    color: var(--muted);
+}
+
+.footer-live-segment,
+.footer-total-segment {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    white-space: nowrap;
+}
+
 /* Live Viewer Avatars Stack */
 .viewer-avatar-stack {
     display: inline-flex;

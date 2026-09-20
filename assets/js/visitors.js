@@ -1,13 +1,17 @@
 /**
- * Karl Evan Tabunda - Visitor & Current Viewer Counter Module
+ * Karl Evan Tabunda - Live Visitor & Real-Time Presence Counter Module
  * 
- * Multi-Tier Resilient Architecture:
- * 1. Live Current Viewers (defaults to 4, matches 4 animated sketch developer avatars, realistic drift 3-5)
- * 2. Background View Tracking:
- *    - Tier 1: Local PHP endpoint (api/visitors.php) on Apache/XAMPP
- *    - Tier 2: Public Counter API (api.counterapi.dev) for static hosting (Netlify / GitHub Pages)
- *    - Tier 3: LocalStorage persistence + seed fallback (248 site views)
- * 3. UX: Animated sketch developer avatars stack with floating micro-animations, interactive hover spread & real-time live indicator
+ * Architecture:
+ * 1. True Live Concurrent Viewers:
+ *    - Uses atomic presence engine on Apache/PHP (api/visitors.php).
+ *    - Heartbeat ping sent every 10s via fetch; leave signal dispatched via navigator.sendBeacon on tab close.
+ *    - Multi-tab presence sync via BroadcastChannel so open tabs stay in sync across windows.
+ * 2. Total Visits & Unique Hits:
+ *    - Atomically recorded with PHP flock and session cooldown cookies (cache/visitors.json).
+ *    - Resilient 3-tier fallback (Local PHP -> Public Counter API -> localStorage cached total).
+ * 3. Reactive UI:
+ *    - Dynamic avatar stack reflecting real active viewers.
+ *    - Combined footer pill displaying both live viewing count and total site views.
  */
 
 (function () {
@@ -16,15 +20,64 @@
   const LOCAL_ENDPOINT = "api/visitors.php";
   const PUBLIC_COUNTER_ENDPOINT = "https://api.counterapi.dev/v1/lollipop0-0-portfolio/views/up";
   const STORAGE_KEY = "ke_cached_views";
-  const DEFAULT_FALLBACK_COUNT = 248;
+  const DEFAULT_FALLBACK_COUNT = 356;
   const REQUEST_TIMEOUT_MS = 2500;
+  const HEARTBEAT_ACTIVE_MS = 10000;     // 10 seconds when tab is active
+  const HEARTBEAT_INACTIVE_MS = 25000;   // 25 seconds when tab is in background
 
-  let currentViewers = 4;
+  let currentViewers = 1;
   let totalViews = DEFAULT_FALLBACK_COUNT;
-  let driftTimer = null;
+  let heartbeatTimer = null;
+  let presenceChannel = null;
 
   /**
-   * Helper: Fetch with timeout
+   * Get or generate a stable, tab-isolated session ID for presence tracking
+   */
+  function getViewerId() {
+    let id = null;
+    try {
+      id = sessionStorage.getItem("ke_viewer_id");
+      if (!id) {
+        id = "v_" + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
+        sessionStorage.setItem("ke_viewer_id", id);
+      }
+    } catch (e) {
+      id = "v_" + Math.random().toString(36).substring(2, 12);
+    }
+    return id;
+  }
+
+  /**
+   * Multi-tab BroadcastChannel synchronizer
+   */
+  try {
+    if (typeof BroadcastChannel !== "undefined") {
+      presenceChannel = new BroadcastChannel("ke_presence_sync");
+      presenceChannel.onmessage = (event) => {
+        if (!event || !event.data) return;
+        if (typeof event.data.currentViewers === "number") {
+          currentViewers = event.data.currentViewers;
+          renderCurrentViewsUI(currentViewers);
+        }
+        if (typeof event.data.totalViews === "number") {
+          totalViews = event.data.totalViews;
+          saveToStorage(totalViews);
+          renderTotalViewsUI(totalViews);
+        }
+      };
+    }
+  } catch (e) {}
+
+  function broadcastPresence(viewers, total) {
+    if (presenceChannel) {
+      try {
+        presenceChannel.postMessage({ currentViewers: viewers, totalViews: total });
+      } catch (e) {}
+    }
+  }
+
+  /**
+   * Fetch with AbortController timeout
    */
   async function fetchWithTimeout(resource, options = {}) {
     const controller = new AbortController();
@@ -40,59 +93,6 @@
       clearTimeout(timeoutId);
       throw err;
     }
-  }
-
-  /**
-   * Fetch total view count through resilient 3-tier fallback pipeline
-   */
-  async function fetchVisitorCount() {
-    // Tier 1: Try local PHP endpoint (XAMPP / Apache)
-    try {
-      const response = await fetchWithTimeout(LOCAL_ENDPOINT, {
-        method: "GET",
-        headers: { "Accept": "application/json" },
-        cache: "no-cache"
-      });
-
-      if (response.ok) {
-        const contentType = response.headers.get("content-type") || "";
-        if (contentType.includes("application/json")) {
-          const data = await response.json();
-          if (data && typeof data.totalViews === "number" && data.totalViews > 0) {
-            saveToStorage(data.totalViews);
-            return data.totalViews;
-          }
-        }
-      }
-    } catch (err) {
-      console.info("[VisitorManager] Local PHP endpoint not active; verifying secondary fallback pipeline.");
-    }
-
-    // Tier 2: Try public Counter API (for static environments like Netlify/GitHub Pages)
-    try {
-      const pubResp = await fetchWithTimeout(PUBLIC_COUNTER_ENDPOINT, {
-        method: "GET",
-        headers: { "Accept": "application/json" },
-        cache: "no-cache"
-      });
-
-      if (pubResp.ok) {
-        const contentType = pubResp.headers.get("content-type") || "";
-        if (contentType.includes("application/json")) {
-          const pubData = await pubResp.json();
-          const parsed = Number(pubData.count ?? pubData.value);
-          if (!isNaN(parsed) && parsed > 0) {
-            saveToStorage(parsed);
-            return parsed;
-          }
-        }
-      }
-    } catch (pubErr) {
-      console.info("[VisitorManager] Public counter endpoint unavailable or timed out; falling back to cached storage.");
-    }
-
-    // Tier 3: Fallback to localStorage or default seed
-    return getFromStorage();
   }
 
   function saveToStorage(count) {
@@ -112,32 +112,36 @@
   }
 
   /**
-   * Update pill tooltips with live viewers + total view metrics
+   * Update Tooltips and accessibility labels
    */
   function updatePillTooltips() {
     const pills = document.querySelectorAll(".footer-visitor-pill");
+    const peopleText = currentViewers === 1 ? "person" : "people";
+    const titleText = `${currentViewers} ${peopleText} viewing now (${totalViews.toLocaleString()} total visits)`;
     pills.forEach(pill => {
-      pill.setAttribute(
-        "title",
-        `${currentViewers} people viewing now (${totalViews.toLocaleString()} total visits)`
-      );
-      pill.setAttribute("aria-label", `${currentViewers} people viewing now`);
+      pill.setAttribute("title", titleText);
+      pill.setAttribute("aria-label", titleText);
     });
   }
 
   /**
-   * Render current viewers count
+   * Render Live Current Viewers UI
    */
-  function renderCurrentViews(targetCount) {
+  function renderCurrentViewsUI(targetCount) {
     const elements = document.querySelectorAll("[data-current-views]");
     elements.forEach(el => {
       el.textContent = String(targetCount);
     });
 
-    // Update avatar visibility if count dips below 4
+    const liveLabel = document.getElementById("footer-live-label");
+    if (liveLabel) {
+      liveLabel.textContent = "viewing now";
+    }
+
+    // Update avatar stack visibility (showing up to targetCount avatars, max 4, min 1)
     const avatars = document.querySelectorAll(".viewer-avatar");
     avatars.forEach((avatar, index) => {
-      if (index < targetCount) {
+      if (index < Math.min(4, Math.max(1, targetCount))) {
         avatar.style.display = "inline-flex";
       } else {
         avatar.style.display = "none";
@@ -148,9 +152,9 @@
   }
 
   /**
-   * Optional total views elements (if placed anywhere with data-total-views or legacy data-visitor-count)
+   * Render Total Visits UI
    */
-  function renderTotalViews(count) {
+  function renderTotalViewsUI(count) {
     const totalElements = document.querySelectorAll("[data-total-views]");
     totalElements.forEach(el => {
       el.textContent = count.toLocaleString();
@@ -159,57 +163,137 @@
   }
 
   /**
-   * Natural drift: subtle periodic fluctuation (3, 4, 5) to simulate organic live activity
+   * Public Counter API fallback for static deployment environments
    */
-  function startLiveViewersDrift() {
-    if (driftTimer) clearInterval(driftTimer);
+  async function fetchPublicCountFallback() {
+    try {
+      const pubResp = await fetchWithTimeout(PUBLIC_COUNTER_ENDPOINT, {
+        method: "GET",
+        headers: { "Accept": "application/json" },
+        cache: "no-cache"
+      });
 
-    // Check periodically with random timing (30-50s)
-    const interval = Math.floor(Math.random() * 20000) + 30000;
-    driftTimer = setInterval(() => {
-      const roll = Math.random();
-      let delta = 0;
-      if (roll < 0.25) delta = 1;
-      else if (roll < 0.5) delta = -1;
-
-      let next = currentViewers + delta;
-      if (next < 3) next = 3;
-      if (next > 5) next = 5;
-
-      if (next !== currentViewers) {
-        currentViewers = next;
-        renderCurrentViews(currentViewers);
+      if (pubResp.ok) {
+        const pubData = await pubResp.json();
+        const parsed = Number(pubData.count ?? pubData.value);
+        if (!isNaN(parsed) && parsed > 0) {
+          totalViews = parsed;
+          saveToStorage(totalViews);
+          renderTotalViewsUI(totalViews);
+          return;
+        }
       }
-    }, interval);
+    } catch (e) {}
+
+    // Fallback to storage
+    totalViews = getFromStorage();
+    renderTotalViewsUI(totalViews);
   }
 
   /**
-   * Initialize visitor counter
+   * Core Presence & Tracking Request: handles visit, heartbeat, and leave
+   */
+  async function sendPresencePing(action = "heartbeat") {
+    const viewerId = getViewerId();
+    const url = `${LOCAL_ENDPOINT}?action=${encodeURIComponent(action)}&viewerId=${encodeURIComponent(viewerId)}`;
+
+    try {
+      const response = await fetchWithTimeout(url, {
+        method: "GET",
+        headers: { "Accept": "application/json" },
+        cache: "no-cache"
+      });
+
+      if (response.ok) {
+        const contentType = response.headers.get("content-type") || "";
+        if (contentType.includes("application/json")) {
+          const data = await response.json();
+          if (data && data.success) {
+            if (typeof data.currentViewers === "number") {
+              currentViewers = data.currentViewers;
+              renderCurrentViewsUI(currentViewers);
+            }
+            if (typeof data.totalViews === "number") {
+              totalViews = data.totalViews;
+              saveToStorage(totalViews);
+              renderTotalViewsUI(totalViews);
+            }
+            broadcastPresence(currentViewers, totalViews);
+            return;
+          }
+        }
+      }
+    } catch (err) {
+      // Local PHP endpoint unavailable (static hosting fallback)
+    }
+
+    if (action === "visit") {
+      await fetchPublicCountFallback();
+    }
+  }
+
+  /**
+   * Dispatch leave signal on tab close or navigation away
+   */
+  function sendLeaveSignal() {
+    const viewerId = getViewerId();
+    const url = `${LOCAL_ENDPOINT}?action=leave&viewerId=${encodeURIComponent(viewerId)}`;
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(url);
+    } else {
+      fetch(url, { method: "GET", keepalive: true }).catch(() => {});
+    }
+    broadcastPresence(Math.max(1, currentViewers - 1), totalViews);
+  }
+
+  window.addEventListener("beforeunload", sendLeaveSignal);
+  window.addEventListener("pagehide", sendLeaveSignal);
+
+  /**
+   * Scheduled Heartbeat Loop with Page Visibility Optimization
+   */
+  function scheduleNextHeartbeat(delay) {
+    if (heartbeatTimer) clearTimeout(heartbeatTimer);
+    heartbeatTimer = setTimeout(async () => {
+      await sendPresencePing("heartbeat");
+      scheduleNextHeartbeat(document.hidden ? HEARTBEAT_INACTIVE_MS : HEARTBEAT_ACTIVE_MS);
+    }, delay);
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      // Immediately refresh live numbers when switching back to tab
+      sendPresencePing("heartbeat");
+      scheduleNextHeartbeat(HEARTBEAT_ACTIVE_MS);
+    } else {
+      scheduleNextHeartbeat(HEARTBEAT_INACTIVE_MS);
+    }
+  });
+
+  /**
+   * Initialize module
    */
   async function init() {
     try {
-      // 1. Set current views immediately (zero delay or blank state)
-      renderCurrentViews(currentViewers);
-
-      // 2. Fetch total visits asynchronously in background
+      // 1. Render immediate default values from local cache
       totalViews = getFromStorage();
-      renderTotalViews(totalViews);
+      renderCurrentViewsUI(currentViewers);
+      renderTotalViewsUI(totalViews);
 
-      const freshCount = await fetchVisitorCount();
-      totalViews = freshCount;
-      renderTotalViews(totalViews);
+      // 2. Initial visit ping to register active presence and increment session visit
+      await sendPresencePing("visit");
 
-      // 3. Start organic live viewers drift
-      startLiveViewersDrift();
+      // 3. Start recurring heartbeat to keep presence live and stream updates
+      scheduleNextHeartbeat(HEARTBEAT_ACTIVE_MS);
     } catch (error) {
-      console.error("[VisitorManager] Initialization safe fallback triggered:", error);
-      renderCurrentViews(currentViewers);
+      console.error("[VisitorManager] Initialization error:", error);
     }
   }
 
   window.VisitorManager = {
     init,
     getCurrentViews: () => currentViewers,
-    getTotalViews: () => totalViews
+    getTotalViews: () => totalViews,
+    refresh: () => sendPresencePing("heartbeat")
   };
 })();

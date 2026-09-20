@@ -2,6 +2,31 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-21: Dual Visitor Metrics Display & Real-Time Live Presence Engine
+- **Objective**: Implement a genuine, real-time live presence engine for "viewing now" and display both metrics (active concurrent viewers and total visits) directly inside the footer analytics pill.
+- **Key Deliverables**:
+  - **Backend Presence Engine (`api/visitors.php`)**:
+    - Created an atomic presence cache (`cache/active_viewers.json`) with `flock(LOCK_EX)` and 25-second active timeout window.
+    - Added support for `action=visit`, `action=heartbeat`, and `action=leave`.
+    - Automatically prunes stale sessions and calculates exact real-time active sessions (`currentViewers`).
+  - **Client Heartbeat & Presence Orchestration (`assets/js/visitors.js`)**:
+    - Generates unique tab/session ID (`getViewerId()`) in `sessionStorage`.
+    - Recurring 10-second heartbeat ping keeps active presence updated without full page reloads.
+    - `beforeunload` and `pagehide` beacon immediately notifies backend on tab close (`action=leave`).
+    - Integrated **Page Visibility API**: pauses when tab is hidden and immediately refreshes when user returns.
+    - Integrated **BroadcastChannel** (`ke_presence_sync`) for instant multi-tab synchronization across the same browser.
+    - Dynamic avatar stack adapts up to 4 avatars matching real active viewer count.
+  - **Footer UI & Styling (`components/footer.html`, `assets/css/sections.css`)**:
+    - Updated pill to display both segments: `<strong data-current-views>1</strong> viewing now • <strong data-total-views>360</strong> total views`.
+    - Added styled separator (`.footer-visitor-sep`) and whitespace preservation wrappers (`.footer-live-segment`, `.footer-total-segment`).
+  - **Verification**:
+    - Headless Chrome test simulated multi-tab lifecycle:
+      - Tab 1 alone: `1 viewing now • 357 total views`.
+      - Tab 2 opens: both tabs update in real time to `2 viewing now`.
+      - Tab 2 closes: Tab 1 updates in real time to `1 viewing now`.
+    - Verified responsive mobile layout (390px) and desktop layout.
+    - Captured visual verification screenshots: `about_footer_desktop.png`, `footer_both_metrics_mobile.png`.
+
 ## 2026-09-21: Cut Hero Status Pill ("IT STUDENT")
 - **Objective**: Remove the redundant status pill element (`<div class="status-pill"><span class="status-dot"></span><span>IT STUDENT</span></div>`) above the hero headline "Karl Evan Tabunda".
 - **Key Deliverables**:

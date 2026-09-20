@@ -278,6 +278,7 @@ const NavigationManager = (() => {
       ".section-header-row",
       ".section-header-bar",
       ".section-title-wrap",
+      ".cert-header-centered",
       ".cb-section-text",
       ".contact-heading-group",
       ".about-hero-header",
@@ -291,7 +292,8 @@ const NavigationManager = (() => {
       ".activity-matrix-card",
       ".activity-feed-card",
       // Verified Certificates
-      ".certificate-card",
+      ".cert-marquee-container",
+      ".certificates-grid .certificate-card",
       // Contact section
       ".contact-left-col",
       ".contact-form-card",

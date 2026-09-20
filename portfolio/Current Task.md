@@ -6,26 +6,25 @@
 ---
 
 ## Active Task Summary
-- **Task**: Implement comprehensive animations for scrolling down (Hero scroll indicator, scroll reveal, and header progress bar)
+- **Task**: Infinite Auto-Scrolling Certificates Marquee Carousel (`Screen Recording 2026-09-19 235319.mp4`)
 - **Context & Implementation**:
-  1. **Interactive Hero "Scroll Down" Indicator Animation** (`components/hero.html`):
-     - Added capsule mouse scroll prompt at the bottom of the hero section with an anchor targeting `#currently-building`.
-     - Keyframe animations: `@keyframes scroll-dot-slide` (sliding wheel dot), `@keyframes scroll-arrow-nudge` (subtle down arrow bounce), and `@keyframes scroll-indicator-float` (gentle breathing motion).
-     - Responsive and direction-aware: smoothly fades out (`.is-scrolled-hidden`) when scrolling down past 60px, and returns when scrolling back to top.
-  2. **Bidirectional Scroll-Driven Reveal Animations (Repeat on Scroll)** (`assets/css/sections.css`, `assets/js/navigation.js`, `assets/js/app.js`):
-     - Bidirectional `IntersectionObserver` (`rootMargin: "80px 0px -40px 0px"`, `threshold: 0.05`) smoothly adds `.is-revealed` on entry and removes it when scrolling offscreen.
-     - Entrance transition uses smooth deceleration `cubic-bezier(0.16, 1, 0.3, 1)` over `0.7s` (`opacity: 0 -> 1`, `translateY(26px) scale(0.985) -> translateY(0) scale(1)`).
-     - Exit transition smoothly fades out offscreen (`0.45s ease-out`) with zero delay, ready for the next scroll entrance.
-     - Staggered cascading delays apply on entrance for Selected Work, Verified Certificates, Tech Stack, and Journey Timeline cards.
-  3. **Header Scroll Reading Progress Bar** (`components/header.html`, `assets/css/sections.css`, `assets/js/navigation.js`):
-     - Pinned 2.5px progress bar (`#scroll-progress-bar`) at the very top of the sticky header (`top: 0; left: 0;`).
-     - Styled with `var(--accent)` (`#2563EB` light / `#3B82F6` dark) to match the active navbar highlight bar (`.nav-link.is-active::after`).
-     - Updates with `requestAnimationFrame` on scroll from 0% to 100%.
-  4. **Accessibility & Reduced Motion** (`assets/css/responsive.css`):
-     - Complete `prefers-reduced-motion: reduce` compliance, immediately rendering elements and disabling infinite keyframes.
+  1. **Centered Header Typography** (`components/certificates.html`, `assets/css/sections.css`):
+     - Added `.cert-header-centered` with `.cert-kicker-pill` (`04 • CREDENTIALS`), bold headline `Certifications.` (with accent period), and subtitle.
+  2. **Full-Bleed Infinite Auto-Scrolling Carousel** (`components/certificates.html`, `assets/css/sections.css`, `assets/js/app.js`):
+     - Created `.cert-marquee-container` and `#certificates-track.cert-marquee-track`.
+     - Dual-group synchronized loop (`.cert-marquee-group`) via `@keyframes cert-marquee-slide` (`translateX(0)` to `translateX(calc(-100% - 24px))`) for a mathematically seamless, gap-free infinite loop.
+     - Smooth gradient edge fade masks (`linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)`).
+  3. **Interactive Pause-on-Hover & Card Elevation** (`assets/css/sections.css`):
+     - Pauses marquee animation on hover or keyboard focus anywhere in the carousel.
+     - Card hover elevates (`translateY(-8px) scale(1.015)`), accent border illumination (`var(--accent)`), and deep ambient shadow.
+     - Clicking any card opens the credential inspection modal (`ModalManager`).
+  4. **Accessibility & Responsive Tweaks** (`assets/css/responsive.css`, `assets/js/navigation.js`):
+     - Dual group clone has `aria-hidden="true"` and `tabindex="-1"`.
+     - Complete `prefers-reduced-motion: reduce` fallback to static horizontal overflow.
+     - Scroll reveal cleanly targets header and marquee container without interfering with card motion.
   5. **Verification**:
-     - All 12 JS modules pass `node -c` (0 syntax errors).
-     - Headless Chrome CDP verification confirms hero indicator existence, smooth fade-out on scroll, progress bar tracking, scroll reveal registration (12 elements on home, 20 on about), and zero console errors.
+     - 0 syntax errors across JS files (`node -c`).
+     - Automated CDP audit confirms seamless animation, edge masks, pause-on-hover, modal opening on click, and 0 console errors.
 
 ---
 
@@ -65,4 +64,3 @@
 - All 12 JS modules pass `node -c` with zero syntax errors.
 - Chrome CDP audit confirms zero overflow, zero collision, and correct link resolution.
 - Branch: `main`.
-- Project Rules: No screenshots or generated pictures. NEVER run `git push` automatically; keep changes and commits local unless explicitly requested by the user.

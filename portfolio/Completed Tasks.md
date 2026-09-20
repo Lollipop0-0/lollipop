@@ -2,6 +2,30 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-20: Infinite Auto-Scrolling Certificates Marquee Carousel
+- **Objective**: Analyze reference video `Screen Recording 2026-09-19 235319.mp4` and transform Section 04 (*Certificates & Certifications* / `CREDENTIALS`) into an interactive, full-bleed auto-scrolling marquee carousel with centered typography and hover elevation.
+- **Key Deliverables**:
+  - **Centered Header matching Video Reference** (`components/certificates.html`, `assets/css/sections.css`):
+    - Added kicker pill `.cert-kicker-pill` featuring `04 • CREDENTIALS` with monospace typography and accent dot styling.
+    - Added bold centered headline `Certifications<span class="accent-dot">.</span>` in `var(--font-serif)`.
+    - Added clean centered subtitle `Professional credentials and continuous learning achievements.`.
+  - **Full-Bleed Infinite Auto-Scrolling Marquee Track** (`components/certificates.html`, `assets/css/sections.css`, `assets/js/app.js`):
+    - Replaced static grid markup with `.cert-marquee-container` and `#certificates-track.cert-marquee-track`.
+    - Implemented dual-group synchronized scrolling structure (`.cert-marquee-group`) using `@keyframes cert-marquee-slide` (`translateX(0)` to `translateX(calc(-100% - 24px))`) for a mathematically seamless, stutter-free infinite loop.
+    - Integrated edge gradient fade masks using `-webkit-mask-image` and `mask-image` (`linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)`) for elegant card dissolves on both screen edges.
+  - **Interactive Pause-on-Hover & Card Elevation** (`assets/css/sections.css`):
+    - Added `animation-play-state: paused` on `:hover` and `:focus-within` anywhere on the marquee container.
+    - Added 3D card elevation on hover (`transform: translateY(-8px) scale(1.015)`), accent border illumination (`border-color: var(--accent)`), and deep ambient shadow (`box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.32), 0 0 0 1px rgba(56, 189, 248, 0.22)`).
+    - Preserved instant click inspection opening Karl's verified credential modal via `ModalManager` (`data-modal-certificate`).
+  - **Accessibility & Motion Adaptations** (`assets/css/responsive.css`, `assets/js/navigation.js`):
+    - Group 2 cards set to `aria-hidden="true"` and `tabindex="-1"` to eliminate duplicate screen reader announcements.
+    - Under `@media (prefers-reduced-motion: reduce)`, auto-scroll is disabled and converted to accessible horizontal overflow scrolling (`overflow-x: auto`).
+    - Responsive card width adapts from `320px` on desktop to `280px` on mobile viewports.
+- **Verification**:
+  - Validated syntax with `node -c` across all JavaScript modules (0 errors).
+  - Headless Chrome CDP verification confirmed 16 rendered cards across 2 groups, active `cert-marquee-slide` animation, edge gradient masks, pause-on-hover behavior, modal opening/closing on card click, and zero console errors.
+
+
 ## 2026-09-20: Animations for Scrolling Down (Hero Scroll Indicator, Scroll-Reveal & Progress Bar)
 - **Objective**: Implement comprehensive scrolling-down animations across the portfolio: an interactive hero scroll prompt, smooth scroll-triggered reveal animations for sections and cards, and a reading progress bar in the top navigation.
 - **Key Deliverables**:

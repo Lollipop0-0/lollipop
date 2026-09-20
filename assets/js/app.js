@@ -290,20 +290,22 @@ function renderFiguringOut() {
 }
 
 /**
- * Render Verified Certificates Grid
+ * Render Verified Certificates Grid or Infinite Marquee Track
  */
 function renderCertificates() {
-  const container = document.getElementById("certificates-grid");
+  const container = document.getElementById("certificates-track") || document.getElementById("certificates-grid");
   if (!container || !window.PORTFOLIO_DATA || !Array.isArray(window.PORTFOLIO_DATA.certificates)) return;
 
   const certs = window.PORTFOLIO_DATA.certificates;
-  const html = certs.map(cert => {
+  if (!certs.length) return;
+
+  const buildCards = (list, isAriaHidden = false) => list.map(cert => {
     const skillsHtml = (cert.skills || [])
       .map(s => `<span class="cert-skill-tag">${escapeHtml(s)}</span>`)
       .join("");
 
     return `
-      <article class="certificate-card" data-modal-certificate="${escapeHtml(cert.id)}" role="button" tabindex="0" aria-label="View ${escapeHtml(cert.title)} certificate details">
+      <article class="certificate-card" data-modal-certificate="${escapeHtml(cert.id)}" role="button" tabindex="${isAriaHidden ? "-1" : "0"}" aria-label="View ${escapeHtml(cert.title)} certificate details">
         <div class="cert-card-media">
           <img src="${escapeHtml(cert.image)}" alt="${escapeHtml(cert.title)} Sololearn Certificate" class="cert-img-thumb" loading="lazy">
           <div class="cert-media-badge">
@@ -349,7 +351,21 @@ function renderCertificates() {
     `;
   }).join("");
 
-  container.innerHTML = html;
+  const isMarquee = container.id === "certificates-track" || container.classList.contains("cert-marquee-track");
+
+  if (isMarquee) {
+    // 2 synchronized marquee groups each with 2 sets of certs = 8 cards per group.
+    // Seamless sliding from 0% to calc(-100% - 24px) guarantees perfect infinite loop.
+    const setCards = buildCards([...certs, ...certs], false);
+    const cloneCards = buildCards([...certs, ...certs], true);
+
+    container.innerHTML = `
+      <div class="cert-marquee-group">${setCards}</div>
+      <div class="cert-marquee-group" aria-hidden="true">${cloneCards}</div>
+    `;
+  } else {
+    container.innerHTML = buildCards(certs, false);
+  }
 }
 
 /**

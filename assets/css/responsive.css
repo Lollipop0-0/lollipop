@@ -598,6 +598,16 @@
     gap: 18px;
   }
 
+  .cert-marquee-group .certificate-card {
+    flex: 0 0 280px;
+    width: 280px;
+  }
+
+  .cert-marquee-container {
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  }
+
   .modal-details-grid {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -1009,5 +1019,15 @@
   .project-card:hover,
   .snapshot-card:hover {
     transform: none;
+  }
+
+  .cert-marquee-group {
+    animation: none !important;
+  }
+
+  .cert-marquee-container {
+    overflow-x: auto;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
   }
 }

@@ -183,6 +183,20 @@ const NavigationManager = (() => {
       const scrollPercent = maxScroll > 0 ? (window.scrollY / maxScroll) * 100 : 0;
       progressBar.style.width = `${Math.min(100, Math.max(0, scrollPercent))}%`;
     }
+
+    // Reveal any elements that have entered the viewport or were scrolled past (e.g. anchor jump)
+    const unrevealed = document.querySelectorAll(".scroll-reveal:not(.is-revealed)");
+    if (unrevealed.length) {
+      unrevealed.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 30) {
+          el.classList.add("is-revealed");
+          if (scrollObserver) {
+            scrollObserver.unobserve(el);
+          }
+        }
+      });
+    }
   }
 
   /**
@@ -274,20 +288,30 @@ const NavigationManager = (() => {
     // Select elements that should reveal on scroll
     const selectors = [
       ".scroll-reveal",
+      // Section headers & kicker titles
       ".section-header-row",
+      ".section-header-bar",
+      ".section-title-wrap",
       ".cb-section-text",
-      ".cb-compact-card",
-      ".selected-project-card",
-      ".gh-profile-badge-card",
-      ".gh-matrix-card",
-      ".gh-feed-card",
-      ".gh-languages-card",
-      ".certificate-card",
-      ".contact-card",
-      ".contact-form-wrap",
-      ".contact-info-list",
+      ".contact-heading-group",
       ".about-hero-header",
+      ".about-bio-block",
+      // Currently building section
+      ".cb-compact-card",
+      // Selected projects & view all button
+      ".selected-project-card",
+      ".section-footer-action",
+      // GitHub Activity cards
+      ".activity-matrix-card",
+      ".activity-feed-card",
+      // Verified Certificates
+      ".certificate-card",
+      // Contact section
+      ".contact-left-col",
+      ".contact-form-card",
+      // About page timeline, figuring out, tech stack, and snapshot cards
       ".journey-item",
+      ".figuring-out-card",
       ".stack-category-card",
       ".snapshot-card"
     ];
@@ -308,7 +332,7 @@ const NavigationManager = (() => {
 
     scrollObserver = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting || entry.boundingClientRect.top < 0) {
           entry.target.classList.add("is-revealed");
           observer.unobserve(entry.target);
         }
@@ -321,9 +345,9 @@ const NavigationManager = (() => {
 
     targets.forEach(el => {
       el.classList.add("scroll-reveal");
-      // Check if element is already within viewport on page load
+      // If element is already within or above the viewport on load, reveal immediately
       const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight && rect.bottom > 0) {
+      if (rect.top < window.innerHeight) {
         el.classList.add("is-revealed");
       } else {
         scrollObserver.observe(el);

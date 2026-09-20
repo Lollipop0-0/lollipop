@@ -2987,14 +2987,14 @@
 
 .scroll-reveal {
     opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(28px) scale(0.985);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: opacity, transform;
 }
 
 .scroll-reveal.is-revealed {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
     will-change: auto;
 }
 
@@ -3005,10 +3005,16 @@
 .selected-projects-grid .selected-project-card.scroll-reveal:nth-child(4) { transition-delay: 0.28s; }
 .selected-projects-grid .selected-project-card.scroll-reveal:nth-child(5) { transition-delay: 0.36s; }
 
+.code-activity-grid .activity-matrix-card.scroll-reveal { transition-delay: 0.04s; }
+.code-activity-grid .activity-feed-card.scroll-reveal { transition-delay: 0.14s; }
+
 .certificates-grid .certificate-card.scroll-reveal:nth-child(1) { transition-delay: 0.04s; }
 .certificates-grid .certificate-card.scroll-reveal:nth-child(2) { transition-delay: 0.12s; }
 .certificates-grid .certificate-card.scroll-reveal:nth-child(3) { transition-delay: 0.20s; }
 .certificates-grid .certificate-card.scroll-reveal:nth-child(4) { transition-delay: 0.28s; }
+
+.contact-layout-grid .contact-left-col.scroll-reveal { transition-delay: 0.04s; }
+.contact-layout-grid .contact-form-card.scroll-reveal { transition-delay: 0.14s; }
 
 .journey-timeline .journey-item.scroll-reveal:nth-child(1) { transition-delay: 0.04s; }
 .journey-timeline .journey-item.scroll-reveal:nth-child(2) { transition-delay: 0.12s; }
@@ -3019,5 +3025,12 @@
 .tech-stack-container .stack-category-card.scroll-reveal:nth-child(2) { transition-delay: 0.12s; }
 .tech-stack-container .stack-category-card.scroll-reveal:nth-child(3) { transition-delay: 0.20s; }
 .tech-stack-container .stack-category-card.scroll-reveal:nth-child(4) { transition-delay: 0.28s; }
+
+.snapshot-grid .snapshot-card.scroll-reveal:nth-child(1) { transition-delay: 0.04s; }
+.snapshot-grid .snapshot-card.scroll-reveal:nth-child(2) { transition-delay: 0.12s; }
+.snapshot-grid .snapshot-card.scroll-reveal:nth-child(3) { transition-delay: 0.20s; }
+.snapshot-grid .snapshot-card.scroll-reveal:nth-child(4) { transition-delay: 0.28s; }
+.snapshot-grid .snapshot-card.scroll-reveal:nth-child(5) { transition-delay: 0.36s; }
+
 
 

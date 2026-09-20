@@ -2,6 +2,28 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-21: Cut Complete Projects Archive & Adjusted Controls to Headings
+- **Objective**: Remove the stray "Complete Projects Archive" heading from the Projects page (`projects.html`), eliminate the separator border and excessive vertical gap, adjust the filter buttons and search input directly beneath the hero narrative, and add `.sr-only` utility styles.
+- **Key Deliverables**:
+  - **Removed Heading (`components/projects-gallery.html`)**:
+    - Removed `<h2 id="gallery-section-heading" class="sr-only">Complete Projects Archive</h2>` which was inadvertently visible due to missing `.sr-only` utility.
+    - Updated section attribute to `aria-label="Projects Archive and Filter"`.
+  - **Added `.sr-only` Utility (`assets/css/base.css`)**:
+    - Defined standard accessible `.sr-only` CSS utility to safely hide screen-reader text without rendering on-screen.
+  - **Seamless Hero-to-Controls Alignment (`assets/css/sections.css`)**:
+    - Removed `border-bottom: 1px solid var(--border)` on `.projects-page-hero`.
+    - Reduced `.projects-page-hero` `padding-bottom` from `36px` to `20px`.
+    - Set `.projects-hero-subtext` margin to `0 auto` (removing old `32px` bottom margin).
+    - Reduced `.projects-gallery-section` padding from `48px 0 80px` to `12px 0 80px`.
+    - Resulting in a balanced ~32px flow from hero subtext straight to the category filter pills and search bar.
+  - **Verification**:
+    - Chrome CDP headless tests confirmed:
+      - `Complete Projects Archive` text in DOM: `false`.
+      - Spacing between hero subtext and controls bar is seamless and balanced.
+      - Mobile view (<768px) verified: pills wrap smoothly, search stretches to full width.
+      - Saved visual verification artifacts: `projects_adjusted_desktop.png`, `projects_adjusted_mobile.png`, `certificates_adjusted_desktop.png`.
+    - All 12 JS modules pass syntax checks (`node -c`).
+
 ## 2026-09-21: Cut Hero Metrics, Dedicated Certificates Page, Explore CTA, & Home in Navbar
 - **Objective**: Remove the 4 metric cards row from `projects-hero.html`, create a dedicated standalone Certificates Archive Page (`certificates.html`), add an "Explore All Certificates (4) →" call-to-action button below the marquee carousel on the homepage, and add "Home" back to the global navbar.
 - **Key Deliverables**:

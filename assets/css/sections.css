@@ -3156,8 +3156,7 @@ body:not(.modal-locked) .cert-marquee-container.is-resuming .cert-marquee-group 
 
 .projects-page-hero {
     padding-top: calc(var(--header-height) + 48px);
-    padding-bottom: 36px;
-    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
     background: radial-gradient(ellipse at 50% 0%, var(--surface-alt) 0%, var(--bg) 75%);
 }
 
@@ -3181,7 +3180,7 @@ body:not(.modal-locked) .cert-marquee-container.is-resuming .cert-marquee-group 
     color: var(--secondary);
     line-height: 1.6;
     max-width: 680px;
-    margin: 0 auto 32px;
+    margin: 0 auto;
 }
 
 .projects-metrics-row {
@@ -3229,7 +3228,7 @@ body:not(.modal-locked) .cert-marquee-container.is-resuming .cert-marquee-group 
 }
 
 .projects-gallery-section {
-    padding: 48px 0 80px;
+    padding: 12px 0 80px;
 }
 
 .projects-controls-bar {

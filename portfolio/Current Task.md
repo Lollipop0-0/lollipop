@@ -6,29 +6,25 @@
 ---
 
 ## Active Task Summary
-- **Task**: Cut Hero Metrics, Dedicated Certificates Page, Explore CTA, & Home in Navbar
+- **Task**: Cut Complete Projects Archive & Adjusted Controls to Headings
 - **Context & Implementation**:
-  1. **Removed Metric Cards (`components/projects-hero.html`)**:
-     - Removed `.projects-metrics-row` (Total Projects, Active Development, Practical Systems, Core Focus) per user request.
-  2. **Dedicated Standalone Certificates Archive Page (`certificates.html`)**:
-     - Standalone SPA shell mounting `CERTIFICATES_MANIFEST` into `<div id="app" data-page="certificates">`.
-     - Editorial hero header (`components/certificates-hero.html`) with kicker `03 • CREDENTIALS & CERTIFICATIONS`, headline, and narrative.
-     - Responsive certificate gallery grid (`components/certificates-gallery.html`) hosting `#certificates-grid`.
-     - Updated `assets/js/components.js` with `CERTIFICATES_MANIFEST` and route detection.
-     - Updated `renderCertificates()` in `assets/js/app.js` to render all 4 Sololearn cards into `#certificates-grid` with full modal inspector integration.
-  3. **Explore All Certificates CTA (`components/certificates.html`)**:
-     - Added `<div class="section-footer-action"><a href="certificates.html" class="btn btn-outline" id="view-all-certificates-btn"><span>Explore All Certificates (4) →</span></a></div>` directly below `#cert-marquee-container` on the homepage.
-  4. **Global Navbar (`components/header.html`, `assets/js/navigation.js`)**:
-     - Added `Home` (`index.html#home`) to desktop navigation (`.desktop-nav`) and mobile drawer (`.mobile-nav-links`).
-     - Navbar now links to: `Home`, `About`, `Projects`, `Certificates`.
-     - Updated `assets/js/navigation.js` to highlight `Home` on `index.html`, `About` on `about.html`, `Projects` on `projects.html`, and `Certificates` on `certificates.html`.
-     - Added Certificates page to Command+K search index in `assets/js/search.js`.
-  5. **Verification**:
-     - Chrome CDP automated tests confirmed:
-       - `projects.html`: Metric cards removed (count = 0), `Projects` link active.
-       - `certificates.html`: Hero present, 4 certificate cards in grid, modal inspection functional, `Certificates` link active.
-       - `index.html`: `Home` active, explore button present and links to `certificates.html`.
-       - Screenshots saved: `projects_hero_without_metrics.png`, `certificates_page_desktop.png`, `index_with_explore_certificates.png`.
+  1. **Removed Stray Heading (`components/projects-gallery.html`)**:
+     - Removed `<h2 id="gallery-section-heading" class="sr-only">Complete Projects Archive</h2>`.
+     - Set `aria-label="Projects Archive and Filter"` on the gallery section.
+  2. **Added `.sr-only` Utility (`assets/css/base.css`)**:
+     - Defined accessible screen-reader utility so any hidden headings/labels do not bleed into the visual presentation.
+  3. **Refined Spacing & Alignment (`assets/css/sections.css`)**:
+     - Removed separator border (`border-bottom: 1px solid var(--border)`) on `.projects-page-hero`.
+     - Reduced `.projects-page-hero` `padding-bottom` from `36px` to `20px`.
+     - Set `.projects-hero-subtext` margin to `0 auto` (removing `32px` bottom margin).
+     - Reduced `.projects-gallery-section` padding from `48px 0 80px` to `12px 0 80px`.
+     - Category filter pills and search bar now sit directly and smoothly beneath the hero heading and narrative.
+  4. **Verification**:
+     - Chrome CDP headless test confirmed:
+       - `Complete Projects Archive` in DOM: `false`.
+       - Filter controls bar sits ~32px cleanly below the hero description.
+       - Mobile view adapts with full-width search and wrapping filter pills.
+       - Saved screenshots: `projects_adjusted_desktop.png`, `projects_adjusted_mobile.png`, `certificates_adjusted_desktop.png`.
      - All JavaScript files pass syntax check (`node -c`).
 
 ---

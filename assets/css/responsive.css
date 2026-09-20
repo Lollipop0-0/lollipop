@@ -187,7 +187,7 @@
   .journey-section,
   .stack-section,
   .about-section {
-    padding: 48px 10;
+    padding: 48px 0;
   }
 
   /* Hero Section - Tablet & Medium Screens: Profile First, Info Second */

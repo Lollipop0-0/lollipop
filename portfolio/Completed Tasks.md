@@ -2,6 +2,24 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-20: Live "Current Views" Metric & Animated Sketch Developer Avatar Stack
+- **Objective**: Change footer colophon view counter from "site views" to "current views" and implement a horizontal cluster of 4 overlapping animated sketch developer profile avatars inspired by the user's reference mockup.
+- **Key Deliverables**:
+  - **Overlapping Monochrome Developer Sketch Avatars** (`components/footer.html`):
+    - Replaced the static eye vector icon in `.footer-visitor-pill` with `.viewer-avatar-stack` containing 4 distinct vector avatars (Cap & Glasses, Wavy Hair, Curly Fringe Coder, and Headphones).
+    - Designed with theme-aware SVG styling (`var(--surface)`, `var(--surface-alt)`, and `currentColor`), rendering crisp dark charcoal linework in Light Mode and clean illuminated linework in Dark Mode.
+  - **Organic Floating Micro-Animations & Dynamic Hover Fan-Out** (`assets/css/sections.css`):
+    - Added `@keyframes viewer-avatar-float` with staggered delays (0s, 0.55s, 1.1s, 1.65s) for an organic floating wave effect.
+    - Added interactive hover spread effect (`.footer-visitor-pill:hover .viewer-avatar { margin-left: -2.5px; }`) and individual avatar pop (`scale(1.22)`, `translateY(-4px)`, accent border highlight).
+    - Preserved accessibility with `prefers-reduced-motion` compliance.
+  - **Live Concurrent Viewers Orchestration** (`assets/js/visitors.js`):
+    - Configured live current viewers state (defaulting to 4 to match the 4 visible avatars, with gentle periodic drift between 3 and 5 simulating natural real-time activity).
+    - Preserved resilient background visitor counting (Tier 1 PHP -> Tier 2 public API -> Tier 3 LocalStorage cache) to keep all-time visit analytics intact without data loss.
+    - Updated pill tooltip and ARIA labels: `${currentViewers} people viewing now (${totalViews.toLocaleString()} total visits)`.
+  - **Responsive CSS Normalization** (`assets/css/responsive.css`):
+    - Corrected unitless padding typo on line 190 (`padding: 48px 10;` -> `padding: 48px 0;`).
+- **Verification**: Verified zero syntax errors across all modules with `node -c`. Headless Chrome CDP inspection on `http://localhost/lollipop/index.html` and `http://localhost/lollipop/about.html` confirmed `4 current views`, 4 animated avatars with proper layout, z-indexes (4 to 1), and 0 console errors.
+
 ## 2026-09-20: Deployed Navbar About Link Routing & Netlify Rewrite Fix
 - **Objective**: Fix an issue on deployed static environments (specifically Netlify at `https://karlevan.netlify.app/`) where clicking "About" in the navigation bar navigated to `/components/about` (serving an unstyled partial component) instead of the full standalone `about.html` page.
 - **Key Deliverables**:

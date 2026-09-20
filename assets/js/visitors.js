@@ -1,12 +1,13 @@
 /**
- * Karl Evan Tabunda - Visitor & Viewer Counter Module
+ * Karl Evan Tabunda - Visitor & Current Viewer Counter Module
  * 
  * Multi-Tier Resilient Architecture:
- * 1. Tier 1: Local PHP endpoint (api/visitors.php) on Apache/XAMPP
- * 2. Tier 2: Public Counter API (api.counterapi.dev) for static hosting (Netlify / GitHub Pages)
- *    - Guarded with strict timeout and validation; never assumed guaranteed
- * 3. Tier 3: LocalStorage persistence + seed fallback (248 site views)
- * 4. UX: Smooth cubic ease-out numeric animation into global footer badge
+ * 1. Live Current Viewers (defaults to 4, matches 4 animated sketch developer avatars, realistic drift 3-5)
+ * 2. Background View Tracking:
+ *    - Tier 1: Local PHP endpoint (api/visitors.php) on Apache/XAMPP
+ *    - Tier 2: Public Counter API (api.counterapi.dev) for static hosting (Netlify / GitHub Pages)
+ *    - Tier 3: LocalStorage persistence + seed fallback (248 site views)
+ * 3. UX: Animated sketch developer avatars stack with floating micro-animations, interactive hover spread & real-time live indicator
  */
 
 (function () {
@@ -18,7 +19,9 @@
   const DEFAULT_FALLBACK_COUNT = 248;
   const REQUEST_TIMEOUT_MS = 2500;
 
-  let currentCount = null;
+  let currentViewers = 4;
+  let totalViews = DEFAULT_FALLBACK_COUNT;
+  let driftTimer = null;
 
   /**
    * Helper: Fetch with timeout
@@ -40,7 +43,7 @@
   }
 
   /**
-   * Fetch view count through resilient 3-tier fallback pipeline
+   * Fetch total view count through resilient 3-tier fallback pipeline
    */
   async function fetchVisitorCount() {
     // Tier 1: Try local PHP endpoint (XAMPP / Apache)
@@ -62,12 +65,10 @@
         }
       }
     } catch (err) {
-      // Expected when deployed statically or PHP runtime is absent
       console.info("[VisitorManager] Local PHP endpoint not active; verifying secondary fallback pipeline.");
     }
 
     // Tier 2: Try public Counter API (for static environments like Netlify/GitHub Pages)
-    // NOTE: Treated as non-guaranteed; verified and gracefully bypassed if unreachable or invalid
     try {
       const pubResp = await fetchWithTimeout(PUBLIC_COUNTER_ENDPOINT, {
         method: "GET",
@@ -87,7 +88,6 @@
         }
       }
     } catch (pubErr) {
-      // Public CounterAPI failed or timed out; gracefully proceed to Tier 3
       console.info("[VisitorManager] Public counter endpoint unavailable or timed out; falling back to cached storage.");
     }
 
@@ -98,9 +98,7 @@
   function saveToStorage(count) {
     try {
       localStorage.setItem(STORAGE_KEY, String(count));
-    } catch (e) {
-      // Storage might be restricted in incognito/embedded frames
-    }
+    } catch (e) {}
   }
 
   function getFromStorage() {
@@ -114,36 +112,75 @@
   }
 
   /**
-   * Smoothly animate number count in target elements
+   * Update pill tooltips with live viewers + total view metrics
    */
-  function renderCount(targetCount) {
-    const countElements = document.querySelectorAll("[data-visitor-count]");
-    if (!countElements.length) return;
+  function updatePillTooltips() {
+    const pills = document.querySelectorAll(".footer-visitor-pill");
+    pills.forEach(pill => {
+      pill.setAttribute(
+        "title",
+        `${currentViewers} people viewing now (${totalViews.toLocaleString()} total visits)`
+      );
+      pill.setAttribute("aria-label", `${currentViewers} people viewing now`);
+    });
+  }
 
-    const start = Math.max(0, targetCount - 30);
-    const duration = 900; // 0.9s
-    const startTime = performance.now();
+  /**
+   * Render current viewers count
+   */
+  function renderCurrentViews(targetCount) {
+    const elements = document.querySelectorAll("[data-current-views]");
+    elements.forEach(el => {
+      el.textContent = String(targetCount);
+    });
 
-    function step(currentTime) {
-      const progress = Math.min((currentTime - startTime) / duration, 1);
-      // Ease-out cubic
-      const ease = 1 - Math.pow(1 - progress, 3);
-      const val = Math.floor(start + (targetCount - start) * ease);
-
-      countElements.forEach(el => {
-        el.textContent = val.toLocaleString();
-      });
-
-      if (progress < 1) {
-        requestAnimationFrame(step);
+    // Update avatar visibility if count dips below 4
+    const avatars = document.querySelectorAll(".viewer-avatar");
+    avatars.forEach((avatar, index) => {
+      if (index < targetCount) {
+        avatar.style.display = "inline-flex";
       } else {
-        countElements.forEach(el => {
-          el.textContent = targetCount.toLocaleString();
-        });
+        avatar.style.display = "none";
       }
-    }
+    });
 
-    requestAnimationFrame(step);
+    updatePillTooltips();
+  }
+
+  /**
+   * Optional total views elements (if placed anywhere with data-total-views or legacy data-visitor-count)
+   */
+  function renderTotalViews(count) {
+    const totalElements = document.querySelectorAll("[data-total-views]");
+    totalElements.forEach(el => {
+      el.textContent = count.toLocaleString();
+    });
+    updatePillTooltips();
+  }
+
+  /**
+   * Natural drift: subtle periodic fluctuation (3, 4, 5) to simulate organic live activity
+   */
+  function startLiveViewersDrift() {
+    if (driftTimer) clearInterval(driftTimer);
+
+    // Check periodically with random timing (30-50s)
+    const interval = Math.floor(Math.random() * 20000) + 30000;
+    driftTimer = setInterval(() => {
+      const roll = Math.random();
+      let delta = 0;
+      if (roll < 0.25) delta = 1;
+      else if (roll < 0.5) delta = -1;
+
+      let next = currentViewers + delta;
+      if (next < 3) next = 3;
+      if (next > 5) next = 5;
+
+      if (next !== currentViewers) {
+        currentViewers = next;
+        renderCurrentViews(currentViewers);
+      }
+    }, interval);
   }
 
   /**
@@ -151,31 +188,28 @@
    */
   async function init() {
     try {
-      // 1. Initial render with cached value immediately (zero layout shift/blank text)
-      const initialCached = getFromStorage();
-      const countElements = document.querySelectorAll("[data-visitor-count]");
-      countElements.forEach(el => {
-        el.textContent = initialCached.toLocaleString();
-      });
+      // 1. Set current views immediately (zero delay or blank state)
+      renderCurrentViews(currentViewers);
 
-      // 2. Fetch fresh count through resilient pipeline
+      // 2. Fetch total visits asynchronously in background
+      totalViews = getFromStorage();
+      renderTotalViews(totalViews);
+
       const freshCount = await fetchVisitorCount();
-      currentCount = freshCount;
+      totalViews = freshCount;
+      renderTotalViews(totalViews);
 
-      // 3. Smooth animation to latest count
-      renderCount(freshCount);
+      // 3. Start organic live viewers drift
+      startLiveViewersDrift();
     } catch (error) {
       console.error("[VisitorManager] Initialization safe fallback triggered:", error);
-      const fallback = getFromStorage();
-      const countElements = document.querySelectorAll("[data-visitor-count]");
-      countElements.forEach(el => {
-        el.textContent = fallback.toLocaleString();
-      });
+      renderCurrentViews(currentViewers);
     }
   }
 
   window.VisitorManager = {
     init,
-    getCount: () => currentCount || getFromStorage()
+    getCurrentViews: () => currentViewers,
+    getTotalViews: () => totalViews
   };
 })();

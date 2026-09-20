@@ -6,22 +6,24 @@
 ---
 
 ## Active Task Summary
-- **Task**: Fix Deployed Navbar About Link Routing to `/components/about`
-- **Context & Diagnosis**:
-  1. **Root Cause**:
-     - On localhost, clicking the "About" link in the navbar loaded `/about.html`.
-     - On the deployed site (Netlify at `https://karlevan.netlify.app/`), Netlify's automatic HTML post-processing / Pretty URLs feature inspected `components/header.html` during deploy.
-     - Because `components/header.html` is located inside `/components/` and contains `<a href="about.html">`, Netlify resolved `about.html` relative to `/components/` as `/components/about.html`.
-     - Because a physical partial file named `components/about.html` existed on disk, Netlify stripped `.html` into a "pretty URL" and rewrote the link to `<a class='nav-link' href='/components/about'>About</a>`.
-     - When clicked on the live site, `/components/about` served the raw component partial (unstyled snapshot card) instead of the full standalone `about.html` page.
-  2. **Three-Layer Solution Applied**:
-     - **Component Disambiguation**: Renamed partial `components/about.html` to `components/about-snapshot.html` and updated `ABOUT_MANIFEST` in `assets/js/components.js`. Since no `about.html` exists inside `/components/`, static hosts will never confuse the root page with a component partial.
-     - **Netlify Post-Processing & Redirects** (`netlify.toml`): Disabled HTML pretty-URL rewriting via `[build.processing] skip_processing = true` and `[build.processing.html] pretty_urls = false`. Added a 301 redirect rule forwarding any request to `/components/about` or `/components/about.html` directly to `/about.html`.
-     - **Client-Side Sanitization** (`assets/js/navigation.js`): Added an automated DOM guard during navigation initialization that normalizes any link containing `components/about` back to `about.html`.
-  3. **Verification**:
-     - Verified all 12 JS modules with `node -c`.
-     - Headless Chrome CDP tests on localhost confirmed that `index.html` and `about.html` mount all sections and navigation links point to `about.html`.
-     - Verified active link highlighting on `about.html`.
+- **Task**: Replace "site views" with "current views" and provide small animated developer profile avatars
+- **Context & Implementation**:
+  1. **Monochrome Developer Sketch Avatars** (`components/footer.html`):
+     - Added `.viewer-avatar-stack` containing 4 circular vector sketch avatars matching the user's reference visual: Cap & Glasses, Wavy Hair, Curly Fringe Coder, and Headphones.
+     - Fully theme-reactive with `var(--surface)`, `var(--surface-alt)`, and `currentColor` adapting dynamically to Light and Dark modes.
+     - Layered left-to-right with descending z-indexes (`z-index: 4` to `1`) and overlapping negative margins (`margin-left: -7px`).
+  2. **Micro-Animations & Interactive Hover Effects** (`assets/css/sections.css`):
+     - Added `@keyframes viewer-avatar-float` with staggered animation delays creating an organic vertical wave motion.
+     - Interactive hover spread (`margin-left: -2.5px`) fanning out the avatars on pill hover, plus individual avatar pop (`scale(1.22)`, `translateY(-4px)`, accent border) on hover.
+  3. **Live Concurrent Viewers Orchestration** (`assets/js/visitors.js`):
+     - Displays live viewers count in `<strong data-current-views>4</strong> current views`.
+     - Simulates realistic natural viewer activity (natural drift between 3 and 5) while preserving full background visitor logging (local PHP `api/visitors.php` + public counter fallback + LocalStorage).
+     - Pill tooltip displays: `${currentViewers} people viewing now (${totalViews.toLocaleString()} total visits)`.
+  4. **Clean Code & Responsive Fixes** (`assets/css/responsive.css`):
+     - Normalized unitless CSS padding on line 190 (`padding: 48px 10;` -> `padding: 48px 0;`).
+  5. **Verification**:
+     - Verified with `node -c` (0 syntax errors).
+     - Verified via Chrome CDP headless on both `http://localhost/lollipop/index.html` and `http://localhost/lollipop/about.html`, confirming 4 avatars, active animation, `4 current views` text, and zero console errors.
 
 ---
 

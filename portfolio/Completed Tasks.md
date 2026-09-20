@@ -2,6 +2,35 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-21: Focused Navbar (About, Projects, Certificates) & Reordered Homepage Sequence
+- **Objective**: Configure navbar to contain strictly **About**, **Projects**, and **Certificates**, and reorder the homepage sequence to enumerate: **Home**, **Projects**, **Certificates**, **GitHub**, and **Contact**.
+- **Key Deliverables**:
+  - **Global Header (`components/header.html`)**:
+    - Desktop navigation (`.desktop-nav`) and mobile drawer (`.mobile-nav-links`) updated to strictly 3 links:
+      1. `About` (`about.html`)
+      2. `Projects` (`projects.html`)
+      3. `Certificates` (`index.html#certificates`)
+  - **Homepage Section Reordering (`assets/js/components.js`, `components/certificates.html`, `components/activity.html`)**:
+    - Reordered `HOMEPAGE_MANIFEST` to mount sections in requested sequence:
+      1. `hero` (Home)
+      2. `currently-building` (`01`) & `selected-work` (`02`) (Projects)
+      3. `certificates` (`03`) (Certificates)
+      4. `activity` (`04`) (GitHub)
+      5. `contact` (`05`) (Contact)
+    - Updated section kickers: Certificates is now `03 • CREDENTIALS`, and GitHub Activity is now `04`.
+    - Added `#projects` anchor target inside `components/selected-work.html`.
+  - **Active Link Highlighting (`assets/js/navigation.js`)**:
+    - Highlighting `About` when on `about.html`.
+    - Highlighting `Projects` when on `projects.html`.
+    - Highlighting `Certificates` dynamically when scrolled into `#certificates` on `index.html`.
+  - **Verification**:
+    - Chrome CDP headless tests confirmed:
+      - Navbar links: strictly `About`, `Projects`, `Certificates` across all pages.
+      - Homepage sections order: `home` → `currently-building` → `selected-work` → `certificates` → `activity` → `contact`.
+      - Kickers: `01`, `02`, `03`, `04`, `05`.
+      - Scroll to certificates triggers active state on `Certificates` link.
+      - Captured screenshot `homepage_new_navbar.png`.
+
 ## 2026-09-21: Streamlined 3-Item Navigation (Home, Projects, About) & Removed About Me Snapshot Cards
 - **Objective**: Cut `Work`, `Activity`, `Certificates`, and `Contact` links from both desktop and mobile drawer navigation bars, establishing a clean, focused 3-page navigation architecture (**Home**, **Projects**, **About**). Cut the user-attached "About Me" snapshot cards section (Education, Focus, Currently Learning, Interests).
 - **Key Deliverables**:

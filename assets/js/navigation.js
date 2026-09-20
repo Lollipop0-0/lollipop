@@ -128,17 +128,22 @@ const NavigationManager = (() => {
       return;
     }
 
-    // On homepage, Home navigation link remains active
+    // On homepage, highlight Certificates when scrolled into the Certificates section
+    const certSection = document.getElementById("certificates");
+    let isViewingCertificates = false;
+    if (certSection) {
+      const scrollPos = window.scrollY + 180;
+      const top = certSection.offsetTop;
+      const height = certSection.offsetHeight;
+      if (scrollPos >= top && scrollPos < top + height) {
+        isViewingCertificates = true;
+      }
+    }
+
     const allLinks = navLinks && navLinks.length ? navLinks : document.querySelectorAll(".nav-link, .mobile-nav-link");
     allLinks.forEach(link => {
       const href = link.getAttribute("href") || "";
-      if (
-        href === "index.html#home" ||
-        href === "#home" ||
-        href === "index.html" ||
-        href.endsWith("/index.html") ||
-        href === "/"
-      ) {
+      if (isViewingCertificates && (href === "index.html#certificates" || href === "#certificates" || href.endsWith("#certificates"))) {
         link.classList.add("is-active");
         link.setAttribute("aria-current", "page");
       } else {

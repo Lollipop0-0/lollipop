@@ -29,7 +29,7 @@ const SearchManager = (() => {
       title: "Celestine University of the Pacific",
       desc: "Flagship University Admissions & Enrollment Management System",
       keywords: ["cup", "celestine", "university", "admissions", "enrollment", "php", "mvc", "mysql", "bootstrap", "featured", "yakuzokai", "collaborative"],
-      action: () => openProjectModal("cup")
+      action: () => openProjectModal("01")
     },
     {
       id: "proj-inventory",
@@ -38,7 +38,7 @@ const SearchManager = (() => {
       title: "Inventory Management System",
       desc: "Stock tracking, automated low-inventory alerts, and receipt generation",
       keywords: ["inventory", "stock", "warehouse", "tracking", "php", "mysql", "javascript", "crud", "management"],
-      action: () => openProjectModal("inventory")
+      action: () => openProjectModal("02")
     },
     {
       id: "proj-library",
@@ -47,7 +47,7 @@ const SearchManager = (() => {
       title: "Library Management System",
       desc: "Book cataloging, borrowing/return workflows, and patron fine tracking",
       keywords: ["library", "book", "borrowing", "patron", "catalog", "php", "mysql", "bootstrap"],
-      action: () => openProjectModal("library")
+      action: () => openProjectModal("03")
     },
     {
       id: "proj-sneakerhub",
@@ -56,7 +56,7 @@ const SearchManager = (() => {
       title: "UI SneakerHub",
       desc: "Responsive sneaker marketplace storefront with dynamic cart & filter preview",
       keywords: ["sneakerhub", "sneaker", "shoes", "ecommerce", "storefront", "cart", "html", "css", "javascript", "frontend"],
-      action: () => openProjectModal("sneakerhub")
+      action: () => openProjectModal("04")
     },
     {
       id: "proj-hotel",
@@ -65,7 +65,7 @@ const SearchManager = (() => {
       title: "Hotel Reservation Management System",
       desc: "Room availability checker, guest billing, and reservation booking engine",
       keywords: ["hotel", "reservation", "booking", "room", "guest", "billing", "php", "mysql", "bootstrap"],
-      action: () => openProjectModal("hotel")
+      action: () => openProjectModal("05")
     },
     {
       id: "proj-smartspace",
@@ -74,7 +74,7 @@ const SearchManager = (() => {
       title: "SmartSpace",
       desc: "3D Room Planning & Furniture Visualizer powered by Three.js",
       keywords: ["smartspace", "3d", "room", "furniture", "threejs", "visualizer", "javascript", "php", "mysql", "collaborative", "yakuzokai"],
-      action: () => openProjectModal("smartspace")
+      action: () => openProjectModal("06")
     },
 
     // --- Sections ---
@@ -102,8 +102,8 @@ const SearchManager = (() => {
       badge: "Section",
       title: "Work & Featured Projects",
       desc: "Explore featured software, personal apps, and collaborative systems",
-      keywords: ["work", "projects", "portfolio", "archive", "featured", "software", "applications"],
-      action: () => scrollToSection("work")
+      keywords: ["work", "projects", "portfolio", "archive", "featured", "software", "applications", "selected work"],
+      action: () => scrollToSection("selected-work")
     },
     {
       id: "page-projects",
@@ -311,47 +311,81 @@ const SearchManager = (() => {
     }
   ];
 
+  const PROJECT_ID_MAP = {
+    cup: "01",
+    "01": "01",
+    inventory: "02",
+    "02": "02",
+    library: "03",
+    "03": "03",
+    sneakerhub: "04",
+    "04": "04",
+    hotel: "05",
+    "05": "05",
+    smartspace: "06",
+    "06": "06"
+  };
+
   function openProjectModal(projectId) {
     close();
-    const workSection = document.getElementById("work");
-    if (workSection) {
-      workSection.scrollIntoView({ behavior: "smooth" });
+    const canonicalId = PROJECT_ID_MAP[projectId] || projectId;
+    const targetSection = document.getElementById("selected-work") ||
+      document.getElementById("projects-gallery-section") ||
+      document.getElementById("featured-project");
+
+    if (targetSection) {
+      targetSection.scrollIntoView({ behavior: "smooth" });
     }
+
     setTimeout(() => {
       if (window.ModalManager && typeof window.ModalManager.open === "function") {
-        window.ModalManager.open(projectId);
+        window.ModalManager.open(canonicalId);
       }
-    }, 400);
+    }, 250);
   }
 
   function openCertificateModal(certId) {
     close();
-    const certSection = document.getElementById("certificates");
+    const certSection = document.getElementById("certificates") ||
+      document.getElementById("certificates-gallery-section") ||
+      document.getElementById("certificates-page-hero");
+
     if (certSection) {
       certSection.scrollIntoView({ behavior: "smooth" });
-      setTimeout(() => {
-        if (window.ModalManager && typeof window.ModalManager.openCertificate === "function") {
-          window.ModalManager.openCertificate(certId);
-        }
-      }, 400);
-    } else {
-      window.location.href = `index.html#certificates`;
     }
+
+    setTimeout(() => {
+      if (window.ModalManager && typeof window.ModalManager.openCertificate === "function") {
+        window.ModalManager.openCertificate(certId);
+      } else {
+        window.location.href = "certificates.html";
+      }
+    }, 250);
   }
 
   function scrollToSection(sectionId) {
     close();
-    const el = document.getElementById(sectionId);
+    // Normalize aliases
+    let target = sectionId;
+    if (target === "work") target = "selected-work";
+
+    const el = document.getElementById(target) ||
+      (target === "selected-work" ? document.getElementById("projects") : null);
+
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
     } else {
       const aboutSections = ["about-intro", "journey", "stack"];
-      if (aboutSections.includes(sectionId)) {
-        window.location.href = `about.html#${sectionId}`;
-      } else if (sectionId === "about") {
+      if (aboutSections.includes(target)) {
+        window.location.href = `about.html#${target}`;
+      } else if (target === "about") {
         window.location.href = "about.html";
+      } else if (target === "certificates") {
+        window.location.href = `certificates.html`;
+      } else if (target === "selected-work" || target === "projects") {
+        window.location.href = `index.html#selected-work`;
       } else {
-        window.location.href = `index.html#${sectionId}`;
+        window.location.href = `index.html#${target}`;
       }
     }
   }
@@ -364,6 +398,11 @@ const SearchManager = (() => {
 
     if (searchInput) {
       searchInput.value = "";
+      // Immediately focus and retry across animation frame & timer
+      searchInput.focus();
+      requestAnimationFrame(() => {
+        searchInput.focus();
+      });
       setTimeout(() => searchInput.focus(), 50);
     }
     renderResults("");

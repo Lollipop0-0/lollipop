@@ -187,7 +187,13 @@
   .journey-section,
   .stack-section,
   .about-section {
-    padding: 48px 0;
+    padding: 48px 50;
+  }
+
+  .selected-work-section,
+  .mobile-projects-deck-wrapper,
+  .mobile-deck-stage {
+    overflow: hidden;
   }
 
   /* Hero Section - Tablet & Medium Screens: Profile First, Info Second */
@@ -764,6 +770,25 @@
 
   .featured-actions .btn {
     width: 100%;
+  }
+
+  .cb-compact-body {
+    padding: 16px;
+  }
+
+  .cb-compact-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .cb-compact-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .contact-form-card {
+    padding: 18px 14px;
   }
 }
 

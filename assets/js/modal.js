@@ -24,13 +24,30 @@ const ModalManager = (() => {
 
     if (modal) modal.classList.remove("modal-cert-mode");
 
+    // Slug alias map for backwards compatibility and resilient linking
+    const SLUG_TO_ID_MAP = {
+      cup: "01",
+      "01": "01",
+      inventory: "02",
+      "02": "02",
+      library: "03",
+      "03": "03",
+      sneakerhub: "04",
+      "04": "04",
+      hotel: "05",
+      "05": "05",
+      smartspace: "06",
+      "06": "06"
+    };
+    const targetId = SLUG_TO_ID_MAP[projectId] || projectId;
+
     // Retrieve project data (check featured project or archive projects)
     let project = null;
     if (window.PORTFOLIO_DATA) {
-      if (window.PORTFOLIO_DATA.featuredProject && window.PORTFOLIO_DATA.featuredProject.id === projectId) {
+      if (window.PORTFOLIO_DATA.featuredProject && (window.PORTFOLIO_DATA.featuredProject.id === targetId || window.PORTFOLIO_DATA.featuredProject.id === projectId)) {
         project = window.PORTFOLIO_DATA.featuredProject;
       } else if (Array.isArray(window.PORTFOLIO_DATA.projects)) {
-        project = window.PORTFOLIO_DATA.projects.find(p => p.id === projectId);
+        project = window.PORTFOLIO_DATA.projects.find(p => p.id === targetId || p.id === projectId);
       }
     }
 

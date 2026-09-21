@@ -150,7 +150,7 @@
     padding-top: var(--header-height);
     padding-bottom: 24px;
     box-sizing: border-box;
-    overflow: visible;
+    overflow-x: clip;
     scroll-margin-top: 0;
 }
 
@@ -1944,6 +1944,7 @@
     box-sizing: border-box;
     position: relative;
     scroll-margin-top: 0;
+    overflow: hidden;
 }
 
 .contact-section > .container {
@@ -1961,6 +1962,8 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .contact-heading-group h2 {
@@ -1977,6 +1980,8 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .contact-method-link {
@@ -1990,6 +1995,17 @@
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     transition: all var(--transition-fast);
+    min-width: 0;
+    max-width: 100%;
+}
+
+.contact-method-link span {
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
 }
 
 .contact-method-link:hover {
@@ -2004,6 +2020,9 @@
     border-radius: var(--radius-lg);
     padding: 28px;
     box-shadow: var(--shadow-sm);
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .contact-form-row {
@@ -2717,6 +2736,7 @@ body:not(.modal-locked) .cert-marquee-container.is-resuming .cert-marquee-group 
     box-sizing: border-box;
     border-top: 1px solid var(--border);
     scroll-margin-top: 0;
+    overflow: hidden;
 }
 
 .selected-work-section > .container {
@@ -2909,7 +2929,7 @@ body:not(.modal-locked) .cert-marquee-container.is-resuming .cert-marquee-group 
     width: 100%;
     margin-top: 24px;
     padding: 10px 0 20px;
-    overflow: visible;
+    overflow: hidden;
 }
 
 @media (max-width: 767px) {
@@ -2932,6 +2952,7 @@ body:not(.modal-locked) .cert-marquee-container.is-resuming .cert-marquee-group 
     justify-content: center;
     touch-action: pan-y;
     user-select: none;
+    overflow: hidden;
 }
 
 .mobile-deck-card {
@@ -2990,6 +3011,7 @@ body:not(.modal-locked) .cert-marquee-container.is-resuming .cert-marquee-group 
     transform: translate3d(-70px, 24px, -80px) rotate(-14deg) scale(0.82);
     z-index: 1;
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
 }
 
@@ -2997,6 +3019,7 @@ body:not(.modal-locked) .cert-marquee-container.is-resuming .cert-marquee-group 
     transform: translate3d(70px, 24px, -80px) rotate(14deg) scale(0.82);
     z-index: 1;
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
 }
 
@@ -3599,6 +3622,7 @@ body:not(.modal-locked) .cert-marquee-container.is-resuming .cert-marquee-group 
     align-items: center;
     gap: 10px;
     margin-top: 6px;
+    flex-wrap: wrap;
 }
 
 /* 03 — GitHub Activity Preview */

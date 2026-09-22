@@ -2,6 +2,28 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-22: Refine Hero Rotator Text Palette (Removed AI-Style Gradient)
+- **Objective**: Replace the cyan-to-purple/violet gradient on `.hero-rotator-text` ("IT Student", "Software Developer", etc.) which resembled generic AI branding with a clean, cohesive developer blue palette.
+- **Key Deliverables**:
+  - **Light Theme (`assets/css/sections.css`)**:
+    - Removed electric indigo-purple gradient (`#1d63ff` → `#4f46e5` → `#7c3aed`).
+    - Applied clean monochromatic developer blue (`#1e40af` Navy → `#2563eb` Brand Accent → `#3b82f6` Royal Blue).
+  - **Dark Theme (`assets/css/sections.css`)**:
+    - Removed the glowing cyan-to-lavender AI gradient (`#38bdf8` → `#60a5fa` → `#a78bfa`).
+    - Applied crisp ice-to-azure developer blue (`#93c5fd` Ice Blue → `#60a5fa` Sky → `#3b82f6` Azure Blue).
+
+
+## 2026-09-22: Live Presence Engine Verification & Static Hosting (Netlify) Multi-Tab Fallback
+- **Objective**: Verify whether "viewing now" is live across environments (Localhost vs. Netlify) and implement resilient multi-tab presence for static hosting deployments where server-side PHP does not execute.
+- **Key Deliverables**:
+  - **Environment Audit**:
+    - **Localhost (XAMPP/PHP)**: Verified live. Full atomic presence engine in `api/visitors.php` + `cache/active_viewers.json` dynamically responds to tab lifecycle (visit, 10s heartbeat, beacon leave).
+    - **Netlify**: Previously static. Netlify CDN serves `api/visitors.php` as raw static text without executing PHP, and vendor deprecated `api.counterapi.dev/v1` with HTTP 410.
+  - **Static Multi-Tab Presence Engine (`assets/js/visitors.js`)**:
+    - Added `localStorage` active tab registry (`ke_active_tabs`) with automatic lease timeouts (25s) and `storage` event listeners for instant multi-tab synchronization even when running on static hosts like Netlify or GitHub Pages.
+    - Cleaned up defunct CounterAPI v1 calls to prevent 410 network errors in the console.
+
+
 ## 2026-09-22: Suppress Floating "Powered by Netlify" / Netlify AI Builder HUD Badge
 - **Objective**: Remove the floating badge in the bottom right corner showing the Netlify AI sparkle icon ("Powered by Netlify") which opens the Netlify AI site generator HUD on deployed builds.
 - **Key Deliverables**:

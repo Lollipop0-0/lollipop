@@ -18,7 +18,6 @@
   "use strict";
 
   const LOCAL_ENDPOINT = "api/visitors.php";
-  const PUBLIC_COUNTER_ENDPOINT = "https://api.counterapi.dev/v1/lollipop0-0-portfolio/views/up";
   const STORAGE_KEY = "ke_cached_views";
   const DEFAULT_FALLBACK_COUNT = 356;
   const REQUEST_TIMEOUT_MS = 2500;
@@ -163,29 +162,54 @@
   }
 
   /**
-   * Public Counter API fallback for static deployment environments
+   * Local Storage Multi-Tab Presence Coordinator (Fallback for Static Hosting Environments like Netlify)
    */
-  async function fetchPublicCountFallback() {
-    try {
-      const pubResp = await fetchWithTimeout(PUBLIC_COUNTER_ENDPOINT, {
-        method: "GET",
-        headers: { "Accept": "application/json" },
-        cache: "no-cache"
-      });
+  const TAB_REGISTRY_KEY = "ke_active_tabs";
+  const TAB_LEASE_TIMEOUT_MS = 25000;
 
-      if (pubResp.ok) {
-        const pubData = await pubResp.json();
-        const parsed = Number(pubData.count ?? pubData.value);
-        if (!isNaN(parsed) && parsed > 0) {
-          totalViews = parsed;
-          saveToStorage(totalViews);
-          renderTotalViewsUI(totalViews);
-          return;
+  function syncLocalTabPresence(action = "heartbeat") {
+    try {
+      const vid = getViewerId();
+      const now = Date.now();
+      let registry = {};
+      const raw = localStorage.getItem(TAB_REGISTRY_KEY);
+      if (raw) {
+        try { registry = JSON.parse(raw) || {}; } catch (e) {}
+      }
+
+      // Prune stale tabs whose lease expired
+      for (const [id, ts] of Object.entries(registry)) {
+        if (now - ts > TAB_LEASE_TIMEOUT_MS) {
+          delete registry[id];
         }
       }
-    } catch (e) {}
 
-    // Fallback to storage
+      if (action === "leave") {
+        delete registry[vid];
+      } else {
+        registry[vid] = now;
+      }
+
+      localStorage.setItem(TAB_REGISTRY_KEY, JSON.stringify(registry));
+      return Math.max(1, Object.keys(registry).length);
+    } catch (e) {
+      return 1;
+    }
+  }
+
+  // Cross-tab real-time storage event listener (triggers when tabs are opened/closed)
+  window.addEventListener("storage", (e) => {
+    if (e.key === TAB_REGISTRY_KEY) {
+      const activeTabs = syncLocalTabPresence("heartbeat");
+      currentViewers = activeTabs;
+      renderCurrentViewsUI(currentViewers);
+    }
+  });
+
+  /**
+   * Fallback for static deployment environments (local storage seed)
+   */
+  async function fetchPublicCountFallback() {
     totalViews = getFromStorage();
     renderTotalViewsUI(totalViews);
   }
@@ -227,6 +251,11 @@
       // Local PHP endpoint unavailable (static hosting fallback)
     }
 
+    // Static hosting fallback (e.g. Netlify): coordinate active tab presence locally
+    currentViewers = syncLocalTabPresence(action);
+    renderCurrentViewsUI(currentViewers);
+    broadcastPresence(currentViewers, totalViews);
+
     if (action === "visit") {
       await fetchPublicCountFallback();
     }
@@ -243,6 +272,7 @@
     } else {
       fetch(url, { method: "GET", keepalive: true }).catch(() => {});
     }
+    syncLocalTabPresence("leave");
     broadcastPresence(Math.max(1, currentViewers - 1), totalViews);
   }
 

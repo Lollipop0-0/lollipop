@@ -217,8 +217,9 @@
     display: inline-block;
     font-weight: 700;
     white-space: nowrap;
-    /* Electric Royal Blue to Indigo/Purple Gradient matching reference recording */
-    background: linear-gradient(135deg, #1d63ff 0%, #4f46e5 45%, #7c3aed 100%);
+    color: var(--accent);
+    /* Clean Developer Blue: Deep Navy to Royal Cobalt (No AI purple/magenta hues) */
+    background: linear-gradient(135deg, #1e40af 0%, #2563eb 55%, #3b82f6 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -232,8 +233,9 @@
 }
 
 [data-theme="dark"] .hero-rotator-text {
-    /* Glowing Cyan/Sky to Azure to Radiant Purple Gradient for Dark Mode */
-    background: linear-gradient(135deg, #38bdf8 0%, #60a5fa 35%, #a78bfa 100%);
+    color: var(--accent-hover);
+    /* Crisp Ice Blue to Vivid Azure (Zero AI purple/violet) */
+    background: linear-gradient(135deg, #93c5fd 0%, #60a5fa 50%, #3b82f6 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

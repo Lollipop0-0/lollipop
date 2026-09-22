@@ -54,17 +54,25 @@ const ComponentLoader = (() => {
     { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
   ];
 
+  // In-memory component template cache to eliminate redundant network roundtrips
+  const componentCache = new Map();
+
   /**
-   * Fetch a single component HTML template
+   * Fetch a single component HTML template (cached)
    * @param {string} path
    * @returns {Promise<string>}
    */
   async function fetchComponent(path) {
+    if (componentCache.has(path)) {
+      return componentCache.get(path);
+    }
     const res = await fetch(path);
     if (!res.ok) {
       throw new Error(`Failed to load component: ${path} (${res.status})`);
     }
-    return await res.text();
+    const html = await res.text();
+    componentCache.set(path, html);
+    return html;
   }
 
   /**

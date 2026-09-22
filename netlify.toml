@@ -1,5 +1,6 @@
 [build]
   publish = "."
+  command = "python optimize.py"
   functions = "netlify/functions"
 
 [build.processing]
@@ -32,3 +33,31 @@
   to = "/.netlify/functions/contributions"
   status = 200
   force = true
+
+# ==============================================================================
+# Netlify Edge CDN & Browser Caching Headers
+# ==============================================================================
+
+# Long-term immutable caching for all static assets (images, fonts, scripts, styles)
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Fast revalidation and security headers for HTML pages
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+

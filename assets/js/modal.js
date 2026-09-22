@@ -128,7 +128,7 @@ const ModalManager = (() => {
         <!-- Left Side: Certificate Preview Image, Actions & Key Competencies -->
         <div class="modal-split-media-col modal-cert-media-col">
           <a href="${escapeHtml(cert.image)}" target="_blank" rel="noopener noreferrer" class="modal-media-wrapper modal-cert-preview-frame modal-preview-zoomable" title="Click to view full high-res certificate image">
-            <img src="${escapeHtml(cert.image)}" alt="${escapeHtml(cert.title)} Certificate preview" class="modal-cert-img" loading="lazy">
+            <img src="${escapeHtml(cert.image)}" alt="${escapeHtml(cert.title)} Certificate preview" class="modal-cert-img" width="1024" height="722" loading="lazy" decoding="async">
             <div class="modal-preview-zoom-overlay">
               <span class="modal-preview-zoom-pill">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
@@ -217,7 +217,7 @@ const ModalManager = (() => {
         <!-- Left Side: Project Screenshot, Actions & Technologies Used -->
         <div class="modal-split-media-col">
           <a href="${escapeHtml(project.image)}" target="_blank" rel="noopener noreferrer" class="modal-media-wrapper modal-preview-zoomable" title="Click to view full screenshot">
-            <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)} preview screenshot" class="modal-project-img" loading="lazy">
+            <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)} preview screenshot" class="modal-project-img" width="1376" height="768" loading="lazy" decoding="async">
             <div class="modal-preview-zoom-overlay">
               <span class="modal-preview-zoom-pill">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>

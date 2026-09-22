@@ -149,7 +149,7 @@ function renderSelectedProjects() {
     return `
       <article class="selected-project-card">
         <div class="selected-project-media">
-          <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)} preview" class="selected-project-img" loading="lazy">
+          <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)} preview" class="selected-project-img" width="1376" height="768" loading="lazy" decoding="async">
           <div class="selected-project-hover-overlay">
             <button type="button" class="btn btn-sm btn-glass" data-modal-project="${escapeHtml(project.id)}" aria-label="View case study for ${escapeHtml(project.title)}">
               <span>View Case Study</span>
@@ -260,7 +260,7 @@ function renderMobileProjectsDeck(selectedProjects) {
 
         <div class="mobile-deck-identity">
           <div class="mobile-deck-icon-wrap">
-            <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)} icon" class="mobile-deck-icon" loading="lazy">
+            <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)} icon" class="mobile-deck-icon" width="60" height="60" loading="lazy" decoding="async">
           </div>
           <div class="mobile-deck-title-group">
             <h3 class="mobile-deck-title">${escapeHtml(project.title)}</h3>
@@ -543,7 +543,7 @@ function renderCertificates() {
     return `
       <article class="certificate-card" data-modal-certificate="${escapeHtml(cert.id)}" role="button" tabindex="${isAriaHidden ? "-1" : "0"}" aria-label="View ${escapeHtml(cert.title)} certificate details">
         <div class="cert-card-media">
-          <img src="${escapeHtml(cert.image)}" alt="${escapeHtml(cert.title)} Sololearn Certificate" class="cert-img-thumb" loading="lazy">
+          <img src="${escapeHtml(cert.image)}" alt="${escapeHtml(cert.title)} Sololearn Certificate" class="cert-img-thumb" width="1024" height="722" loading="lazy" decoding="async">
           <div class="cert-media-badge">
             <span class="cert-gold-star">★</span>
             <span>Completed</span>

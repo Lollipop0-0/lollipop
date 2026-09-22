@@ -75,7 +75,7 @@ const ProjectsManager = (() => {
     return `
       <article class="project-card" data-category="${escapeHtml(project.category)}" data-id="${escapeHtml(project.id)}">
         <div class="project-card-image-wrap">
-          <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)} preview" class="project-card-img" loading="lazy">
+          <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)} preview" class="project-card-img" width="1376" height="768" loading="lazy" decoding="async">
           <div class="project-card-overlay">
             <button type="button" class="btn btn-sm btn-glass" data-modal-project="${escapeHtml(project.id)}" aria-label="View details for ${escapeHtml(project.title)}">
               <span>View Details</span>
@@ -366,13 +366,17 @@ const ProjectsManager = (() => {
     });
 
     // Real-time search filter input
+    let projectSearchTimer = null;
     if (searchInput) {
       searchInput.addEventListener("input", e => {
         searchQuery = e.target.value;
         if (searchClearBtn) {
           searchClearBtn.style.display = searchQuery ? "flex" : "none";
         }
-        filterAndRender();
+        clearTimeout(projectSearchTimer);
+        projectSearchTimer = setTimeout(() => {
+          filterAndRender();
+        }, 120);
       });
     }
 

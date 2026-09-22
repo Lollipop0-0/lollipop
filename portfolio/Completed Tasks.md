@@ -2,6 +2,37 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-22: Full Static Frontend Performance & Production Optimization
+- **Objective**: Optimize the static portfolio website for loading speed, mobile responsiveness, Core Web Vitals (LCP, CLS, FID/INP), and Lighthouse performance without modifying any visual styling, layout, or content.
+- **Key Deliverables**:
+  - **Asset Pruning & Image Optimization**:
+    - Deleted unreferenced 7.62 MB `Screen Recording 2026-09-21 233029.mp4` leftover.
+    - Converted `gradpic.jpg` to high-DPI upright `gradpic.webp` with `ImageOps.exif_transpose` (1996.9 KB → 28.9 KB, 98.6% reduction, preserving correct vertical portrait orientation).
+    - Converted all 6 project preview mockups to `.webp` (~650 KB → ~66–89 KB each, 87% reduction).
+    - Converted 4 Sololearn certificates to `.webp` (~150 KB → ~24 KB each, 83% reduction).
+    - Converted `og-preview.png` to `og-preview.webp` (1130 KB → 60.8 KB, 94.6% reduction).
+    - Total media bandwidth reduced from >7.5 MB down to ~600 KB (>90% payload reduction).
+  - **Layout Shift (CLS) & Critical Path Acceleration**:
+    - Added explicit `width`, `height`, and `decoding="async"` across all image tags.
+    - Set `fetchpriority="high"` on LCP hero profile image.
+    - Set `loading="lazy"` on all below-the-fold project and certificate images.
+  - **Font Loading Optimization**:
+    - Pruned Google Fonts requests across all 5 HTML pages to exact weights used in the design (Caveat 600, Inter 400-700, Newsreader regular/bold/italic).
+  - **JavaScript & Component Optimization**:
+    - Added `defer` to script tags across all pages to unblock initial HTML parsing.
+    - Added in-memory `componentCache` Map in `assets/js/components.js` to eliminate repeated template fetches.
+    - Added 120ms debounce to search and filter inputs in `assets/js/search.js` and `assets/js/projects.js`.
+  - **Netlify Edge CDN & Browser Caching (`netlify.toml`)**:
+    - Added 1-year immutable caching (`public, max-age=31536000, immutable`) for `/assets/*`.
+    - Added fast revalidation (`public, max-age=0, must-revalidate`) and security headers for HTML pages.
+    - Added automated build step: `command = "python optimize.py"`.
+  - **Bundling & Minification**:
+    - Created standalone zero-dependency build script `optimize.py`.
+    - Generated `assets/css/styles.min.css` (140.2 KB → 102.7 KB uncompressed, 17.4 KB gzipped).
+    - Generated `assets/js/bundle.min.js` (194.0 KB → 172.6 KB uncompressed, 37.1 KB gzipped).
+    - Reduced initial render-blocking requests from 17 network roundtrips down to 2.
+
+
 ## 2026-09-22: Refine Hero Rotator Text Palette (Removed AI-Style Gradient)
 - **Objective**: Replace the cyan-to-purple/violet gradient on `.hero-rotator-text` ("IT Student", "Software Developer", etc.) which resembled generic AI branding with a clean, cohesive developer blue palette.
 - **Key Deliverables**:

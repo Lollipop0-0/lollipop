@@ -39,15 +39,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&display=swap"
     rel="stylesheet">
 
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="assets/css/variables.css">
-  <link rel="stylesheet" href="assets/css/base.css">
-  <link rel="stylesheet" href="assets/css/components.css">
-  <link rel="stylesheet" href="assets/css/sections.css">
-  <link rel="stylesheet" href="assets/css/responsive.css">
+  <!-- Production Stylesheet (Pre-compiled & minified) -->
+  <link rel="stylesheet" href="assets/css/styles.min.css">
 
   <!-- Anti-flash inline theme detection -->
   <script>
@@ -104,19 +100,8 @@
     <!-- ComponentLoader dynamically mounts components here -->
   </div>
 
-  <!-- Modular Scripts -->
-  <script src="assets/js/data.js"></script>
-  <script src="assets/js/theme.js"></script>
-  <script src="assets/js/navigation.js"></script>
-  <script src="assets/js/error-state.js"></script>
-  <script src="assets/js/modal.js"></script>
-  <script src="assets/js/projects.js"></script>
-  <script src="assets/js/github.js"></script>
-  <script src="assets/js/contact.js"></script>
-  <script src="assets/js/search.js"></script>
-  <script src="assets/js/components.js"></script>
-  <script src="assets/js/visitors.js"></script>
-  <script src="assets/js/app.js"></script>
+  <!-- Production Script Bundle (Deferred) -->
+  <script defer src="assets/js/bundle.min.js"></script>
 </body>
 
 </html>

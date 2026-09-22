@@ -593,13 +593,17 @@ const SearchManager = (() => {
       });
     }
 
+    let searchDebounceTimer = null;
     if (searchInput) {
       searchInput.addEventListener("input", () => {
         const val = searchInput.value;
         if (clearBtn) {
           clearBtn.style.display = val.length > 0 ? "flex" : "none";
         }
-        renderResults(val);
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(() => {
+          renderResults(val);
+        }, 120);
       });
 
       searchInput.addEventListener("keydown", (e) => {

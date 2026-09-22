@@ -74,7 +74,7 @@ const PORTFOLIO_DATA = {
     longDescription: "Celestine University of the Pacific (CUP) is a collaborative academic management system developed with the Yakuzokai team. It streamlines student admissions, application review, course enrollment, and student records management within an intuitive, responsive interface built with robust PHP MVC architecture.",
     technologies: ["PHP", "MVC", "MySQL", "JavaScript", "Bootstrap"],
     repository: "https://github.com/Yakuzokai/CUP",
-    image: "assets/images/projects/cup/preview.jpg",
+    image: "assets/images/projects/cup/preview.webp",
     annotation: "Real systems. Real impact.",
     highlights: [
       "Comprehensive admissions evaluation and applicant tracking pipeline",
@@ -97,7 +97,7 @@ const PORTFOLIO_DATA = {
       longDescription: "A practical inventory management web application engineered to monitor stock levels, organize product categories, flag low inventories, and provide automated reporting for small-to-medium scale warehouse and retail needs.",
       technologies: ["PHP", "MySQL", "JavaScript"],
       repository: "https://github.com/Lollipop0-0/Inventory-Management-System",
-      image: "assets/images/projects/inventory/preview.jpg",
+      image: "assets/images/projects/inventory/preview.webp",
       highlights: [
         "Product catalog with SKU search, categorization, and filtering",
         "Automated threshold notifications for low stock replenishment",
@@ -117,7 +117,7 @@ const PORTFOLIO_DATA = {
       longDescription: "A structured library circulation and cataloging platform designed to manage book records, patron memberships, active loans, and overdue tracking with clean relational database integrity.",
       technologies: ["PHP", "MySQL", "Bootstrap"],
       repository: "https://github.com/Lollipop0-0/Library-Management-System",
-      image: "assets/images/projects/library/preview.jpg",
+      image: "assets/images/projects/library/preview.webp",
       highlights: [
         "Searchable book catalog with genre, author, and availability status",
         "Patron record management and circulation history tracking",
@@ -137,7 +137,7 @@ const PORTFOLIO_DATA = {
       longDescription: "A high-fidelity frontend showcase demonstrating modern e-commerce user interface design, dark-mode product presentation, interactive category filters, and an animated cart preview built with semantic HTML, modern CSS, and vanilla JavaScript.",
       technologies: ["HTML", "CSS", "JavaScript"],
       repository: "https://github.com/Lollipop0-0/UI-SneakerHub",
-      image: "assets/images/projects/sneakerhub/preview.jpg",
+      image: "assets/images/projects/sneakerhub/preview.webp",
       highlights: [
         "Sleek dark theme with vibrant orange accents and visual hierarchy",
         "Client-side interactive filtering by shoe category, brand, and price",
@@ -157,7 +157,7 @@ const PORTFOLIO_DATA = {
       longDescription: "An administrative hotel management system for tracking room availability, handling guest check-in and check-out workflows, managing room tiers, and calculating reservation invoices.",
       technologies: ["PHP", "MySQL", "Bootstrap"],
       repository: "https://github.com/Lollipop0-0/Hotel-Reservation-Management-System",
-      image: "assets/images/projects/hotel/preview.jpg",
+      image: "assets/images/projects/hotel/preview.webp",
       highlights: [
         "Interactive room occupancy calendar and availability status grid",
         "Seamless guest registration, room assignment, and check-in workflow",
@@ -177,7 +177,7 @@ const PORTFOLIO_DATA = {
       longDescription: "SmartSpace is a collaborative 3D interior design and spatial planning web application. Built with Three.js on the client for interactive 3D scene rendering, object manipulation, and dimensional measurements, supported by a Laravel REST API backend for layout persistence.",
       technologies: ["Three.js", "JavaScript", "Laravel", "MySQL"],
       repository: "https://github.com/Yakuzokai/smartspace",
-      image: "assets/images/projects/smartspace/preview.jpg",
+      image: "assets/images/projects/smartspace/preview.webp",
       highlights: [
         "Interactive Three.js 3D viewport with camera orbit and pan controls",
         "Furniture placement, drag-and-drop manipulation, and collision detection",
@@ -250,7 +250,7 @@ const PORTFOLIO_DATA = {
       issuer: "Sololearn",
       issueDate: "18 March, 2025",
       credentialId: "CC-KDC4AZEG",
-      image: "assets/images/certificates/cert-cpp.png",
+      image: "assets/images/certificates/cert-cpp.webp",
       skills: ["C++", "Procedural Logic", "Data Structures", "Memory Concepts"],
       description: "Official Sololearn course certification verifying competency in C++ syntax, conditional branching, loops, functions, arrays, memory concepts, and algorithmic foundations."
     },
@@ -260,7 +260,7 @@ const PORTFOLIO_DATA = {
       issuer: "Sololearn",
       issueDate: "20 February, 2025",
       credentialId: "CC-NHB7RE2H",
-      image: "assets/images/certificates/cert-html.png",
+      image: "assets/images/certificates/cert-html.webp",
       skills: ["HTML5", "Semantic Markup", "Web Accessibility", "Forms & Tables"],
       description: "Official Sololearn course certification verifying understanding of core HTML structure, semantic tags, tables, forms, media integration, and accessible web standards."
     },
@@ -270,7 +270,7 @@ const PORTFOLIO_DATA = {
       issuer: "Sololearn",
       issueDate: "17 March, 2025",
       credentialId: "CC-T8NGLTB4",
-      image: "assets/images/certificates/cert-css.png",
+      image: "assets/images/certificates/cert-css.webp",
       skills: ["CSS3", "Box Model", "Flexbox & Grid", "Responsive Design"],
       description: "Official Sololearn course certification verifying expertise in CSS cascading rules, selectors, box sizing, Flexbox, responsive layouts, and modern visual styling."
     },
@@ -280,7 +280,7 @@ const PORTFOLIO_DATA = {
       issuer: "Sololearn",
       issueDate: "17 May, 2025",
       credentialId: "CC-C8KJA5GY",
-      image: "assets/images/certificates/cert-javascript.png",
+      image: "assets/images/certificates/cert-javascript.webp",
       skills: ["JavaScript", "DOM Manipulation", "ES6+ Logic", "Event Handling"],
       description: "Official Sololearn course certification verifying theoretical and practical understanding of JavaScript fundamentals, variables, control flow, functions, objects, and DOM manipulation."
     }

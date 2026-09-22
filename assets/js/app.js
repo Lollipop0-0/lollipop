@@ -3,6 +3,28 @@
  * Coordinates all modules on DOMContentLoaded.
  */
 
+// Purge Netlify HUD / "Powered by Netlify" injected floating badge
+(function purgeNetlifyBadge() {
+  const removeHud = () => {
+    const targets = document.querySelectorAll(
+      '#nl-badge-frame, #nl-hud-frame, iframe[id^="nl-"], iframe[title="Powered by Netlify"], iframe[title="Netlify"], script[src*="/scripts/hud"]'
+    );
+    targets.forEach(el => el.remove());
+  };
+  removeHud();
+  if (typeof MutationObserver !== "undefined") {
+    const observer = new MutationObserver(() => removeHud());
+    if (document.documentElement) {
+      observer.observe(document.documentElement, { childList: true, subtree: true });
+    } else {
+      document.addEventListener("DOMContentLoaded", () => {
+        removeHud();
+        observer.observe(document.documentElement, { childList: true, subtree: true });
+      });
+    }
+  }
+})();
+
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     // 1. Asynchronously load and assemble all component templates into #app

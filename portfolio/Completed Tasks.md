@@ -2,6 +2,17 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-22: Suppress Floating "Powered by Netlify" / Netlify AI Builder HUD Badge
+- **Objective**: Remove the floating badge in the bottom right corner showing the Netlify AI sparkle icon ("Powered by Netlify") which opens the Netlify AI site generator HUD on deployed builds.
+- **Key Deliverables**:
+  - **CSS Rule Suppression (`assets/css/base.css`)**:
+    - Added high-specificity override targeting `#nl-badge-frame`, `#nl-hud-frame`, `iframe[id^="nl-"]`, and `iframe[title="Powered by Netlify"]` with `display: none !important; pointer-events: none !important;` to ensure the floating badge iframe cannot render or intercept interactions.
+  - **DOM Purge & MutationObserver (`assets/js/app.js`)**:
+    - Added an immediate self-executing `purgeNetlifyBadge` function and a `MutationObserver` that watches the document root and removes any injected Netlify HUD frames or scripts (`#nl-badge-frame`, `script[src*="/scripts/hud"]`) immediately upon mounting.
+  - **Netlify Dashboard Instructions**:
+    - Identified Netlify's server-side toggle in **Site Configuration > General > "Powered by Netlify badge"** to disable edge injection at the source.
+
+
 ## 2026-09-21: Dual Visitor Metrics Display & Real-Time Live Presence Engine
 - **Objective**: Implement a genuine, real-time live presence engine for "viewing now" and display both metrics (active concurrent viewers and total visits) directly inside the footer analytics pill.
 - **Key Deliverables**:

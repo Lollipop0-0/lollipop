@@ -199,4 +199,27 @@ section>.container {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
-}
+}
+
+/* ==========================================================================
+   Suppress Netlify HUD / "Powered by Netlify" Injected Floating Badge
+   ========================================================================== */
+#nl-badge-frame,
+#nl-hud-frame,
+iframe[id^="nl-"],
+iframe[title="Powered by Netlify"],
+iframe[title="Netlify"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  clip: rect(0, 0, 0, 0) !important;
+  clip-path: inset(100%) !important;
+  z-index: -99999 !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+}
+

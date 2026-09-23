@@ -260,7 +260,7 @@ const ThemeManager = (() => {
               ]
             },
             {
-              duration: 700,
+              duration: 1050,
               easing: "cubic-bezier(0.22, 1, 0.36, 1)",
               pseudoElement: "::view-transition-new(root)"
             }
@@ -336,7 +336,7 @@ const ThemeManager = (() => {
     // Expand circle immediately without artificial delay
     requestAnimationFrame(() => {
       overlay.classList.add("active");
-      setTimeout(cleanup, 720);
+      setTimeout(cleanup, 1070);
     });
   }
 
@@ -397,18 +397,18 @@ const ThemeManager = (() => {
   }
 
   /**
-   * Cycle theme toggle (Light -> Dark -> System -> Light) for keyboard or direct click
+   * Cycle theme toggle (Dark -> Light -> System -> Dark) for keyboard or direct click
    * @param {HTMLElement|null} triggerEl
    */
   function toggleTheme(triggerEl = null) {
     const pref = getPreference();
     let nextPref;
-    if (pref === PREF_LIGHT) {
-      nextPref = PREF_DARK;
-    } else if (pref === PREF_DARK) {
+    if (pref === PREF_DARK) {
+      nextPref = PREF_LIGHT;
+    } else if (pref === PREF_LIGHT) {
       nextPref = PREF_SYSTEM;
     } else {
-      nextPref = PREF_LIGHT;
+      nextPref = PREF_DARK;
     }
     setTheme(nextPref, triggerEl);
   }

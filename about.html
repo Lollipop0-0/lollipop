@@ -35,18 +35,15 @@
   <!-- Production Stylesheet (Pre-compiled & minified) -->
   <link rel="stylesheet" href="assets/css/styles.min.css">
 
-  <!-- Anti-flash inline theme detection -->
+  <!-- Anti-flash inline theme detection (Priority: localStorage -> System OS -> effective theme) -->
   <script>
     (function () {
       try {
         var savedTheme = localStorage.getItem('ket_portfolio_theme');
-        if (savedTheme === 'dark' || savedTheme === 'light') {
-          document.documentElement.setAttribute('data-theme', savedTheme);
-        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-          document.documentElement.setAttribute('data-theme', 'dark');
-        } else {
-          document.documentElement.setAttribute('data-theme', 'light');
-        }
+        var systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var effectiveTheme = (savedTheme === 'dark' || (savedTheme !== 'light' && systemDark)) ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', effectiveTheme);
+        document.documentElement.setAttribute('data-theme-preference', savedTheme || 'system');
       } catch (e) { }
     })();
   </script>

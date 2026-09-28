@@ -65,10 +65,7 @@
   --container-max: 1520px;
   --header-height: 64px;
 
-  /* Circular Reveal Coordinates (Set dynamically via JS) */
-  --theme-reveal-x: 50%;
-  --theme-reveal-y: 50%;
-  --theme-reveal-r: 150%;
+  /* Digital Rainfall Theme Transition (Handled dynamically via layered canvas masks) */
 }
 
 /* Dark Theme Overrides */

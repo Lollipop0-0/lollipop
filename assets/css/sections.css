@@ -281,22 +281,17 @@ section,
         border-color 250ms ease;
 }
 
-/* Circular Reveal Transition Overlay (Fallback & Standalone) */
-.theme-transition {
+/* Digital Rainfall Theme Transition Overlay (Fallback & Standalone) */
+.theme-transition,
+.theme-transition-rainfall {
     position: fixed;
     inset: 0;
     z-index: 99999;
     pointer-events: none;
-    clip-path: circle(0px at var(--theme-reveal-x, 50%) var(--theme-reveal-y, 50%));
-    transition: clip-path 1050ms cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: clip-path;
+    will-change: mask-position, -webkit-mask-position;
 }
 
-.theme-transition.active {
-    clip-path: circle(var(--theme-reveal-r, 150%) at var(--theme-reveal-x, 50%) var(--theme-reveal-y, 50%));
-}
-
-/* Native View Transitions API support for circular reveal */
+/* Native View Transitions API support for Digital Rainfall transition */
 ::view-transition-old(root),
 ::view-transition-new(root) {
     animation: none;
@@ -309,16 +304,14 @@ section,
 
 ::view-transition-new(root) {
     z-index: 99999;
-    animation: theme-circular-reveal 1050ms cubic-bezier(0.22, 1, 0.36, 1);
+    animation: none;
 }
 
-@keyframes theme-circular-reveal {
-    from {
-        clip-path: circle(0px at var(--theme-reveal-x, 50%) var(--theme-reveal-y, 50%));
-    }
-    to {
-        clip-path: circle(var(--theme-reveal-r, 150%) at var(--theme-reveal-x, 50%) var(--theme-reveal-y, 50%));
-    }
+/* Suppress CSS property transitions during theme switching to ensure crisp rainfall reveal */
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+    transition: none !important;
 }
 
 /* Respect prefers-reduced-motion */
@@ -328,7 +321,8 @@ section,
     ::view-transition-new(*) {
         animation: none !important;
     }
-    .theme-transition {
+    .theme-transition,
+    .theme-transition-rainfall {
         transition: none !important;
         display: none !important;
     }

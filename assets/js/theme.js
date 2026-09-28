@@ -1,7 +1,7 @@
 /**
  * Karl Evan Tabunda - Theme Management Module
  * Supports 3-State Theme Preferences: Light (☀️), Dark (🌙), and System (🖥️)
- * Features dynamic Circular Reveal animation using clip-path and native View Transitions.
+ * Features dynamic Digital Rainfall transition using multi-layer pixel masks and View Transitions.
  */
 
 const ThemeManager = (() => {
@@ -61,50 +61,70 @@ const ThemeManager = (() => {
   }
 
   /**
-   * Calculate dynamic coordinates (x, y) originating from trigger element
-   * Falls back safely to center of viewport if element not visible/provided.
-   * @param {HTMLElement|null} el
-   * @returns {{x: number, y: number}}
+   * Generate 31 animation keyframes with 16 layered dithered rain column masks
+   * Creates the pixelated digital matrix rainfall transition effect.
+   * @returns {Array<Object>}
    */
-  function getOriginCoordinates(el) {
-    if (el && typeof el.getBoundingClientRect === "function") {
-      const rect = el.getBoundingClientRect();
-      if (rect.width > 0 && rect.height > 0) {
-        return {
-          x: rect.left + rect.width / 2,
-          y: rect.top + rect.height / 2
-        };
+  function generateRainfallKeyframes() {
+    const pixelSize = 4;
+    const colCount = Math.ceil(window.innerWidth / pixelSize);
+    const dropHeight = Math.ceil(window.innerHeight / pixelSize) + 60 + 60;
+    const totalMaskHeight = pixelSize * dropHeight;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = colCount;
+    canvas.height = dropHeight;
+    const ctx = canvas.getContext("2d");
+
+    if (!ctx) {
+      return [];
+    }
+
+    // 16 layers of rain columns with independent staggered speeds and delays
+    const layers = Array.from({ length: 16 }, () => ctx.createImageData(colCount, dropHeight));
+
+    for (let col = 0; col < colCount; col++) {
+      const layerData = layers[Math.floor(16 * Math.random())].data;
+      const cutPoint = dropHeight - 60 - 60 * Math.random();
+      for (let row = 0; row < dropHeight; row++) {
+        if (Math.random() > (row - cutPoint) / 60) {
+          layerData[(row * colCount + col) * 4 + 3] = 255;
+        }
       }
     }
 
-    const toggleBtn = document.querySelector(".theme-toggle-btn");
-    if (toggleBtn && typeof toggleBtn.getBoundingClientRect === "function") {
-      const rect = toggleBtn.getBoundingClientRect();
-      if (rect.width > 0 && rect.height > 0) {
-        return {
-          x: rect.left + rect.width / 2,
-          y: rect.top + rect.height / 2
-        };
-      }
-    }
+    const maskImageUrls = layers.map((layer) => {
+      ctx.putImageData(layer, 0, 0);
+      return `url(${canvas.toDataURL()})`;
+    }).join(",");
 
-    // Fallback to center of viewport
-    return {
-      x: window.innerWidth / 2,
-      y: window.innerHeight / 2
-    };
-  }
+    const layerAnimators = layers.map(() => {
+      const delay = 0.4 * Math.random();
+      const duration = (1 - delay) * (0.5 + 0.5 * Math.random());
+      const ease = Math.random();
+      return (progress) => {
+        const r = Math.min(Math.max((progress - delay) / duration, 0), 1);
+        return `0 ${(r * (1 - ease + ease * r) - 1) * totalMaskHeight}px`;
+      };
+    });
 
-  /**
-   * Calculate maximum radius to guarantee complete viewport coverage from (x, y)
-   * @param {number} x
-   * @param {number} y
-   * @returns {number}
-   */
-  function calculateMaxRadius(x, y) {
-    const maxX = Math.max(x, window.innerWidth - x);
-    const maxY = Math.max(y, window.innerHeight - y);
-    return Math.hypot(maxX, maxY);
+    const keyframes = Array.from({ length: 31 }, (_, idx) => {
+      const progress = idx / 30;
+      const posStr = layerAnimators.map((anim) => anim(progress)).join(",");
+      return {
+        maskImage: maskImageUrls,
+        webkitMaskImage: maskImageUrls,
+        maskSize: `${pixelSize * colCount}px ${totalMaskHeight}px`,
+        webkitMaskSize: `${pixelSize * colCount}px ${totalMaskHeight}px`,
+        maskRepeat: "no-repeat",
+        webkitMaskRepeat: "no-repeat",
+        imageRendering: "pixelated",
+        maskPosition: posStr,
+        webkitMaskPosition: posStr
+      };
+    });
+
+    return keyframes;
   }
 
   /**
@@ -182,9 +202,9 @@ const ThemeManager = (() => {
   }
 
   /**
-   * Set user theme preference and smoothly transition with circular reveal if effective theme changes
+   * Set user theme preference and smoothly transition with digital rainfall if effective theme changes
    * @param {string} newPreference - 'light' | 'dark' | 'system'
-   * @param {HTMLElement|null} triggerEl - Element triggering the change for coordinate origin
+   * @param {HTMLElement|null} triggerEl - Optional trigger element reference
    */
   function setTheme(newPreference, triggerEl = null) {
     if (newPreference !== PREF_LIGHT && newPreference !== PREF_DARK && newPreference !== PREF_SYSTEM) {
@@ -201,14 +221,14 @@ const ThemeManager = (() => {
       // Ignored if storage full/disabled
     }
 
-    // 1. If effective theme does not change, only update preference indicators (Requirement #7)
+    // 1. If effective theme does not change, only update preference indicators
     if (currentEffective === nextEffective) {
       updateUI(newPreference, nextEffective);
       closeDropdown(false);
       return;
     }
 
-    // 2. Check prefers-reduced-motion (Requirement #13)
+    // 2. Check prefers-reduced-motion
     const prefersReducedMotion = Boolean(
       window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
     );
@@ -226,14 +246,6 @@ const ThemeManager = (() => {
       activeTransitionCleanup = null;
     }
 
-    // Calculate dynamic origin coordinates and maximum viewport radius
-    const { x, y } = getOriginCoordinates(triggerEl);
-    const radius = Math.ceil(calculateMaxRadius(x, y));
-
-    document.documentElement.style.setProperty("--theme-reveal-x", `${x}px`);
-    document.documentElement.style.setProperty("--theme-reveal-y", `${y}px`);
-    document.documentElement.style.setProperty("--theme-reveal-r", `${radius}px`);
-
     // Suppress child CSS property transitions (background, border, color) during snapshotting
     // to prevent browser rasterization pause / perceived lag
     document.documentElement.classList.add("theme-transitioning");
@@ -241,36 +253,22 @@ const ThemeManager = (() => {
     // Close dropdown instantly so it is not captured mid-fade
     closeDropdown(true);
 
-    // 4. Circular Reveal via native View Transitions API if supported
+    // 4. Digital Rainfall via native View Transitions API if supported
     if (typeof document.startViewTransition === "function") {
       isTransitioning = true;
       try {
-        const transition = document.startViewTransition(() => {
-          applyThemeToDom(nextEffective);
-          updateUI(newPreference, nextEffective);
-        });
-
-        // Trigger hardware-accelerated circular reveal immediately when transition is ready
-        transition.ready.then(() => {
-          document.documentElement.animate(
-            {
-              clipPath: [
-                `circle(0px at ${x}px ${y}px)`,
-                `circle(${radius}px at ${x}px ${y}px)`
-              ]
-            },
-            {
-              duration: 1050,
-              easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-              pseudoElement: "::view-transition-new(root)"
-            }
-          );
-        });
-
+        let activeAnimation = null;
         let cleaned = false;
+
         const cleanup = () => {
           if (cleaned) return;
           cleaned = true;
+          if (activeAnimation) {
+            try {
+              activeAnimation.cancel();
+            } catch (e) {}
+            activeAnimation = null;
+          }
           document.documentElement.classList.remove("theme-transitioning");
           isTransitioning = false;
           activeTransitionCleanup = null;
@@ -278,12 +276,29 @@ const ThemeManager = (() => {
 
         activeTransitionCleanup = () => {
           if (cleaned) return;
-          cleaned = true;
-          document.documentElement.classList.remove("theme-transitioning");
-          isTransitioning = false;
+          cleanup();
           applyThemeToDom(nextEffective);
           updateUI(newPreference, nextEffective);
         };
+
+        const transition = document.startViewTransition(() => {
+          applyThemeToDom(nextEffective);
+          updateUI(newPreference, nextEffective);
+        });
+
+        // Trigger hardware-accelerated digital rainfall transition when view transition is ready
+        transition.ready.then(() => {
+          try {
+            const keyframes = generateRainfallKeyframes();
+            activeAnimation = document.documentElement.animate(keyframes, {
+              duration: 1000,
+              easing: "linear",
+              pseudoElement: "::view-transition-new(root)"
+            });
+          } catch (animErr) {
+            // Fallback gracefully if animate fails
+          }
+        });
 
         transition.finished.then(cleanup, cleanup);
       } catch (err) {
@@ -293,32 +308,40 @@ const ThemeManager = (() => {
         updateUI(newPreference, nextEffective);
       }
     } else {
-      // 5. Fallback Circular Reveal Overlay for browsers without View Transitions
-      executeFallbackReveal(newPreference, nextEffective, x, y, radius);
+      // 5. Fallback Rainfall Overlay for browsers without View Transitions
+      executeFallbackRainfall(newPreference, nextEffective);
     }
   }
 
   /**
-   * Fallback Circular Reveal using .theme-transition overlay element
+   * Fallback Digital Rainfall using .theme-transition-rainfall overlay element
    */
-  function executeFallbackReveal(newPreference, nextEffective, x, y, radius) {
+  function executeFallbackRainfall(newPreference, nextEffective) {
     isTransitioning = true;
 
     // Remove any existing transition overlay
-    const oldOverlay = document.querySelector(".theme-transition");
+    const oldOverlay = document.querySelector(".theme-transition-rainfall, .theme-transition");
     if (oldOverlay && oldOverlay.parentNode) {
       oldOverlay.parentNode.removeChild(oldOverlay);
     }
 
     const overlay = document.createElement("div");
-    overlay.className = "theme-transition";
+    overlay.className = "theme-transition-rainfall";
     overlay.style.backgroundColor = nextEffective === PREF_DARK ? "#0B0F19" : "#FBFBFA";
     document.body.appendChild(overlay);
 
     let cleaned = false;
+    let anim = null;
+
     const cleanup = () => {
       if (cleaned) return;
       cleaned = true;
+      if (anim) {
+        try {
+          anim.cancel();
+        } catch (e) {}
+        anim = null;
+      }
       document.documentElement.classList.remove("theme-transitioning");
       if (overlay.parentNode) {
         overlay.parentNode.removeChild(overlay);
@@ -327,17 +350,28 @@ const ThemeManager = (() => {
       activeTransitionCleanup = null;
     };
 
-    activeTransitionCleanup = cleanup;
+    activeTransitionCleanup = () => {
+      cleanup();
+      applyThemeToDom(nextEffective);
+      updateUI(newPreference, nextEffective);
+    };
 
-    // Apply new theme state immediately so the DOM reflects target theme behind the circle
+    // Apply target theme to DOM
     applyThemeToDom(nextEffective);
     updateUI(newPreference, nextEffective);
 
-    // Expand circle immediately without artificial delay
-    requestAnimationFrame(() => {
-      overlay.classList.add("active");
-      setTimeout(cleanup, 1070);
-    });
+    try {
+      const keyframes = generateRainfallKeyframes();
+      anim = overlay.animate(keyframes, {
+        duration: 1000,
+        easing: "linear"
+      });
+      anim.onfinish = cleanup;
+      anim.oncancel = cleanup;
+      setTimeout(cleanup, 1100);
+    } catch (err) {
+      cleanup();
+    }
   }
 
   /**
@@ -511,7 +545,7 @@ const ThemeManager = (() => {
         const nextEffective = e.matches ? PREF_DARK : PREF_LIGHT;
 
         if (currentEffective !== nextEffective) {
-          // Automatic Circular Reveal transition from theme control (Requirement #8)
+          // Automatic Digital Rainfall transition from theme control (Requirement #8)
           const targetToggle = document.getElementById("theme-toggle-btn");
           setTheme(PREF_SYSTEM, targetToggle);
         } else {

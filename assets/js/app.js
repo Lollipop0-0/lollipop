@@ -131,8 +131,7 @@ function renderSelectedProjects() {
   // 2. Hotel Management System (05)
   // 3. Inventory Management System (02)
   // 4. Library Management System (03)
-  // 5. UI-SneakerHub (04)
-  const selectedIds = ["06", "05", "02", "03", "04"];
+  const selectedIds = ["06", "05", "02", "03"];
 
   const selectedProjects = selectedIds
     .map(id => window.PORTFOLIO_DATA.projects.find(p => p.id === id))

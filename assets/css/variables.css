@@ -63,7 +63,7 @@
 
   /* Layout */
   --container-max: 1520px;
-  --header-height: 64px;
+  --header-height: 72px;
 
   /* Digital Rainfall Theme Transition (Handled dynamically via layered canvas masks) */
 }

@@ -1,7 +1,8 @@
 /**
- * Karl Evan Tabunda - Contact Form Module
+ * Karl Evan Tabunda - Contact Form & Docked Modal Module
  * Directly delivers user inquiries to tabunda.karlevan@ncst.edu.ph via FormSubmit AJAX service.
- * Includes client-side input validation, loading states, success confirmation,
+ * Includes docked bottom-right interactive popup window, minimize/restore,
+ * client-side input validation, loading states, success confirmation,
  * and resilient mailto fallback if network is unreachable.
  */
 
@@ -12,6 +13,13 @@ const ContactManager = (() => {
   let messageInput = null;
   let submitBtn = null;
   let statusArea = null;
+
+  // Modal elements
+  let modal = null;
+  let openBtn = null;
+  let closeBtn = null;
+  let minimizeBtn = null;
+  let modalHeader = null;
 
   const TARGET_EMAIL = "tabunda.karlevan@ncst.edu.ph";
   const FORMSUBMIT_ENDPOINT = `https://formsubmit.co/ajax/${TARGET_EMAIL}`;
@@ -57,8 +65,8 @@ const ContactManager = (() => {
     let isValid = true;
 
     // Validate Name
-    if (!nameInput.value.trim()) {
-      setFieldError(nameInput, "Please enter your name.");
+    if (!nameInput || !nameInput.value.trim()) {
+      if (nameInput) setFieldError(nameInput, "Please enter your name.");
       isValid = false;
     } else if (nameInput.value.trim().length < 2) {
       setFieldError(nameInput, "Name must be at least 2 characters.");
@@ -68,8 +76,8 @@ const ContactManager = (() => {
     }
 
     // Validate Email
-    if (!emailInput.value.trim()) {
-      setFieldError(emailInput, "Please enter your email address.");
+    if (!emailInput || !emailInput.value.trim()) {
+      if (emailInput) setFieldError(emailInput, "Please enter your email address.");
       isValid = false;
     } else if (!isValidEmail(emailInput.value.trim())) {
       setFieldError(emailInput, "Please enter a valid email address.");
@@ -79,8 +87,8 @@ const ContactManager = (() => {
     }
 
     // Validate Message
-    if (!messageInput.value.trim()) {
-      setFieldError(messageInput, "Please enter your message.");
+    if (!messageInput || !messageInput.value.trim()) {
+      if (messageInput) setFieldError(messageInput, "Please enter your message.");
       isValid = false;
     } else if (messageInput.value.trim().length < 10) {
       setFieldError(messageInput, "Message should be at least 10 characters.");
@@ -118,13 +126,50 @@ const ContactManager = (() => {
       `;
     } else {
       submitBtn.innerHTML = `
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="22" y1="2" x2="11" y2="13"></line>
-          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-        </svg>
-        <span>Send Message</span>
+        <span>SEND MESSAGE</span>
+        <span class="btn-arrow" aria-hidden="true">→</span>
       `;
     }
+  }
+
+  /**
+   * Open the docked modal
+   */
+  function openModal() {
+    if (!modal) {
+      modal = document.getElementById("contact-modal");
+    }
+    if (!modal) return;
+
+    modal.style.display = "flex";
+    modal.classList.remove("is-minimized");
+    if (nameInput) {
+      setTimeout(() => {
+        nameInput.focus();
+      }, 60);
+    }
+  }
+
+  /**
+   * Close the docked modal
+   */
+  function closeModal() {
+    if (!modal) {
+      modal = document.getElementById("contact-modal");
+    }
+    if (!modal) return;
+    modal.style.display = "none";
+  }
+
+  /**
+   * Toggle minimize state of the docked modal
+   */
+  function toggleMinimize() {
+    if (!modal) {
+      modal = document.getElementById("contact-modal");
+    }
+    if (!modal) return;
+    modal.classList.toggle("is-minimized");
   }
 
   /**
@@ -176,16 +221,16 @@ const ContactManager = (() => {
         // Success: Message sent directly to Karl Evan's email
         if (statusArea) {
           statusArea.innerHTML = `
-            <div class="contact-notice contact-notice-success" role="status">
-              <div class="contact-notice-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <div class="contact-notice contact-notice-success" role="status" style="margin-top: 14px; padding: 12px 14px; border-radius: 8px; background: rgba(34, 197, 94, 0.12); border: 1px solid rgba(34, 197, 94, 0.3); color: var(--primary); font-size: 13px; display: flex; gap: 10px; align-items: flex-start;">
+              <div class="contact-notice-icon" style="color: #22c55e; flex-shrink: 0; margin-top: 2px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                   <polyline points="22 4 12 14.01 9 11.01"></polyline>
                 </svg>
               </div>
               <div class="contact-notice-content">
-                <p><strong>Message sent directly to Karl Evan!</strong></p>
-                <p>Thank you, <strong>${escapeHtml(name)}</strong>. Your message has been delivered to <code>${TARGET_EMAIL}</code>. I'll get back to you shortly.</p>
+                <p style="margin: 0; font-weight: 600;">Message sent directly to Karl Evan!</p>
+                <p style="margin: 4px 0 0 0; color: var(--secondary); font-size: 12px;">Thank you, <strong>${escapeHtml(name)}</strong>. Your message has been delivered to <code>${TARGET_EMAIL}</code>.</p>
               </div>
             </div>
           `;
@@ -220,17 +265,17 @@ const ContactManager = (() => {
 
       if (statusArea) {
         statusArea.innerHTML = `
-          <div class="contact-notice contact-notice-error" role="status">
-            <div class="contact-notice-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <div class="contact-notice contact-notice-error" role="status" style="margin-top: 14px; padding: 12px 14px; border-radius: 8px; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--primary); font-size: 13px; display: flex; gap: 10px; align-items: flex-start;">
+            <div class="contact-notice-icon" style="color: #ef4444; flex-shrink: 0; margin-top: 2px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="12" y1="8" x2="12" y2="12"></line>
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
               </svg>
             </div>
             <div class="contact-notice-content">
-              <p><strong>${escapeHtml(errorTitle)}</strong></p>
-              <p>${errorExplanation}</p>
+              <p style="margin: 0; font-weight: 600;">${escapeHtml(errorTitle)}</p>
+              <p style="margin: 4px 0 0 0; color: var(--secondary); font-size: 12px;">${errorExplanation}</p>
             </div>
           </div>
         `;
@@ -246,7 +291,7 @@ const ContactManager = (() => {
   }
 
   /**
-   * Initialize contact form events
+   * Initialize contact form and docked modal events
    */
   function init() {
     form = document.getElementById("contact-form");
@@ -255,6 +300,45 @@ const ContactManager = (() => {
     messageInput = document.getElementById("contact-message");
     statusArea = document.getElementById("contact-status");
     submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+
+    // Modal elements
+    modal = document.getElementById("contact-modal");
+    openBtn = document.getElementById("open-contact-modal-btn");
+    closeBtn = document.getElementById("contact-modal-close-btn");
+    minimizeBtn = document.getElementById("contact-modal-minimize-btn");
+    modalHeader = document.getElementById("contact-modal-header");
+
+    if (openBtn) {
+      openBtn.addEventListener("click", openModal);
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        closeModal();
+      });
+    }
+
+    if (minimizeBtn) {
+      minimizeBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleMinimize();
+      });
+    }
+
+    if (modalHeader) {
+      modalHeader.addEventListener("click", (e) => {
+        if (e.target.closest(".contact-modal-controls")) return;
+        toggleMinimize();
+      });
+    }
+
+    // Global Escape key handler to close modal
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal && modal.style.display === "flex") {
+        closeModal();
+      }
+    });
 
     if (!form) return;
 
@@ -270,7 +354,10 @@ const ContactManager = (() => {
 
   return {
     init,
-    validate
+    validate,
+    open: openModal,
+    close: closeModal,
+    toggleMinimize
   };
 })();
 

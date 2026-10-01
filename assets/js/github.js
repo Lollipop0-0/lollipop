@@ -538,7 +538,7 @@ const GitHubManager = (() => {
 
     // Language distribution reflecting Karl's primary engineering stack
     const items = [
-      { name: "PHP", percent: "42%", color: "#3B82F6" },
+      { name: "PHP", percent: "42%", color: "#1A1A1A" },
       { name: "JavaScript", percent: "25%", color: "#F59E0B" },
       { name: "HTML/CSS", percent: "18%", color: "#F97316" },
       { name: "Java", percent: "15%", color: "#EF4444" }

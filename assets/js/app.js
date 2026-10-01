@@ -50,6 +50,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderJourney();
     renderFiguringOut();
     initHeroWordRotator();
+    initHeroInteractiveAvatar();
 
     // 4.5. Initialize Scroll Reveal for dynamically rendered cards
     if (window.NavigationManager && typeof window.NavigationManager.initScrollReveal === "function") {
@@ -117,297 +118,328 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 /**
- * Render Selected Projects (Homepage 02 — SELECTED WORK)
- * Shows the selected projects: SmartSpace, Hotel Management System,
- * Inventory Management System, Library-Management-System, and UI-SneakerHub.
- * Celestine University of the Pacific is strictly excluded (shown ONLY in 01 — Currently Building).
+ * Render Selected Projects (Homepage 02 — SELECTED WORK / Work Gallery)
+ * Faithfully implements the signature 3D Interactive Album Cover Flow from
+ * https://richardmiculob-portfolio.vercel.app/ on desktop, and the tilted
+ * interactive card peek stack on mobile with dynamic info panel transitions.
  */
 function renderSelectedProjects() {
-  const container = document.getElementById("selected-projects-grid");
-  if (!container || !window.PORTFOLIO_DATA || !Array.isArray(window.PORTFOLIO_DATA.projects)) return;
+  const albumContainer = document.getElementById("work-album-inner");
+  const mobileStack = document.getElementById("work-mobile-stack");
+  const infoContainer = document.getElementById("work-info");
 
-  // Selected projects in exact requested sequence:
-  // 1. SmartSpace (06)
-  // 2. Hotel Management System (05)
-  // 3. Inventory Management System (02)
-  // 4. Library Management System (03)
-  const selectedIds = ["06", "05", "02", "03"];
+  if (!window.PORTFOLIO_DATA || !Array.isArray(window.PORTFOLIO_DATA.projects)) return;
+
+  // Selected projects sequence (5 projects matching the 5 3D cover flow positions):
+  // 1. SmartSpace (06) - Collaborative Three.js & Laravel
+  // 2. Hotel Reservation Management System (05) - PHP & MySQL
+  // 3. Inventory Management System (02) - PHP & MySQL & JS
+  // 4. Library Management System (03) - PHP & MySQL & Bootstrap
+  // 5. UI SneakerHub (04) - E-Commerce Storefront HTML, CSS & JS
+  const selectedIds = ["06", "05", "02", "03", "04"];
 
   const selectedProjects = selectedIds
     .map(id => window.PORTFOLIO_DATA.projects.find(p => p.id === id))
     .filter(Boolean);
 
-  const html = selectedProjects.map(project => {
-    const techPills = (project.technologies || []).slice(0, 4)
-      .map(t => `<span class="tech-pill-sm">${escapeHtml(t)}</span>`)
-      .join("");
-
-    const isCollaborative = project.category === "collaborative" || project.isCollaborative;
-    const badgeText = isCollaborative ? "Collaborative" : "Personal";
-
-    return `
-      <article class="selected-project-card">
-        <div class="selected-project-media">
-          <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)} preview" class="selected-project-img" width="1376" height="768" loading="lazy" decoding="async">
-          <div class="selected-project-hover-overlay">
-            <button type="button" class="btn btn-sm btn-glass" data-modal-project="${escapeHtml(project.id)}" aria-label="View case study for ${escapeHtml(project.title)}">
-              <span>View Case Study</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
-            </button>
-          </div>
-        </div>
-        <div class="selected-project-body">
-          <div class="selected-project-header">
-            <h3 class="selected-project-title">
-              <button type="button" class="selected-project-title-btn" data-modal-project="${escapeHtml(project.id)}">
-                ${escapeHtml(project.title)}
-              </button>
-            </h3>
-            <span class="selected-project-badge">${badgeText}</span>
-          </div>
-          <p class="selected-project-desc">${escapeHtml(project.description)}</p>
-          <div class="selected-project-footer">
-            <div class="selected-project-tech">${techPills}</div>
-            <div class="selected-project-actions">
-              <span class="selected-repo-action-wrap" data-project-id="${escapeHtml(project.id)}">
-                ${window.ErrorState ? window.ErrorState.renderAction(project) : `
-                  <a href="${escapeHtml(project.repository)}" target="_blank" rel="noopener noreferrer" class="selected-repo-link" aria-label="GitHub repository for ${escapeHtml(project.title)}" title="GitHub Repository">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-                  </a>
-                `}
-              </span>
-              <button type="button" class="selected-project-link" data-modal-project="${escapeHtml(project.id)}" aria-label="View case study for ${escapeHtml(project.title)}">
-                <span>View Case Study →</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </article>
-    `;
-  }).join("");
-
-  container.innerHTML = html;
-
-  // Render 3D fanned card deck for mobile view (< 768px)
-  renderMobileProjectsDeck(selectedProjects);
-
-  // Background repository status check for selected projects
-  if (window.ErrorState && typeof window.ErrorState.checkRepository === "function") {
-    selectedProjects.forEach(project => {
-      if (!project.repository) return;
-      window.ErrorState.checkRepository(project.repository, project).then(status => {
-        const wrap = container.querySelector(`.selected-repo-action-wrap[data-project-id="${project.id}"]`);
-        if (wrap && window.ErrorState) {
-          wrap.innerHTML = window.ErrorState.renderAction(project, status);
-        }
-      }).catch(() => {});
-    });
-  }
-}
-
-/**
- * Render and initialize the interactive 3D fanned card deck for mobile view
- * Matching the mobile app card deck design reference:
- * - Active center card with bracket badge, outline pill, app icon, title, description, and dual app-store style buttons
- * - Tilted peek cards on left (-7.5deg) and right (+7.5deg) with smooth 3D perspective transitions
- * - Swipe gestures, side-card tap navigation, and pagination dots
- * @param {Array<Object>} selectedProjects
- */
-function renderMobileProjectsDeck(selectedProjects) {
-  const deckWrapper = document.getElementById("mobile-projects-deck");
-  if (!deckWrapper || !selectedProjects || !selectedProjects.length) return;
-
   const N = selectedProjects.length;
+  if (!N) return;
+
   let activeIndex = 0;
 
-  const cardsHtml = selectedProjects.map((project, idx) => {
-    const isCollab = project.category === "collaborative" || project.isCollaborative;
-    const bracketBadge = `<span class="deck-pill-bracket">&lt; #${escapeHtml(project.badgeNumber || project.id)} ${isCollab ? "COLLABORATIVE" : "PERSONAL"} &gt;</span>`;
-
-    const tag1 = project.tagline ? project.tagline.split("&")[0].split("—")[0].trim() : (isCollab ? "TEAM PROJECT" : "SOLO SYSTEM");
-    const techLead = (project.technologies || []).slice(0, 2).join(" + ");
-
-    const outlineBadge1 = `<span class="deck-pill-outline">${escapeHtml(tag1)}</span>`;
-    const outlineBadge2 = techLead ? `<span class="deck-pill-outline">${escapeHtml(techLead)}</span>` : "";
-
-    const status = window.ErrorState ? window.ErrorState.getRepositoryStatus(project) : { type: "public" };
-    const isPrivate = status.type === "private";
-
-    const repoBtnHtml = isPrivate
-      ? `<span class="deck-action-btn deck-action-disabled" title="Private Repository — This repository isn't publicly accessible." aria-label="Private Repository">
-           <svg class="deck-action-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-           <div class="deck-action-text">
-             <span class="deck-action-sub">REPOSITORY</span>
-             <span class="deck-action-main">Private</span>
-           </div>
-         </span>`
-      : `<a href="${escapeHtml(project.repository)}" target="_blank" rel="noopener noreferrer" class="deck-action-btn" aria-label="GitHub Repository for ${escapeHtml(project.title)}">
-           <svg class="deck-action-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-           <div class="deck-action-text">
-             <span class="deck-action-sub">REPOSITORY</span>
-             <span class="deck-action-main">GitHub Repo</span>
-           </div>
-         </a>`;
-
-    return `
-      <article class="mobile-deck-card" data-deck-index="${idx}" data-project-id="${escapeHtml(project.id)}">
-        <div class="mobile-deck-badges">
-          ${bracketBadge}
-          ${outlineBadge1}
-          ${outlineBadge2}
-        </div>
-
-        <div class="mobile-deck-identity">
-          <div class="mobile-deck-icon-wrap">
-            <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)} icon" class="mobile-deck-icon" width="60" height="60" loading="lazy" decoding="async">
-          </div>
-          <div class="mobile-deck-title-group">
-            <h3 class="mobile-deck-title">${escapeHtml(project.title)}</h3>
-            <span class="mobile-deck-tagline">${escapeHtml(project.tagline || "")}</span>
-          </div>
-        </div>
-
-        <p class="mobile-deck-desc">${escapeHtml(project.description)}</p>
-
-        <div class="mobile-deck-actions">
-          ${repoBtnHtml}
-          <button type="button" class="deck-action-btn deck-action-primary" data-modal-project="${escapeHtml(project.id)}" aria-label="View case study for ${escapeHtml(project.title)}">
-            <svg class="deck-action-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-            <div class="deck-action-text">
-              <span class="deck-action-sub">EXPLORE</span>
-              <span class="deck-action-main">View Details</span>
-            </div>
-          </button>
-        </div>
-      </article>
-    `;
-  }).join("");
-
-  const dotsHtml = selectedProjects.map((_, i) =>
-    `<button type="button" class="mobile-deck-dot ${i === 0 ? "is-active" : ""}" data-dot-index="${i}" aria-label="Go to project slide ${i + 1}"></button>`
-  ).join("");
-
-  deckWrapper.innerHTML = `
-    <div class="mobile-deck-stage" id="mobile-deck-stage">
-      ${cardsHtml}
-    </div>
-    <div class="mobile-deck-controls">
-      <button type="button" class="mobile-deck-nav-btn prev-btn" id="mobile-deck-prev" aria-label="Previous project">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
-      </button>
-      <div class="mobile-deck-dots" id="mobile-deck-dots">
-        ${dotsHtml}
+  // 1. Render Desktop 3D Album items into #work-album-inner
+  if (albumContainer) {
+    albumContainer.innerHTML = selectedProjects.map((project, idx) => `
+      <div class="work-album-item" data-album-index="${idx}" data-project-id="${escapeHtml(project.id)}" role="button" tabindex="0" aria-label="View ${escapeHtml(project.title)}">
+        <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)}" class="work-album-img" width="1376" height="768" loading="lazy" decoding="async" draggable="false">
       </div>
-      <button type="button" class="mobile-deck-nav-btn next-btn" id="mobile-deck-next" aria-label="Next project">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-      </button>
-    </div>
-    <div class="mobile-deck-hint">
-      <span>Swipe or tap side cards to explore</span>
-    </div>
-  `;
+    `).join("");
+  }
 
-  const cards = deckWrapper.querySelectorAll(".mobile-deck-card");
-  const dots = deckWrapper.querySelectorAll(".mobile-deck-dot");
-  const prevBtn = deckWrapper.querySelector("#mobile-deck-prev");
-  const nextBtn = deckWrapper.querySelector("#mobile-deck-next");
-  const stage = deckWrapper.querySelector("#mobile-deck-stage");
+  // 2. Render Mobile Stack items into #work-mobile-stack
+  if (mobileStack) {
+    mobileStack.innerHTML = selectedProjects.map((project, idx) => `
+      <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)}" class="stacked-image" data-stack-index="${idx}" data-project-id="${escapeHtml(project.id)}" draggable="false">
+    `).join("");
+  }
 
-  function updateDeck() {
-    cards.forEach((card, idx) => {
-      card.classList.remove("is-active", "is-prev", "is-next", "is-hidden-prev", "is-hidden-next");
+  const albumItems = albumContainer ? Array.from(albumContainer.querySelectorAll(".work-album-item")) : [];
+  const stackImages = mobileStack ? Array.from(mobileStack.querySelectorAll(".stacked-image")) : [];
 
-      const prevIdx = (activeIndex - 1 + N) % N;
-      const nextIdx = (activeIndex + 1) % N;
+  /**
+   * Update 3D album transforms on desktop and stacked image styles on mobile
+   */
+  function updateAlbum(animateInfo = true) {
+    const activeProject = selectedProjects[activeIndex];
+    if (!activeProject) return;
 
-      if (idx === activeIndex) {
-        card.classList.add("is-active");
-      } else if (idx === prevIdx) {
-        card.classList.add("is-prev");
-      } else if (idx === nextIdx) {
-        card.classList.add("is-next");
+    // --- Update Desktop 3D Album ---
+    albumItems.forEach((item, idx) => {
+      // Calculate circular distance in range [-floor(N/2), floor(N/2)]
+      let diff = idx - activeIndex;
+      while (diff > N / 2) diff -= N;
+      while (diff < -N / 2) diff += N;
+
+      item.classList.remove("work-album-item-center");
+
+      if (diff === 0) {
+        // Active Center Card
+        item.style.transform = "translate(-50%, -50%) scale(1)";
+        item.style.zIndex = "5";
+        item.style.opacity = "1";
+        item.style.pointerEvents = "auto";
+        item.classList.add("work-album-item-center");
+        item.setAttribute("aria-current", "true");
+      } else if (diff === -1) {
+        // Near Left Card
+        item.style.transform = "translate(calc(-50% - 220px), -50%) scale(0.72)";
+        item.style.zIndex = "4";
+        item.style.opacity = "0.85";
+        item.style.pointerEvents = "auto";
+        item.removeAttribute("aria-current");
+      } else if (diff === 1) {
+        // Near Right Card
+        item.style.transform = "translate(calc(-50% + 220px), -50%) scale(0.72)";
+        item.style.zIndex = "4";
+        item.style.opacity = "0.85";
+        item.style.pointerEvents = "auto";
+        item.removeAttribute("aria-current");
+      } else if (diff === -2) {
+        // Far Left Card
+        item.style.transform = "translate(calc(-50% - 370px), -50%) scale(0.55)";
+        item.style.zIndex = "3";
+        item.style.opacity = "0.32";
+        item.style.pointerEvents = "auto";
+        item.removeAttribute("aria-current");
+      } else if (diff === 2) {
+        // Far Right Card
+        item.style.transform = "translate(calc(-50% + 370px), -50%) scale(0.55)";
+        item.style.zIndex = "3";
+        item.style.opacity = "0.32";
+        item.style.pointerEvents = "auto";
+        item.removeAttribute("aria-current");
       } else {
-        const diff = (idx - activeIndex + N) % N;
-        if (diff > N / 2) {
-          card.classList.add("is-hidden-prev");
-        } else {
-          card.classList.add("is-hidden-next");
+        // Offscreen / Hidden
+        const dir = diff > 0 ? 460 : -460;
+        item.style.transform = `translate(calc(-50% + ${dir}px), -50%) scale(0.4)`;
+        item.style.zIndex = "1";
+        item.style.opacity = "0";
+        item.style.pointerEvents = "none";
+        item.removeAttribute("aria-current");
+      }
+    });
+
+    // --- Update Mobile Stack ---
+    stackImages.forEach((img, idx) => {
+      let mDiff = (idx - activeIndex + N) % N;
+      img.classList.remove("stacked-image-front");
+
+      if (mDiff === 0) {
+        // Active Front Card
+        img.style.setProperty("--tx", "0px");
+        img.style.setProperty("--ty", "0px");
+        img.style.setProperty("--rot", "0deg");
+        img.style.setProperty("--sc", "1");
+        img.style.setProperty("--op", "1");
+        img.style.zIndex = "30";
+        img.classList.add("stacked-image-front");
+      } else if (mDiff === 1) {
+        // Second Card peek (Right tilt)
+        img.style.setProperty("--tx", "12px");
+        img.style.setProperty("--ty", "-7.6px");
+        img.style.setProperty("--rot", "-2.7deg");
+        img.style.setProperty("--sc", "0.94");
+        img.style.setProperty("--op", "0.75");
+        img.style.zIndex = "20";
+      } else if (mDiff === 2) {
+        // Third Card peek (Left tilt)
+        img.style.setProperty("--tx", "14px");
+        img.style.setProperty("--ty", "17.6px");
+        img.style.setProperty("--rot", "6.6deg");
+        img.style.setProperty("--sc", "0.88");
+        img.style.setProperty("--op", "0.55");
+        img.style.zIndex = "10";
+      } else if (mDiff === N - 1) {
+        // Exiting / Previous Card
+        img.style.setProperty("--tx", "106px");
+        img.style.setProperty("--ty", "-44px");
+        img.style.setProperty("--rot", "18deg");
+        img.style.setProperty("--sc", "0.88");
+        img.style.setProperty("--op", "0");
+        img.style.zIndex = "5";
+      } else {
+        // Deep Background Card
+        img.style.setProperty("--tx", "106px");
+        img.style.setProperty("--ty", "-44px");
+        img.style.setProperty("--rot", "18deg");
+        img.style.setProperty("--sc", "0.8");
+        img.style.setProperty("--op", "0");
+        img.style.zIndex = "2";
+      }
+    });
+
+    // --- Update Dynamic Project Info Box ---
+    if (infoContainer) {
+      if (animateInfo) {
+        infoContainer.style.animation = "none";
+        // Force reflow
+        void infoContainer.offsetWidth;
+        infoContainer.style.animation = "";
+      }
+
+      const isCollab = activeProject.category === "collaborative" || activeProject.isCollaborative;
+      const techPills = (activeProject.technologies || []).slice(0, 4)
+        .map(t => `<span class="work-info-pill">${escapeHtml(t)}</span>`)
+        .join("");
+
+      const status = window.ErrorState ? window.ErrorState.getRepositoryStatus(activeProject) : { type: "public" };
+      const isPrivate = status.type === "private";
+
+      const repoBtnHtml = isPrivate
+        ? `<span class="btn btn-sm btn-outline btn-disabled" title="Private Repository" aria-label="Private Repository">
+             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+             <span>Private Repo</span>
+           </span>`
+        : `<a href="${escapeHtml(activeProject.repository)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline work-repo-link" aria-label="GitHub repository for ${escapeHtml(activeProject.title)}">
+             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+             <span>View Repository ↗</span>
+           </a>`;
+
+      infoContainer.innerHTML = `
+        <div class="work-info-meta">
+          <span class="work-info-badge ${isCollab ? "badge-collab" : ""}">${isCollab ? "Collaborative" : "Personal"}</span>
+          ${techPills}
+        </div>
+        <h3 class="work-info-title">${escapeHtml(activeProject.title)}</h3>
+        <p class="work-info-desc">${escapeHtml(activeProject.longDescription || activeProject.description)}</p>
+        <div class="work-info-actions">
+          <button type="button" class="btn btn-sm btn-primary" data-modal-project="${escapeHtml(activeProject.id)}" aria-label="View case study for ${escapeHtml(activeProject.title)}">
+            <span>View Case Study →</span>
+          </button>
+          <span class="work-info-repo-wrap" data-project-id="${escapeHtml(activeProject.id)}">
+            ${repoBtnHtml}
+          </span>
+        </div>
+      `;
+
+      // Repository status check verification
+      if (window.ErrorState && typeof window.ErrorState.checkRepository === "function" && activeProject.repository) {
+        window.ErrorState.checkRepository(activeProject.repository, activeProject).then(newStatus => {
+          const repoWrap = infoContainer.querySelector(`.work-info-repo-wrap[data-project-id="${activeProject.id}"]`);
+          if (repoWrap && window.ErrorState) {
+            repoWrap.innerHTML = window.ErrorState.renderAction(activeProject, newStatus);
+          }
+        }).catch(() => {});
+      }
+    }
+  }
+
+  // Initial layout mounting
+  updateAlbum(false);
+
+  // Desktop Card Click Handling
+  albumItems.forEach(item => {
+    item.addEventListener("click", () => {
+      const idx = parseInt(item.getAttribute("data-album-index"), 10);
+      if (idx === activeIndex) {
+        // Clicking center card triggers case study modal
+        const projectId = item.getAttribute("data-project-id");
+        if (window.ModalManager && typeof window.ModalManager.open === "function") {
+          window.ModalManager.open(projectId, item);
         }
-      }
-    });
-
-    dots.forEach((dot, idx) => {
-      dot.classList.toggle("is-active", idx === activeIndex);
-    });
-  }
-
-  // Initial deck layout
-  updateDeck();
-
-  function goPrev() {
-    activeIndex = (activeIndex - 1 + N) % N;
-    updateDeck();
-  }
-
-  function goNext() {
-    activeIndex = (activeIndex + 1) % N;
-    updateDeck();
-  }
-
-  if (prevBtn) prevBtn.addEventListener("click", goPrev);
-  if (nextBtn) nextBtn.addEventListener("click", goNext);
-
-  dots.forEach(dot => {
-    dot.addEventListener("click", () => {
-      const idx = parseInt(dot.getAttribute("data-dot-index"), 10);
-      if (!isNaN(idx)) {
+      } else {
         activeIndex = idx;
-        updateDeck();
+        updateAlbum(true);
+      }
+    });
+
+    item.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        item.click();
       }
     });
   });
 
-  // Tap on side cards brings them to center
-  cards.forEach(card => {
-    card.addEventListener("click", e => {
-      if (card.classList.contains("is-prev")) {
+  // Mobile Stack Click/Tap Handling (Cycle to next)
+  if (mobileStack) {
+    mobileStack.addEventListener("click", () => {
+      activeIndex = (activeIndex + 1) % N;
+      updateAlbum(true);
+    });
+
+    mobileStack.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        goPrev();
-      } else if (card.classList.contains("is-next")) {
-        e.preventDefault();
-        goNext();
+        activeIndex = (activeIndex + 1) % N;
+        updateAlbum(true);
       }
     });
-  });
 
-  // Touch Swipe Gesture Support
-  let touchStartX = 0;
-  let touchStartY = 0;
+    // Touch Swipe Gesture for Mobile Stack
+    let touchStartX = 0;
+    let touchStartY = 0;
 
-  if (stage) {
-    stage.addEventListener("touchstart", e => {
+    mobileStack.addEventListener("touchstart", e => {
       if (e.touches && e.touches.length) {
         touchStartX = e.touches[0].clientX;
         touchStartY = e.touches[0].clientY;
       }
     }, { passive: true });
 
-    stage.addEventListener("touchend", e => {
+    mobileStack.addEventListener("touchend", e => {
       if (!e.changedTouches || !e.changedTouches.length) return;
       const touchEndX = e.changedTouches[0].clientX;
       const touchEndY = e.changedTouches[0].clientY;
-
       const deltaX = touchEndX - touchStartX;
       const deltaY = touchEndY - touchStartY;
 
       if (Math.abs(deltaX) > 35 && Math.abs(deltaX) > Math.abs(deltaY)) {
         if (deltaX < 0) {
-          goNext();
+          activeIndex = (activeIndex + 1) % N;
         } else {
-          goPrev();
+          activeIndex = (activeIndex - 1 + N) % N;
         }
+        updateAlbum(true);
       }
     }, { passive: true });
+  }
+
+  // Desktop Prev / Next Arrow Buttons
+  const prevBtn = document.getElementById("work-album-prev");
+  const nextBtn = document.getElementById("work-album-next");
+
+  if (prevBtn) {
+    prevBtn.addEventListener("click", e => {
+      e.preventDefault();
+      activeIndex = (activeIndex - 1 + N) % N;
+      updateAlbum(true);
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener("click", e => {
+      e.preventDefault();
+      activeIndex = (activeIndex + 1) % N;
+      updateAlbum(true);
+    });
+  }
+
+  // Keyboard Left / Right Navigation when focusing the album container
+  const albumRegion = document.getElementById("work-album");
+  if (albumRegion) {
+    albumRegion.setAttribute("tabindex", "0");
+    albumRegion.addEventListener("keydown", e => {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        activeIndex = (activeIndex - 1 + N) % N;
+        updateAlbum(true);
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        activeIndex = (activeIndex + 1) % N;
+        updateAlbum(true);
+      }
+    });
   }
 }
 
@@ -708,4 +740,35 @@ function initHeroWordRotator() {
   // Initial delay before first rotation (~2.8s)
   timeoutId = setTimeout(rotate, 2800);
 }
+
+/**
+ * Interactive Hero Character Easter Egg
+ * Enables touch / tap toggle on mobile devices and keyboard triggers (Enter / Space)
+ * for the 4 coordinated visual states (Light Default, Light Shy Hover, Dark Night Default, Dark Sleep Hover).
+ */
+function initHeroInteractiveAvatar() {
+  const heroCard = document.getElementById("hero-photo-interactive");
+  if (!heroCard) return;
+
+  // Toggle active state on tap/click for mobile & touchscreens
+  heroCard.addEventListener("click", (e) => {
+    heroCard.classList.toggle("is-active");
+  });
+
+  // Keyboard accessibility
+  heroCard.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      heroCard.classList.toggle("is-active");
+    }
+  });
+
+  // Reset active state when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!heroCard.contains(e.target)) {
+      heroCard.classList.remove("is-active");
+    }
+  });
+}
+
 

@@ -30,7 +30,7 @@
 .btn-primary:hover {
   background-color: var(--accent-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  box-shadow: 0 4px 12px rgba(26, 26, 26, 0.25);
 }
 
 .btn-secondary {
@@ -324,7 +324,7 @@
 }
 
 .php-snippet-card .code-func {
-  color: #60A5FA;
+  color: #E2E8F0;
 }
 
 .php-snippet-card .code-string {
@@ -1034,7 +1034,7 @@
 }
 
 [data-theme="dark"] .search-result-item.is-selected {
-  background-color: rgba(59, 130, 246, 0.14);
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .search-item-left {
@@ -1184,8 +1184,8 @@
 }
 
 .error-type-rate-limit .error-state-icon {
-  color: #3B82F6;
-  background-color: rgba(59, 130, 246, 0.1);
+  color: var(--primary);
+  background-color: var(--surface-alt);
 }
 
 .error-type-server .error-state-icon,
@@ -1272,9 +1272,9 @@
 }
 
 .selected-repo-status.status-rate-limit {
-  color: #3B82F6;
-  border-color: rgba(59, 130, 246, 0.3);
-  background-color: rgba(59, 130, 246, 0.08);
+  color: var(--primary);
+  border-color: var(--border);
+  background-color: var(--surface-alt);
 }
 
 /* Modal Repository Status */
@@ -1485,7 +1485,7 @@
 .terminal-code .code-comment { color: #64748B; font-style: italic; }
 .terminal-code .code-tag { color: #FBBF24; }
 .terminal-code .code-keyword { color: #F472B6; }
-.terminal-code .code-func { color: #60A5FA; }
+.terminal-code .code-func { color: #E2E8F0; }
 .terminal-code .code-string { color: #34D399; }
 .terminal-code .code-number { color: #A78BFA; }
 

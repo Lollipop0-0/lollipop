@@ -56,9 +56,33 @@
       <!-- Hand-drawn Tape Strip -->
       <div class="tape-strip tape-top-center" aria-hidden="true"></div>
 
-      <!-- Student Profile Photo Card -->
-      <div class="hero-photo-card">
-        <img src="assets/images/gradpic.webp" alt="Karl Evan Tabunda portrait photo" class="hero-photo-img" width="340" height="396" fetchpriority="high" decoding="async">
+      <!-- Student Profile Photo Card (Coordinated 4-State Interactive Character) -->
+      <div class="hero-photo-card" id="hero-photo-interactive" role="button" tabindex="0" title="Karl Evan Tabunda — Hover to reveal reaction" aria-label="Interactive character portrait: hover or tap to reveal reaction">
+        <div class="hero-photo-frame">
+          <!-- State 1: Light Mode Default (Daytime Coding & Building) -->
+          <img src="assets/images/hero/hero-light-default.webp" 
+               alt="Karl Evan Tabunda - Developer Portrait in Daytime" 
+               class="hero-photo-img hero-img-light-default" 
+               width="340" height="396" fetchpriority="high" decoding="async">
+
+          <!-- State 2: Light Mode Hover (Shy & Bashful Blush Easter Egg) -->
+          <img src="assets/images/hero/hero-light-hover.webp" 
+               alt="Karl Evan Tabunda - Shy Blush Easter Egg" 
+               class="hero-photo-img hero-img-light-hover" 
+               width="340" height="396" fetchpriority="high" decoding="async">
+
+          <!-- State 3: Dark Mode Default (Moonlit Nighttime Scene) -->
+          <img src="assets/images/hero/hero-dark-default.webp" 
+               alt="Karl Evan Tabunda - Developer Portrait in Nighttime Dark Mode" 
+               class="hero-photo-img hero-img-dark-default" 
+               width="340" height="396" fetchpriority="high" decoding="async">
+
+          <!-- State 4: Dark Mode Hover (Sleeping in Cozy Bed Easter Egg) -->
+          <img src="assets/images/hero/hero-dark-hover.webp" 
+               alt="Karl Evan Tabunda - Sleeping in Cozy Bed Easter Egg" 
+               class="hero-photo-img hero-img-dark-hover" 
+               width="340" height="396" fetchpriority="high" decoding="async">
+        </div>
       </div>
 
       <!-- Taped PHP Code Snippet / IDE Card -->

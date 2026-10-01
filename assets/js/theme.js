@@ -137,7 +137,7 @@ const ThemeManager = (() => {
     // Update contribution matrix chart color palette dynamically
     const matrixImg = document.getElementById("github-matrix-chart");
     if (matrixImg) {
-      const colorHex = effectiveTheme === PREF_DARK ? "3b82f6" : "2563eb";
+      const colorHex = effectiveTheme === PREF_DARK ? "ffffff" : "1a1a1a";
       matrixImg.src = `https://ghchart.rshah.org/${colorHex}/Lollipop0-0`;
     }
   }

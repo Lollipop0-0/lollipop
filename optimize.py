@@ -28,6 +28,23 @@ def optimize_images():
             s_opt = os.path.getsize(hero_dst) / 1024
             print(f"  [OK] Hero: {s_orig:.1f} KB -> {s_opt:.1f} KB ({((s_orig-s_opt)/s_orig)*100:.1f}% reduction)")
 
+    # 1.5 Hero Character Interactive States (Light Default, Light Hover, Dark Default, Dark Hover)
+    hero_states = [
+        "hero-light-default",
+        "hero-light-hover",
+        "hero-dark-default",
+        "hero-dark-hover"
+    ]
+    for h in hero_states:
+        h_src = f"assets/images/hero/{h}.jpg"
+        h_dst = f"assets/images/hero/{h}.webp"
+        if os.path.exists(h_src):
+            with Image.open(h_src) as im:
+                im.save(h_dst, "WEBP", quality=88, method=6)
+                s_orig = os.path.getsize(h_src) / 1024
+                s_opt = os.path.getsize(h_dst) / 1024
+                print(f"  [OK] Hero State {h}: {s_orig:.1f} KB -> {s_opt:.1f} KB ({((s_orig-s_opt)/s_orig)*100:.1f}%)")
+
     # 2. Project Mockups
     projects = ["cup", "hotel", "inventory", "library", "smartspace", "sneakerhub"]
     for p in projects:

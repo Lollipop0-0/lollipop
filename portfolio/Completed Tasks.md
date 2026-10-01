@@ -2,6 +2,116 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-10-01: Global Palette Conversion: Replace Blue Accents with #1A1A1A Monochrome
+- **Objective**: Eliminate all blue accent colors across the portfolio system and replace them with sleek, editorial `#1A1A1A` obsidian/charcoal monochrome tones.
+- **Key Deliverables**:
+  - **Design Tokens (`assets/css/variables.css`)**:
+    - Light Theme: Changed `--accent` from `#2563EB` to `#1A1A1A`, `--accent-hover` to `#000000`, `--accent-light` to `rgba(26, 26, 26, 0.08)`, `--border-focus` to `#1A1A1A`, `--badge-collaborative-bg` and text to `#1A1A1A`.
+    - Deep Palette: Replaced `--navy-deep`, `--navy-surface`, `--navy-border` with `#1A1A1A` and neutral darks.
+    - Dark Theme: Neutralized all dark surfaces from blue-tinted navy (`#131C2E`, `#1A263D`, `#0B0F19`) to pure charcoal blacks (`#0A0A0A`, `#141414`, `#1E1E1E`), with high-contrast neutral borders (`#2A2A2A`).
+  - **Components & Buttons (`assets/css/sections.css`, `assets/css/components.css`)**:
+    - Updated `.nav-resume-btn` ("Hire Me" button) to `#1A1A1A` with clean dark shadows across light and dark modes.
+    - Updated `.btn-primary` and `.btn-featured-primary` to `#1A1A1A` / `#000000`.
+    - Replaced hero rotating word gradient from electric blue to rich obsidian gradient (`linear-gradient(135deg, #000000 0%, #1a1a1a 60%, #333333 100%)`).
+    - Replaced GitHub contribution matrix cells and legend fills with monochrome progressive density levels (`#EFF2F5`, `#CBD5E1`, `#8E9BAE`, `#475569`, `#1A1A1A`).
+    - Removed blue glow box-shadows from scroll indicator, buttons, work album controls, and badges.
+  - **Scripts (`assets/js/theme.js`, `assets/js/github.js`)**:
+    - Updated GitHub dynamic calendar generator to pass `1a1a1a` in light mode and `ffffff` in dark mode.
+    - Updated language statistics PHP badge color to `#1A1A1A`.
+  - **Compilation & Validation**:
+    - Recompiled production bundles via `python optimize.py`.
+    - Validated all JavaScript syntax with `node -c` (zero errors).
+
+
+## 2026-10-01: Update Navbar CTA Button to "Hire Me" Linking to Contact Section
+- **Objective**: Replace the navbar PDF Resume button with a prominent "Hire Me" CTA button linking smoothly to the `#contact` section across desktop and mobile navigation.
+- **Key Deliverables**:
+  - **Header Component (`components/header.html`)**:
+    - Replaced the desktop `<a class="nav-resume-btn">` from external resume PDF link to `<a href="index.html#contact" class="nav-resume-btn" aria-label="Contact Karl Evan (Hire Me)"><span>Hire Me</span>...</a>` with forward section jump arrow icon.
+    - Added `<a href="index.html#contact" class="mobile-nav-link">Contact</a>` to the mobile navigation drawer.
+  - **Smooth Scroll Integration (`assets/js/navigation.js`)**:
+    - Handled via delegated in-page hash scroll (`scrollToTarget('contact')`), enabling instant smooth scrolling on homepage and multi-page routing to `#contact` from archive pages.
+  - **Compilation & Validation**:
+    - Recompiled production bundles with `python optimize.py`.
+    - Validated bundle syntax with `node -c`.
+
+## 2026-10-01: Re-layout Contact Section with 3 Contact Cards & Docked Popup Message Modal
+- **Objective**: Match the exact visual aesthetics and interactive mechanics from the user's reference screenshots:
+  1. Two-column desktop layout (Left: giant bold headline + resume CTA; Right: 3 stacked contact cards + outline CTA button).
+  2. Docked interactive popup modal in the bottom-right corner when clicking "SEND ME A MESSAGE →".
+- **Key Deliverables**:
+  - **Component Structure (`components/contact.html`)**:
+    - **Left Column**: Monospace eyebrow `05 GET IN TOUCH`, massive stacked graphic headline `<h2 class="contact-headline">LET'S<br><span class="contact-headline-accent">WORK</span><br>TOGETHER</h2>`, primary statement `"Looking for the next problem worth solving."`, secondary description `"I'm open to opportunities where I can contribute to software testing, web development, IT operations, and digital workflows."`, and pill button `DOWNLOAD RESUME →`.
+    - **Right Column**: 3 rounded stacked contact cards:
+      - Card 01: Email (`tabunda.karlevan@ncst.edu.ph`) with mail icon and number `01`.
+      - Card 02: GitHub (`github.com/Lollipop0-0`) with branch icon, number `02`, and external link arrow.
+      - Card 03: LinkedIn (`linkedin.com/in/tabunda-karl-evan-r-44b4a1381`) with LinkedIn icon, number `03`, and external link arrow.
+    - **Outline Pill CTA**: `<button type="button" class="contact-cta" id="open-contact-modal-btn">SEND ME A MESSAGE →</button>`.
+    - **Docked Popup Modal (`#contact-modal`)**:
+      - Window Titlebar with contrasting light silver header (`#e2e8f0` / `#f1f5f9`), title `Send Me a Message`, minimize button (`-`), and close button (`✕`).
+      - Window Body with sleek underline form fields (`FULL NAME`, `EMAIL ADDRESS`, `MESSAGE`), submit pill button `SEND MESSAGE →`, and status container `#contact-status`.
+  - **Styling (`assets/css/sections.css`, `assets/css/responsive.css`)**:
+    - Implemented `.contact-grid`, `.contact-card`, `.contact-card-icon`, `.contact-card-info`, `.contact-card-number`, `.contact-card-arrow`, and `.contact-cta`.
+    - Implemented `.contact-modal` fixed bottom-right position (`right: 32px; bottom: 0;`), smooth slide-up animation (`modalSlideUp`), and collapsible minimized state (`.contact-modal.is-minimized` with `height: 46px`).
+    - Implemented underline input styling (`.contact-modal-input`, `.contact-modal-textarea`) with subtle transitions and focus states.
+    - Added responsive rules in `responsive.css` to dock cleanly across the bottom on mobile screens (`<= 480px`).
+  - **Interactive JavaScript Engine (`assets/js/contact.js`)**:
+    - Added `openModal`, `closeModal`, and `toggleMinimize` handlers.
+    - Connected `#open-contact-modal-btn` to open the modal and autofocus name input.
+    - Connected close button (`✕`), minimize button (`-`), and header click to toggle minimized view.
+    - Added global `Escape` key handling to close the modal.
+    - Integrated with existing FormSubmit AJAX backend (`https://formsubmit.co/ajax/tabunda.karlevan@ncst.edu.ph`) with client-side validation, loading spinners, and resilient email client fallback.
+  - **Compilation & Validation**:
+    - Recompiled production bundles with `python optimize.py`.
+    - Validated all JavaScript syntax with `node -c` (zero errors).
+    - Verified HTTP 200 responses on Apache for both homepage and components.
+
+
+## 2026-10-01: Implement Richard Miculob Signature Topographic Background & Contact Description
+- **Objective**: Faithfully replicate the signature background design and contact description from [Richard Miculob's Portfolio](https://richardmiculob-portfolio.vercel.app/) across Karl's portfolio system.
+- **Key Deliverables**:
+  - **Background Architecture (`assets/css/base.css`, `assets/css/variables.css`, and HTML templates)**:
+    - Added `--light-gray: rgba(0, 0, 0, 0.12);` in light theme and `rgba(255, 255, 255, 0.12);` in dark theme.
+    - Implemented `body::before` multi-layered repeating SVG contour curves tiled at `980px 980px`, `380px 380px`, and `620px 620px` with seamless light/dark SVG vector data.
+    - Mounted `<svg class="bg-lines" viewBox="0 0 1440 5000" ...>` across all site templates (`index.html`, `about.html`, `projects.html`, `certificates.html`, `gear.html`, `store.html`, `404.html`) providing 8 graceful undulating bezier curve clusters flowing down the full document height.
+    - Cleaned up obsolete 80px blueprint section square grid from `base.css` and removed solid section backgrounds from `activity-section`, `about-section`, and `journey-section` in `sections.css` for uninterrupted visual depth.
+  - **Contact Description Architecture (`components/contact.html`, `assets/css/sections.css`)**:
+    - Replaced the previous generic contact copy with Richard Miculob's signature hierarchy:
+      - Eyebrow: `05 GET IN TOUCH` with monospace kicker.
+      - Punchy Graphic Headline: `<h2 class="contact-headline">LET'S<br><span class="contact-headline-accent">WORK</span><br>TOGETHER</h2>` (`clamp(44px, 5.5vw, 84px)`, `line-height: 0.88`, uppercase).
+      - Primary Statement: `<p class="contact-description">Looking for the next problem worth solving.</p>` (`clamp(18px, 1.8vw, 22px)`).
+      - Secondary Context: `<p class="contact-secondary">I'm open to opportunities where I can contribute to software development, web development, IT operations, and digital workflows.</p>`.
+      - Pill Button CTA: `<a href="assets/documents/Karl-Evan-Tabunda-Resume.pdf" class="contact-resume-btn">DOWNLOAD RESUME →</a>`.
+    - Maintained full functionality of Karl's contact methods list (Email, GitHub, LinkedIn, Facebook) and FormSubmit interactive contact form card.
+  - **Compilation & Validation**:
+    - Recompiled production bundles via `python optimize.py` producing optimized `styles.min.css` (126.7 KB) and `bundle.min.js` (189.5 KB).
+    - Validated all JavaScript syntax with `node -c` (zero errors).
+    - Verified HTTP 200 OK status on `http://localhost/lollipop/index.html`.
+
+## 2026-10-01: Implement Richard Miculob Work Gallery Section (3D Interactive Album Cover Flow & Mobile Stack)
+- **Objective**: Analyze `https://richardmiculob-portfolio.vercel.app/` and implement its signature Work section onto Karl's portfolio system, replacing the conventional project cards with the 3D interactive album cover-flow on desktop and the tilted fanned card peek stack on mobile.
+- **Key Deliverables**:
+  - **Component Structure (`components/selected-work.html`)**:
+    - `.work-header`: Monospace kicker `02`, section label `Selected Work`, heading `Work Gallery.`, subtitle, and top CTA button `.work-album-btn-top` linking to `projects.html`.
+    - `.work-album`: Desktop 3D perspective stage with `.work-album-inner` housing 5 fanned project cards (`06 SmartSpace`, `05 Hotel`, `02 Inventory`, `03 Library`, `04 UI SneakerHub`), flanked by glassmorphic circular navigation arrows (`#work-album-prev` and `#work-album-next`).
+    - `.work-mobile-stack-wrap`: Mobile fallback stage housing the stacked peek card deck with swipe/tap rotation.
+    - `.work-info`: Dynamic active project panel with collaborative/personal badges, technology pills, project title, description, case study modal trigger, and repository link.
+  - **JavaScript Engine (`assets/js/app.js`)**:
+    - Re-engineered `renderSelectedProjects()` to manage circular relative offsets `[-2, -1, 0, 1, 2]`.
+    - Implemented desktop cover flow transforms:
+      - Center active: `scale(1); z-index: 5; opacity: 1;`
+      - Near Left / Right: `calc(-50% ± 220px); scale(0.72); z-index: 4; opacity: 0.85;`
+      - Far Left / Right: `calc(-50% ± 370px); scale(0.55); z-index: 3; opacity: 0.32;`
+    - Implemented mobile tilted peek deck with CSS variables `--tx`, `--ty`, `--rot`, `--sc`, `--op`, and `z-index`.
+    - Added desktop click/arrow button navigation (`work-album-prev` / `work-album-next`), keyboard navigation (ArrowLeft, ArrowRight, Enter), and mobile tap/swipe gesture support.
+    - Added dynamic project info transitions with `@keyframes workInfoFade` and repository status verification via `window.ErrorState`.
+  - **CSS Styling (`assets/css/sections.css`, `assets/css/responsive.css`)**:
+    - Applied Richard Miculob's physics curve `cubic-bezier(.22, 1, .36, 1)` for smooth card transitions.
+    - Added floating glassmorphic navigation buttons with backdrop blur, hover elevation, accent border glow, and full dark-theme compatibility.
+  - **Production Optimization**:
+    - Compiled and minified assets via `python optimize.py` producing `styles.min.css` and `bundle.min.js`.
+    - Validated all JavaScript syntax with `node -c`.
+
 ## 2026-09-30: Expand Gear Showcase with iPhone 13, iPhone 11, and Soundcore R50i
 - **Objective**: Expand the daily hardware showcase to 7 devices by generating commercial studio photography and interactive dual-layer hover pairs for Karl's mobile testing and audio devices: Apple iPhone 13, Apple iPhone 11, and Anker Soundcore R50i True Wireless Earbuds.
 - **Key Deliverables**:
@@ -929,4 +1039,29 @@ This changelog records completed features, refinements, fixes, and synchronizati
 - **Changes**:
   - Generated and replaced `assets/images/og-preview.png` reflecting Karl's graduation portrait.
   - Verified Open Graph meta tags in `index.html`.
-- **Files Modified**: `assets/images/og-preview.png`, `index.html`.
+---
+
+## 2026-10-01: Coordinated 4-State Hero Character Easter Egg & Monochrome #1A1A1A System Palette
+- **Objective**: 
+  1. Generate and implement four coordinated, cohesive visual assets based on Karl Evan Tabunda's graduation portrait reference, enabling interactive transitions across Light Mode and Dark Mode with custom hover Easter eggs.
+  2. Shift all system accent colors from blue to clean obsidian monochrome (`#1A1A1A`).
+  3. Completely remove the global footer across the portfolio.
+- **Key Deliverables**:
+  - **4 Coordinated Character States** (`assets/images/hero/`):
+    - **State 1 (Light Default)**: Bright morning daylight ambiance, confident smiling developer in charcoal crewneck, soft daylight rim lighting (`hero-light-default.webp`).
+    - **State 2 (Light Hover)**: Seamless continuation of State 1 with a subtle, bashful smile, lowered gaze, and soft pink blush on cheeks (`hero-light-hover.webp`).
+    - **State 3 (Dark Default)**: Workspace transformed into a moonlit nighttime scene with crescent moon and stars outside the window, cool blue-silver rim lighting, serene smile (`hero-dark-default.webp`).
+    - **State 4 (Dark Hover)**: Cozy bedroom scene with Karl peacefully asleep in bed under a blanket with head on pillow, moonlight streaming through the window: "Dark Mode = time to sleep" (`hero-dark-hover.webp`).
+  - **Interactive Crossfade Mechanics** (`components/hero.html`, `assets/css/sections.css`, `assets/css/responsive.css`):
+    - Layered `.hero-photo-frame` with absolute positioning and cubic-bezier opacity crossfade (`0.45s`).
+    - Light Mode displays State 1 and crossfades to State 2 on hover / active.
+    - Dark Mode displays State 3 and crossfades to State 4 on hover / active.
+  - **Touch & Accessibility Support** (`assets/js/app.js`):
+    - Added `initHeroInteractiveAvatar()` allowing touchscreen/mobile visitors to tap the portrait card to toggle reactions, with full keyboard trigger support (<kbd>Enter</kbd> / <kbd>Space</kbd>).
+  - **System-Wide #1A1A1A Monochrome Palette**:
+    - Replaced blue highlights, shadows, focus rings, matrix cells, and buttons across `variables.css`, `sections.css`, `components.css`, `theme.js`, and `github.js`.
+  - **Footer Removal**:
+    - Emptied `components/footer.html` and verified defensive DOM checks across all modules.
+  - **Production Optimization** (`optimize.py`):
+    - Automated WebP compression pipeline for hero states. Rebuilt minified bundles (`styles.min.css` 133.3 KB, `bundle.min.js` 192.6 KB). Verified 0 syntax errors with `node -c`.
+- **Files Modified**: `components/hero.html`, `components/footer.html`, `assets/css/variables.css`, `assets/css/sections.css`, `assets/css/components.css`, `assets/css/responsive.css`, `assets/js/app.js`, `assets/js/theme.js`, `assets/js/github.js`, `optimize.py`.

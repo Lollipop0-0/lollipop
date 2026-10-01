@@ -1,6 +1,7 @@
 /**
  * Karl Evan Tabunda - CSS Custom Properties & Design Tokens
  * Light & Dark theme palettes, typography scales, spacing units, and elevations.
+ * Monochrome / Obsidian palette (blue replaced with #1A1A1A).
  */
 
 :root {
@@ -12,26 +13,29 @@
   --primary: #0F172A;
   --secondary: #475569;
   --muted: #64748B;
-  --accent: #2563EB;
-  --accent-hover: #1D4ED8;
-  --accent-light: rgba(37, 99, 235, 0.08);
+  --accent: #1A1A1A;
+  --accent-hover: #000000;
+  --accent-light: rgba(26, 26, 26, 0.08);
   --warm: #B45309;
   --warm-light: rgba(180, 83, 9, 0.08);
   --border: #E2E8F0;
   --border-subtle: #ECEEF2;
-  --border-focus: #2563EB;
+  --border-focus: #1A1A1A;
 
-  /* Featured Project Deep Navy Palette */
-  --navy-deep: #0F1D38;
-  --navy-surface: #16284D;
-  --navy-surface-hover: #1D3463;
-  --navy-border: #233A6B;
+  /* Richard Miculob Background Contour Tokens */
+  --light-gray: rgba(0, 0, 0, 0.12);
+
+  /* Featured Project Deep Slate Palette */
+  --navy-deep: #1A1A1A;
+  --navy-surface: #222222;
+  --navy-surface-hover: #2B2B2B;
+  --navy-border: #333333;
   --navy-text: #F8FAFC;
   --navy-muted: #94A3B8;
 
   /* Badges & Tags */
-  --badge-collaborative-bg: rgba(37, 99, 235, 0.1);
-  --badge-collaborative-text: #1D4ED8;
+  --badge-collaborative-bg: rgba(26, 26, 26, 0.08);
+  --badge-collaborative-text: #1A1A1A;
   --badge-personal-bg: rgba(180, 83, 9, 0.1);
   --badge-personal-text: #B45309;
   --badge-active-dot: #10B981;
@@ -68,35 +72,38 @@
   /* Digital Rainfall Theme Transition (Handled dynamically via layered canvas masks) */
 }
 
-/* Dark Theme Overrides */
+/* Dark Theme Overrides - Neutral Charcoal/Obsidian without blue hue */
 [data-theme="dark"] {
-  --bg: #0B0F19;
-  --surface: #131C2E;
-  --surface-alt: #1A263D;
-  --surface-elevated: #172238;
+  --bg: #0A0A0A;
+  --surface: #141414;
+  --surface-alt: #1E1E1E;
+  --surface-elevated: #242424;
   --primary: #F8FAFC;
   --secondary: #CBD5E1;
   --muted: #94A3B8;
-  --accent: #3B82F6;
-  --accent-hover: #60A5FA;
-  --accent-light: rgba(59, 130, 246, 0.15);
+  --accent: #FFFFFF;
+  --accent-hover: #E2E8F0;
+  --accent-light: rgba(255, 255, 255, 0.12);
   --warm: #FBBF24;
   --warm-light: rgba(251, 191, 36, 0.12);
-  --border: #263247;
-  --border-subtle: #1E293B;
-  --border-focus: #3B82F6;
+  --border: #2A2A2A;
+  --border-subtle: #1F1F1F;
+  --border-focus: #FFFFFF;
 
-  /* Featured Project in Dark Theme remains deep navy or refined */
-  --navy-deep: #0C162A;
-  --navy-surface: #132240;
-  --navy-surface-hover: #182B52;
-  --navy-border: #233A66;
+  /* Richard Miculob Background Contour Tokens */
+  --light-gray: rgba(255, 255, 255, 0.12);
+
+  /* Featured Project in Dark Theme */
+  --navy-deep: #141414;
+  --navy-surface: #1C1C1C;
+  --navy-surface-hover: #262626;
+  --navy-border: #333333;
   --navy-text: #F8FAFC;
   --navy-muted: #A0AEC0;
 
   /* Badges & Tags */
-  --badge-collaborative-bg: rgba(59, 130, 246, 0.16);
-  --badge-collaborative-text: #93C5FD;
+  --badge-collaborative-bg: rgba(255, 255, 255, 0.12);
+  --badge-collaborative-text: #F8FAFC;
   --badge-personal-bg: rgba(251, 191, 36, 0.14);
   --badge-personal-text: #FDE047;
 

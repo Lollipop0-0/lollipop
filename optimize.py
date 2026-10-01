@@ -121,7 +121,6 @@ def bundle_js():
         "assets/js/contact.js",
         "assets/js/search.js",
         "assets/js/components.js",
-        "assets/js/visitors.js",
         "assets/js/preloader.js",
         "assets/js/app.js"
     ]

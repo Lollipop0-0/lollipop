@@ -141,17 +141,8 @@ This document provides a detailed breakdown of all user-facing features, their b
 
 ---
 
-## 12. Live Site Visitor & Viewer Counter
-- **Location**: `components/footer.html`, `assets/js/visitors.js`
-- **Backend / Cache**: `api/visitors.php`, `cache/visitors.json`
-- **Styles**: `assets/css/sections.css` (`.footer-visitor-pill`)
-- **Behavior**:
-  - Multi-tier resilient architecture:
-    1. **Tier 1 (Local PHP on XAMPP)**: Calls `api/visitors.php` with atomic file locking (`flock`) on `cache/visitors.json` and 30-minute session cooldown cookies to prevent rapid refresh spam.
-    2. **Tier 2 (Static Fallback on Netlify/CDN)**: Evaluates a public counter API (`api.counterapi.dev`) with strict 2.5s `AbortController` timeout and content-type validation; does not assume availability.
-    3. **Tier 3 (Offline / LocalStorage Cache)**: If both endpoints are unreachable or invalid, immediately falls back to `localStorage` and a seed value (`248`), guaranteeing the counter never errors or displays "NaN".
-  - **Display**: Exclusively placed in the global **Footer** brand colophon as a sleek, editorial pill (`● 👁 248 site views`) with a live pulsating status dot (`.status-dot-active`), leaving the Hero section clean and focused.
-  - Features smooth cubic ease-out numeric animation on page load.
+## 12. Live Site Visitor & Viewer Counter [Removed]
+- **Status**: Completely removed following footer removal. Background heartbeat polling, `api/visitors.php`, `cache/visitors.json`, and client-side `VisitorManager` orchestrator have been eliminated.
 
 ---
 

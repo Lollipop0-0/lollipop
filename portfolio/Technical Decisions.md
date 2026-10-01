@@ -96,21 +96,10 @@ This document records the major architectural, engineering, and UX decisions mad
 - **Files Responsible**:
   - `assets/css/responsive.css`: Configures tablet rules under `@media (max-width: 868px)` and mobile-only collapse under `@media (max-width: 600px)`.
 
-## Decision 9: Multi-Tier Resilient Visitor Counter Architecture (Footer-Only Placement)
-- **Decision**: Implement the website viewer/visitor counter exclusively in the global footer colophon (`components/footer.html`), using a resilient three-tier fallback architecture:
-  1. Local PHP API (`api/visitors.php`) with atomic file locking (`flock`) on `cache/visitors.json` and session cooldown cookies (`ke_portfolio_sess`).
-  2. Public REST Counter API (`api.counterapi.dev`) for static CDN deployments (Netlify / GitHub Pages), strictly treated as non-guaranteed with a 2.5s `AbortController` timeout and content-type verification.
-  3. `localStorage` cache & persistent seed fallback (`248 site views`) ensuring the badge never displays an error or "NaN".
-- **Rationale**:
-  - **Footer-Only Placement**: Keeping the badge exclusively in the global footer prevents visual competition with Karl's primary hero identity, portrait, and action buttons, while still maintaining full visitor transparency.
-  - **Non-Guaranteed Public API Handling**: External free APIs like `counterapi.dev` can suffer from downtime or rate limits. Enforcing a strict timeout and type validation guarantees that a slow or broken external service will never stall portfolio loading or display a broken state.
-  - **Zero-Dependency Privacy**: No third-party tracking cookies or external analytical SDKs are loaded.
-- **Files Responsible**:
-  - `api/visitors.php`: Local backend endpoint with atomic write lock and session deduplication.
-  - `cache/visitors.json`: Local atomic counter storage.
-  - `assets/js/visitors.js`: Client orchestrator with 3-tier fallback and smooth number animation.
-  - `components/footer.html`: Clean UI pill badge markup with live pulsating indicator.
-  - `assets/css/sections.css`: Styling for `.footer-visitor-pill`.
+## Decision 9: Visitor Counter Architecture [Retired / Removed]
+- **Status**: Retired and removed on 2026-10-01 following the dropping of the global footer colophon.
+- **Historical Context**: Previously implemented a multi-tier resilient viewer counter (`api/visitors.php`, `assets/js/visitors.js`, `cache/visitors.json`) exclusively in the footer colophon. When the footer was dropped, the background orchestrator, heartbeat polling, backend endpoint, and CSS were fully decommissioned to prevent wasted network traffic and background execution.
+
 
 ## Decision 10: Data-Driven Modular Certificates Architecture with Modal Inspection
 - **Decision**: Architect the coursework certificates showcase as a data-driven, modular component (`components/certificates.html` and `PORTFOLIO_DATA.certificates`), inserted sequentially between `#stack` and `#journey`, and leveraging the existing WAI-ARIA accessible modal dialog (`ModalManager.openCertificate`) for full credential inspection.

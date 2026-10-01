@@ -2,6 +2,34 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-10-01: Preloader & Preload Optimization Audit & Head Preload Links
+- **Objective**: Audit and maximize site preloader performance across all pages (`index.html`, `about.html`, `projects.html`, `certificates.html`, `gear.html`, `404.html`), verifying critical inline CSS, theme sync, asset compression, and browser preload scanner cues.
+- **Key Deliverables**:
+  - **Browser Preload Scanner Links**: Added `<link rel="preload" as="image" href="assets/images/loader/stickman-loader.webp" type="image/webp">` to `<head>` on all 6 pages. The browser now starts streaming the 84 KB animated WebP loader concurrently with stylesheets before body parsing begins.
+  - **Critical Zero-FOUC CSS**: Verified inline `<style>` in `<head>` ensures the loader renders instantly on frame 0.
+  - **Zero-FOUC Theme Detection**: Verified inline script reads `localStorage` / OS preference to prevent dark-mode flashes.
+  - **Adaptive Timing Safeguards (`assets/js/preloader.js`)**: Verified `MIN_DISPLAY_TIME = 1200ms` guarantees smooth stickman playback, while `MAX_SAFETY_TIMEOUT = 3500ms` provides a hard safety fallback.
+  - **Verification**: All 6 pages return HTTP 200 with zero errors.
+
+
+## 2026-10-01: Cut Visitor Counter System (Backend, Client Orchestrator, Storage, and CSS)
+- **Objective**: Completely cut the visitor and real-time viewer tracking system following the previous removal of the global footer, eliminating background network polling, heartbeats, and disk writes.
+- **Key Deliverables**:
+  - **Removed Client Orchestrator**:
+    - Deleted `assets/js/visitors.js` (`VisitorManager`).
+    - Removed `VisitorManager.init()` call from `assets/js/app.js`.
+    - Removed `assets/js/visitors.js` from the `optimize.py` JS bundle list.
+  - **Removed Backend & Storage**:
+    - Deleted `api/visitors.php` presence/counter endpoint.
+    - Deleted `cache/visitors.json` and `cache/active_viewers.json`.
+  - **Styles Cleanup (`assets/css/sections.css`)**:
+    - Removed unused `.footer-visitor-pill`, `.footer-visitor-sep`, `.footer-live-segment`, `.footer-total-segment`, and `.viewer-avatar-*` animation/avatar CSS rules.
+  - **Build & Optimization**:
+    - Recompiled production bundles via `python optimize.py`.
+    - JavaScript bundle reduced by 25.6 KB (191.7 KB minified).
+    - CSS bundle reduced by 46.5 KB unminified (136.1 KB minified).
+
+
 ## 2026-10-01: Update Light Mode Hover Hero Avatar to Shy Mouth-Cover Chuckle
 - **Objective**: Replace the subtle downward gaze light-mode hover state with a shy hand-over-mouth chuckle reaction, preserving the user's graduation regalia and background.
 - **Key Deliverables**:

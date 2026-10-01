@@ -102,11 +102,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-    // 10. Initialize Visitor & Viewer Counter
-    if (window.VisitorManager) {
-      window.VisitorManager.init();
-    }
-
     // 11. Back to Top Smooth Scroll
     const backToTopBtn = document.getElementById("back-to-top");
     if (backToTopBtn) {

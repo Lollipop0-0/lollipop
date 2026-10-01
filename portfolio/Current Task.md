@@ -55,11 +55,11 @@
    - Live contribution matrix, profile badge, recent activity feed (`#github-activity-feed`), and top languages breakdown (`#github-languages-list`).
 6. **05 — Get in Touch** (`components/contact.html`, kicker `05`):
    - Contact methods list and interactive `#contact-form` with validation and error states.
-7. **Footer**: Single-tier refined bar with site visitor count pill and back-to-top button.
 
 ---
 
 ## Verification & Status
-- All 12 JS modules pass syntax checks with zero errors.
+- Footer and visitor tracker cut and fully retired; no background network polling, heartbeats, or storage writes.
+- All remaining JS modules pass syntax checks with zero errors.
 - Chrome CDP audit confirms zero overflow, zero collision, and correct link resolution.
 - Branch: `main`.

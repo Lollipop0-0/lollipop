@@ -43,7 +43,7 @@ This document provides a complete inventory of project files and their specific 
 | `components/certificates.html` | "Certificates & Certifications" container hosting verified Sololearn course credentials and credential ID inspector triggers. |
 | `components/journey.html` | Academic and programming development timeline alongside the "Currently Figuring Out" exploration cards. |
 | `components/contact.html` | Contact information, verified channels, validated contact form, and transparent `mailto:` launch system. |
-| `components/footer.html` | Footer colophon, social media links, back-to-top button, visitor view counter, and copyright year. |
+| `components/footer.html` | Previously hosted footer colophon (dropped as requested). |
 | `components/project-modal.html` | WAI-ARIA accessible modal dialog for inspecting detailed project architectural highlights and screenshots. |
 
 ---
@@ -71,8 +71,8 @@ This document provides a complete inventory of project files and their specific 
 | `assets/js/github.js` | `GitHubManager`: Multi-tier resilient data fetcher (PHP proxy, Netlify serverless function, static JSON cache) for real GitHub user metrics, languages, and contribution calendar. |
 | `assets/js/contact.js` | `ContactManager`: Client-side validation of name, email, and message; prepares pre-filled `mailto:` email links and provides copy fallbacks. |
 | `assets/js/search.js` | `SearchManager`: Fast command palette / search dialog (`Cmd/Ctrl + K`) indexing all projects, tech stack, milestones, and sections with keyboard navigation. |
-| `assets/js/visitors.js` | `VisitorManager`: Multi-tier resilient viewer counter orchestrator (local PHP -> public count API -> localStorage cache) with numeric animation. |
 | `assets/js/components.js` | `ComponentLoader`: Concurrently fetches all component partials in `components/` and injects them into `#app`. |
+| `assets/js/preloader.js` | `PreloaderManager`: Animated stickman runner loading experience, progress computation, and smooth transition. |
 | `assets/js/app.js` | Main orchestrator initializing modules sequentially once the DOM is fully loaded and components are mounted. |
 
 ---
@@ -82,8 +82,6 @@ This document provides a complete inventory of project files and their specific 
 |---|---|
 | `api/contributions.php` | Local PHP proxy script for querying and parsing GitHub contribution calendar HTML/SVG. |
 | `cache/contributions_lollipop0-0.json` | Committed static fallback containing cached contribution calendar data for offline or rate-limited environments. |
-| `api/visitors.php` | Local PHP visitor counter endpoint with atomic file locking (`flock`) and session cooldown cookies. |
-| `cache/visitors.json` | Atomic JSON storage for total views and unique visitors. |
 
 ---
 

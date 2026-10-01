@@ -8,10 +8,16 @@ Generates optimized WebP images, minified styles.min.css, and bundled bundle.min
 import os
 import re
 import sys
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ImageSequence
+
+try:
+    import rjsmin
+    HAS_RJSMIN = True
+except ImportError:
+    HAS_RJSMIN = False
 
 def optimize_images():
-    print("[1/3] Optimizing Images...")
+    print("[1/3] Optimizing Images (Preserving Exact Dimensions & Framing)...")
     
     # 1. Hero Image
     hero_src = "assets/images/gradpic.jpg"
@@ -28,7 +34,7 @@ def optimize_images():
             s_opt = os.path.getsize(hero_dst) / 1024
             print(f"  [OK] Hero: {s_orig:.1f} KB -> {s_opt:.1f} KB ({((s_orig-s_opt)/s_orig)*100:.1f}% reduction)")
 
-    # 1.5 Hero Character Interactive States (Light Default, Light Hover, Dark Default, Dark Hover)
+    # 1.5 Hero Character Interactive States (Strictly preserving 896x1200 original dimensions)
     hero_states = [
         "hero-light-default",
         "hero-light-hover",
@@ -40,34 +46,34 @@ def optimize_images():
         h_dst = f"assets/images/hero/{h}.webp"
         if os.path.exists(h_src):
             with Image.open(h_src) as im:
-                im.save(h_dst, "WEBP", quality=88, method=6)
+                im.save(h_dst, "WEBP", quality=80, method=6)
                 s_orig = os.path.getsize(h_src) / 1024
                 s_opt = os.path.getsize(h_dst) / 1024
-                print(f"  [OK] Hero State {h}: {s_orig:.1f} KB -> {s_opt:.1f} KB ({((s_orig-s_opt)/s_orig)*100:.1f}%)")
+                print(f"  [OK] Hero State {h} (896x1200): {s_orig:.1f} KB -> {s_opt:.1f} KB ({((s_orig-s_opt)/s_orig)*100:.1f}%)")
 
-    # 2. Project Mockups
+    # 2. Project Mockups (Strictly preserving 1376x768 original dimensions)
     projects = ["cup", "hotel", "inventory", "library", "smartspace", "sneakerhub"]
     for p in projects:
         src = f"assets/images/projects/{p}/preview.jpg"
         dst = f"assets/images/projects/{p}/preview.webp"
         if os.path.exists(src):
             with Image.open(src) as im:
-                im.save(dst, "WEBP", quality=80, method=6)
+                im.save(dst, "WEBP", quality=74, method=6)
                 s_orig = os.path.getsize(src) / 1024
                 s_opt = os.path.getsize(dst) / 1024
-                print(f"  [OK] Project {p}: {s_orig:.1f} KB -> {s_opt:.1f} KB ({((s_orig-s_opt)/s_orig)*100:.1f}%)")
+                print(f"  [OK] Project {p} (1376x768): {s_orig:.1f} KB -> {s_opt:.1f} KB ({((s_orig-s_opt)/s_orig)*100:.1f}%)")
 
-    # 3. Certificates
+    # 3. Certificates (Strictly preserving 1024x722 original dimensions)
     certs = ["cert-cpp", "cert-css", "cert-html", "cert-javascript"]
     for c in certs:
         src = f"assets/images/certificates/{c}.png"
         dst = f"assets/images/certificates/{c}.webp"
         if os.path.exists(src):
             with Image.open(src) as im:
-                im.save(dst, "WEBP", quality=82, method=6)
+                im.save(dst, "WEBP", quality=76, method=6)
                 s_orig = os.path.getsize(src) / 1024
                 s_opt = os.path.getsize(dst) / 1024
-                print(f"  [OK] Certificate {c}: {s_orig:.1f} KB -> {s_opt:.1f} KB ({((s_orig-s_opt)/s_orig)*100:.1f}%)")
+                print(f"  [OK] Certificate {c} (1024x722): {s_orig:.1f} KB -> {s_opt:.1f} KB ({((s_orig-s_opt)/s_orig)*100:.1f}%)")
 
     # 4. OG Preview
     og_src = "assets/images/og-preview.png"
@@ -78,6 +84,20 @@ def optimize_images():
             s_orig = os.path.getsize(og_src) / 1024
             s_opt = os.path.getsize(og_dst) / 1024
             print(f"  [OK] OG Preview: {s_orig:.1f} KB -> {s_opt:.1f} KB ({((s_orig-s_opt)/s_orig)*100:.1f}%)")
+
+    # 5. Animated Stickman Loader (Strictly preserving 140x155 resolution and all 35 frames)
+    loader_src = "assets/images/loader/stickman-loader-source.webp"
+    loader_dst = "assets/images/loader/stickman-loader.webp"
+    if not os.path.exists(loader_src) and os.path.exists(loader_dst):
+        loader_src = loader_dst
+    if os.path.exists(loader_src):
+        with Image.open(loader_src) as im:
+            frames = [f.copy() for f in ImageSequence.Iterator(im)]
+            duration = im.info.get("duration", 40)
+            s_orig = os.path.getsize(loader_src) / 1024
+            frames[0].save(loader_dst, format="WEBP", save_all=True, append_images=frames[1:], duration=duration, loop=0, quality=75, method=4)
+            s_opt = os.path.getsize(loader_dst) / 1024
+            print(f"  [OK] Stickman Loader (140x155, 35 frames): {s_orig:.1f} KB -> {s_opt:.1f} KB ({((s_orig-s_opt)/s_orig)*100:.1f}%)")
 
 def minify_css():
     print("\n[2/3] Compiling & Minifying CSS...")
@@ -130,18 +150,21 @@ def bundle_js():
             with open(f, "r", encoding="utf-8") as fp:
                 combined_js += f"\n/* --- {os.path.basename(f)} --- */\n" + fp.read() + "\n;\n"
 
-    # Strip block comments and pure comment lines
-    lines = []
-    for line in combined_js.splitlines():
-        line_s = line.strip()
-        if line_s.startswith("//"):
-            continue
-        lines.append(line)
-    js = "\n".join(lines)
-    js = re.sub(r"/\*[\s\S]*?\*/", "", js)
-    js = re.sub(r"\n\s*\n+", "\n", js).strip()
-
     out_js = "assets/js/bundle.min.js"
+    if HAS_RJSMIN:
+        js = rjsmin.jsmin(combined_js)
+    else:
+        # Fallback regex comment stripper
+        lines = []
+        for line in combined_js.splitlines():
+            line_s = line.strip()
+            if line_s.startswith("//"):
+                continue
+            lines.append(line)
+        js = "\n".join(lines)
+        js = re.sub(r"/\*[\s\S]*?\*/", "", js)
+        js = re.sub(r"\n\s*\n+", "\n", js).strip()
+
     with open(out_js, "w", encoding="utf-8") as fp:
         fp.write(js)
 

@@ -229,9 +229,16 @@ const NavigationManager = (() => {
       }
     });
 
+    // Batch read layout metrics upfront to prevent forced synchronous reflows
+    const currentScrollY = window.scrollY || window.pageYOffset || 0;
+    const windowH = window.innerHeight;
+    const docH = document.documentElement.scrollHeight;
+    const maxScroll = docH - windowH;
+    const scrollPercent = maxScroll > 0 ? (currentScrollY / maxScroll) * 100 : 0;
+
     // Add subtle shadow and elevated border when scrolled
     if (header) {
-      if (window.scrollY > 20) {
+      if (currentScrollY > 20) {
         header.classList.add("is-scrolled");
       } else {
         header.classList.remove("is-scrolled");
@@ -241,7 +248,7 @@ const NavigationManager = (() => {
     // Smoothly hide hero scroll indicator when scrolled down
     const scrollIndicator = document.getElementById("hero-scroll-indicator");
     if (scrollIndicator) {
-      if (window.scrollY > 60) {
+      if (currentScrollY > 60) {
         scrollIndicator.classList.add("is-scrolled-hidden");
       } else {
         scrollIndicator.classList.remove("is-scrolled-hidden");
@@ -251,8 +258,6 @@ const NavigationManager = (() => {
     // Update top reading scroll progress bar
     const progressBar = document.getElementById("scroll-progress-bar");
     if (progressBar) {
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      const scrollPercent = maxScroll > 0 ? (window.scrollY / maxScroll) * 100 : 0;
       progressBar.style.width = `${Math.min(100, Math.max(0, scrollPercent))}%`;
     }
   }

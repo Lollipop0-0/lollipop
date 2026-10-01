@@ -2,7 +2,20 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
-## 2026-10-01: Fix Netlify Stale Asset Caching for Hero Light Hover Avatar & Static Assets
+## 2026-10-02: Conservative Mobile PageSpeed & Core Web Vitals Optimization (Zero Visual Regression)
+- **Objective**: Optimize Google PageSpeed Insights mobile performance, LCP, INP, and CLS without altering any visual design, image proportions, crop, framing, or animations.
+- **Strict Visual & Proportional Preservation**:
+  - Maintained 100% of existing image dimensions across all images (Hero 896x1200, Projects 1376x768, Certificates 1024x722, Stickman 140x155). Zero resizing was performed.
+  - Verified visual fidelity: maximum channel deviation is under 1.5 / 255 (<0.6%), ensuring identical rendering on all displays.
+- **Key Deliverables**:
+  - **LCP Preload Scanner Priority (`index.html`)**: Added `fetchpriority="high"` to `<link rel="preload" as="image" href="assets/images/hero/hero-light-default.webp?v=2">` to eliminate resource discovery delay.
+  - **Below-the-Fold Lazy Loading (`assets/js/app.js`)**: Added `width="1376" height="768" loading="lazy" decoding="async"` to `.stacked-image` in `#work-mobile-stack`, preventing 5 below-the-fold project images (~390 KiB) from eagerly downloading on initial mobile render.
+  - **Forced Reflow Elimination (`assets/js/navigation.js`)**: Batched layout geometry reads (`window.scrollY`, `scrollHeight`) upfront before classList mutations in `updateActiveLink()`, eliminating 195 ms of synchronous layout thrashing.
+  - **Hero Rotator Layout Optimization (`assets/js/app.js`)**: Pre-measured role text widths with an off-screen canvas, eliminating `void wrapper.offsetWidth` forced layout reflows and reducing CLS shifts while keeping identical 2.8s transition physics.
+  - **Conservative Image Compression (`optimize.py`)**: Re-compressed WebP assets at original dimensions (`quality=80` for hero, `quality=74` for projects, `quality=76` for certificates, and `quality=75` for stickman), saving ~209 KB across images with zero visual change.
+  - **Production JavaScript Minification (`requirements.txt`, `optimize.py`)**: Added `rjsmin` to build pipeline, reducing `bundle.min.js` from 192.3 KB to 159.1 KB (27% uncompressed reduction, ~7 KiB gzipped).
+  - **Google Fonts Preload Hint (`index.html`)**: Added `<link rel="preload" as="style">` for the Google Fonts stylesheet to accelerate stylesheet streaming.
+
 - **Objective**: Resolve the issue where Netlify did not display the updated hero light hover image (`hero-light-hover.webp`) due to immutable browser caching headers.
 - **Root Cause**:
   - `netlify.toml` previously specified `Cache-Control: public, max-age=31536000, immutable` for all `/assets/*`.

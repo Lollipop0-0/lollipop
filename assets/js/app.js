@@ -168,7 +168,7 @@ function renderSelectedProjects() {
   // 2. Render Mobile Stack items into #work-mobile-stack
   if (mobileStack) {
     mobileStack.innerHTML = selectedProjects.map((project, idx) => `
-      <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)}" class="stacked-image" data-stack-index="${idx}" data-project-id="${escapeHtml(project.id)}" draggable="false">
+      <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)}" class="stacked-image" data-stack-index="${idx}" data-project-id="${escapeHtml(project.id)}" width="1376" height="768" loading="lazy" decoding="async" draggable="false">
     `).join("");
   }
 
@@ -683,17 +683,34 @@ function initHeroWordRotator() {
     heroIntro.addEventListener("mouseleave", () => { isPaused = false; });
   }
 
+  // Pre-measure role widths using off-screen canvas to eliminate forced synchronous reflows
+  const roleWidths = [];
+  function measureRoleWidths() {
+    if (!wordEl) return;
+    const computed = window.getComputedStyle(wordEl);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.font = `${computed.fontWeight || '700'} ${computed.fontSize || '16px'} ${computed.fontFamily || 'Inter, sans-serif'}`;
+      roles.forEach((role, i) => {
+        roleWidths[i] = Math.ceil(ctx.measureText(role).width) + 2;
+      });
+    }
+  }
+  measureRoleWidths();
+
   // Initialize wrapper width to match initial role
   if (wrapper) {
-    wrapper.style.width = `${wordEl.offsetWidth}px`;
+    const initW = roleWidths[0] || wordEl.offsetWidth;
+    wrapper.style.width = `${initW}px`;
   }
 
   // Handle window resize dynamically
   window.addEventListener("resize", () => {
-    if (wrapper && wordEl) {
-      wrapper.style.width = "auto";
-      const w = wordEl.offsetWidth;
-      wrapper.style.width = `${w}px`;
+    measureRoleWidths();
+    if (wrapper) {
+      const curW = roleWidths[currentIndex] || (wordEl ? wordEl.offsetWidth : 0);
+      if (curW > 0) wrapper.style.width = `${curW}px`;
     }
   }, { passive: true });
 
@@ -716,13 +733,9 @@ function initHeroWordRotator() {
       wordEl.classList.remove("is-exiting");
       wordEl.classList.add("is-entering-prep");
 
-      // Animate container width smoothly to avoid jarring jump in following text
+      // Animate container width smoothly without forcing layout reflow
       if (wrapper) {
-        const prevWidth = wrapper.style.width;
-        wrapper.style.width = "auto";
-        const targetWidth = wordEl.offsetWidth;
-        wrapper.style.width = prevWidth;
-        void wrapper.offsetWidth; // force reflow
+        const targetWidth = roleWidths[nextIndex] || wordEl.offsetWidth;
         wrapper.style.width = `${targetWidth}px`;
       }
 

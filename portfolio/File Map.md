@@ -12,7 +12,6 @@ This document provides a complete inventory of project files and their specific 
 | `certificates.html` | Standalone application shell for Dedicated Certificates Directory mounting `CERTIFICATES_MANIFEST`. |
 | `about.html` | Standalone application shell for Detailed About page mounting `ABOUT_MANIFEST`. |
 | `gear.html` | Standalone application shell for Dedicated Gear & Workspace page mounting `GEAR_MANIFEST`. |
-| `store.html` | Standalone application shell for Dedicated Store & Digital Goods page mounting `STORE_MANIFEST`. |
 | `404.html` | Standalone custom error page with theme switcher, Newsreader typography, and "Back Home" CTA. |
 | `.htaccess` | Apache configuration routing 404 and 500 error documents to `/lollipop/404.html` with security headers. |
 | `README.md` | Comprehensive project setup, execution guide, folder overview, and architectural reference. |
@@ -38,8 +37,6 @@ This document provides a complete inventory of project files and their specific 
 | `components/certificates-gallery.html` | Dedicated certificates directory gallery showcasing verified Sololearn credentials. |
 | `components/gear-hero.html` | Gear page hero header with workspace kicker, title, and setup narrative. |
 | `components/gear.html` | Dedicated gear and workstation showcase with categorized cards for hardware, dev tools, and software. |
-| `components/store-hero.html` | Store page hero header with digital goods kicker, title, and open-source narrative. |
-| `components/store.html` | Dedicated store catalog featuring open-source boilerplates, templates, and student resources. |
 | `components/work.html` | Featured Project deep dive (Celestine University of the Pacific) and categorized Project Archive with filtering tabs. |
 | `components/activity.html` | GitHub activity overview, live profile stats, languages breakdown, and interactive contribution calendar matrix. |
 | `components/stack.html` | "Things I Build With" container hosting categorized technology and tool cards. |

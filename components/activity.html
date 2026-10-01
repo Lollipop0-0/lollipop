@@ -1,53 +1,52 @@
-<!-- 04 — Code Activity Section (Dynamic GitHub Contribution Matrix & Activity) -->
+<!-- 04 — Code Activity Section (Interactive GitHub Contributions Inspired by iqmal.dev) -->
 <section id="activity" class="activity-section" aria-labelledby="activity-title">
-  <div class="container">
-    <div class="section-title-wrap" style="margin-bottom: 20px;">
-      <span class="section-kicker-num">04</span>
-      <h2 id="activity-title" class="activity-title-text">GitHub Activity</h2>
+  <!-- Dramatic Blurred Background Typography Watermark -->
+  <div aria-hidden="true" class="activity-watermark">CONTRIBUTIONS</div>
+
+  <div class="container activity-container">
+    <!-- Editorial Section Header Row -->
+    <div class="activity-header-row">
+      <div class="activity-header-left">
+        <p class="activity-kicker">Coding activity</p>
+        <h2 id="activity-title" class="activity-heading">GitHub Contributions</h2>
+      </div>
+      <p class="activity-header-desc">
+        Open-source activity tracker showing commits, pull requests, and verified code reviews across active repositories.
+      </p>
     </div>
 
     <!-- Status notice (fallback or error banner) -->
     <div id="github-status-notice"></div>
 
-    <!-- Compact Code Activity Layout -->
-    <div class="code-activity-grid">
-      <!-- Left Card: Profile & Contribution Matrix -->
-      <div class="code-activity-card activity-matrix-card">
-        <!-- Top Profile Row: Avatar + Name + Handle + Live Status / Profile Link -->
-        <div class="gh-matrix-header">
-          <div id="github-profile-card" class="gh-profile-compact">
-            <div class="gh-profile-user">
-              <img src="https://avatars.githubusercontent.com/Lollipop0-0" alt="Karl Evan Tabunda" class="gh-avatar" width="46" height="46"
-                loading="lazy" onerror="this.onerror=null;this.src='assets/images/github-avatar.png';">
-              <div class="gh-user-meta">
-                <span class="gh-user-fullname">Karl Evan Tabunda</span>
-                <a href="https://github.com/Lollipop0-0" target="_blank" rel="noopener noreferrer"
-                  class="gh-user-handle">@KarlEvanTabunda</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="gh-matrix-header-actions">
-            <span class="gh-live-indicator" title="Live GitHub Activity Sync">
-              <span class="gh-live-dot" aria-hidden="true"></span>
-              <span>Activity Matrix</span>
-            </span>
-            <a href="https://github.com/Lollipop0-0" target="_blank" rel="noopener noreferrer" class="gh-profile-btn"
-              aria-label="Open Karl Evan Tabunda GitHub profile in new tab">
-              <span>github.com/Lollipop0-0</span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                <polyline points="15 3 21 3 21 9"></polyline>
-                <line x1="10" y1="14" x2="21" y2="3"></line>
-              </svg>
-            </a>
-          </div>
+    <!-- Primary Showcase: 2-Column Split (Metrics Column + Contribution Calendar Card) -->
+    <div class="contrib-showcase-grid">
+      <!-- Left Column: High-Impact Metrics Cards -->
+      <div class="contrib-metrics-col">
+        <!-- Hero Metric Card: Last 365 Days -->
+        <div class="contrib-metric-card contrib-hero-card">
+          <p class="contrib-metric-kicker">Last 365 Days</p>
+          <div class="contrib-metric-hero-num" id="github-total-number">--</div>
+          <p class="contrib-metric-subtext" id="github-total-contribs">contributions in the last year</p>
         </div>
 
+        <!-- 2-Column Submetrics Grid (Longest Streak & Active Days) -->
+        <div class="contrib-submetrics-grid">
+          <div class="contrib-metric-card contrib-sub-card">
+            <p class="contrib-metric-kicker">Longest Streak</p>
+            <div class="contrib-metric-val" id="github-longest-streak">--</div>
+          </div>
+          <div class="contrib-metric-card contrib-sub-card">
+            <p class="contrib-metric-kicker">Active Days</p>
+            <div class="contrib-metric-val" id="github-active-days">--</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Interactive Contribution Calendar Card -->
+      <div class="contrib-calendar-card">
         <!-- Matrix Calendar with Month headers, Day labels, Cells, and Floating Tooltip -->
         <div class="gh-matrix-card-body">
-          <div class="gh-matrix-scroll-wrapper" id="github-matrix-container" role="region"
+          <div class="contrib-grid-scroll gh-matrix-scroll-wrapper" id="github-matrix-container" role="region"
             aria-label="GitHub Contribution Graph">
             <div class="matrix-loading-placeholder">
               <span class="matrix-spinner" aria-hidden="true"></span>
@@ -58,38 +57,61 @@
           <!-- Dynamic Floating Tooltip -->
           <div id="matrix-tooltip" class="matrix-tooltip" role="tooltip" aria-hidden="true"></div>
 
-          <div class="gh-matrix-footer">
-            <div class="gh-matrix-footer-left">
-              <span class="gh-total-contribs-badge" id="github-total-contribs">Loading contributions...</span>
-            </div>
-            <div class="gh-matrix-legend" aria-label="Contribution activity legend">
+          <!-- Bottom Card Footer (iqmal.dev style: @handle on left, Less-More legend on right) -->
+          <div class="contrib-card-footer">
+            <a href="https://github.com/Lollipop0-0" target="_blank" rel="noopener noreferrer" class="contrib-handle-link">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+              </svg>
+              <span>@Lollipop0-0</span>
+            </a>
+            <div class="contrib-legend" aria-label="Contribution activity legend">
               <span>Less</span>
-              <div class="gh-legend-cells" aria-hidden="true">
-                <span class="gh-legend-cell lvl-0" title="0 contributions"></span>
-                <span class="gh-legend-cell lvl-1" title="1–2 contributions"></span>
-                <span class="gh-legend-cell lvl-2" title="3–5 contributions"></span>
-                <span class="gh-legend-cell lvl-3" title="6–9 contributions"></span>
-                <span class="gh-legend-cell lvl-4" title="10+ contributions"></span>
+              <div class="contrib-legend-cells" aria-hidden="true">
+                <span class="contrib-legend-cell lvl-0" title="0 contributions"></span>
+                <span class="contrib-legend-cell lvl-1" title="1–2 contributions"></span>
+                <span class="contrib-legend-cell lvl-2" title="3–5 contributions"></span>
+                <span class="contrib-legend-cell lvl-3" title="6–9 contributions"></span>
+                <span class="contrib-legend-cell lvl-4" title="10+ contributions"></span>
               </div>
               <span>More</span>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Right Card: Recent Activity + Top Languages -->
+    <!-- Secondary Row: Recent Commit Activity & Top Languages Breakdown -->
+    <div class="activity-supplementary-grid">
+      <!-- Recent Commit Feed -->
       <div class="code-activity-card activity-feed-card">
-        <div class="activity-side-block">
-          <h3 class="activity-subheading">Recent Activity</h3>
-          <div id="github-activity-feed"></div>
+        <div class="activity-card-header-bar">
+          <div class="activity-card-header-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"></circle>
+              <line x1="1.05" y1="12" x2="7" y2="12"></line>
+              <line x1="17.01" y1="12" x2="22.96" y2="12"></line>
+            </svg>
+            <h3>Recent Commit Activity</h3>
+          </div>
+          <span class="activity-status-pill">Live Commits</span>
         </div>
+        <div id="github-activity-feed"></div>
+      </div>
 
-        <div class="activity-side-divider"></div>
-
-        <div class="activity-side-block">
-          <h3 class="activity-subheading">Top Languages</h3>
-          <div id="github-languages-list"></div>
+      <!-- Top Languages Breakdown -->
+      <div class="code-activity-card activity-feed-card">
+        <div class="activity-card-header-bar">
+          <div class="activity-card-header-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="16 18 22 12 16 6"></polyline>
+              <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+            <h3>Top Languages Breakdown</h3>
+          </div>
+          <span class="activity-status-pill">Ecosystem</span>
         </div>
+        <div id="github-languages-list"></div>
       </div>
     </div>
   </div>

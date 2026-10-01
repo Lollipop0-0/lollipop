@@ -207,38 +207,7 @@ const NavigationManager = (() => {
           link.removeAttribute("aria-current");
         }
       });
-      if (moreTrigger) {
-        moreTrigger.classList.add("is-active");
-        moreTrigger.setAttribute("aria-current", "page");
-      }
       return;
-    }
-
-    const isStorePage = window.location.pathname.endsWith("store.html") ||
-      (document.getElementById("app") && document.getElementById("app").getAttribute("data-page") === "store");
-
-    if (isStorePage) {
-      navLinks.forEach(link => {
-        const href = link.getAttribute("href") || "";
-        if (href === "store.html" || href === "/store" || href.endsWith("/store.html")) {
-          link.classList.add("is-active");
-          link.setAttribute("aria-current", "page");
-        } else {
-          link.classList.remove("is-active");
-          link.removeAttribute("aria-current");
-        }
-      });
-      if (moreTrigger) {
-        moreTrigger.classList.add("is-active");
-        moreTrigger.setAttribute("aria-current", "page");
-      }
-      return;
-    }
-
-    // On other pages, reset More dropdown button active indicator
-    if (moreTrigger) {
-      moreTrigger.classList.remove("is-active");
-      moreTrigger.removeAttribute("aria-current");
     }
 
     // On homepage, Home navigation link remains active

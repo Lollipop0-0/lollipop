@@ -11,7 +11,7 @@ The portfolio is structured as a **client-side single-page application (SPA)** b
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                           Root Application Shells                               │
-│  index.html │ about.html │ projects.html │ certificates.html │ gear.html │ store.html
+│  index.html │ about.html │ projects.html │ certificates.html │ gear.html
 │                (Ultra-thin Page Shells + Mounting Point #app)                   │
 └────────────────────────────────────────┬────────────────────────────────────────┘
                                          │
@@ -22,7 +22,7 @@ The portfolio is structured as a **client-side single-page application (SPA)** b
                      │        ComponentLoader (loadAll)       │
                      │  Detects [data-page] & loads Manifest: │
                      │   HOMEPAGE · ABOUT · PROJECTS ·        │
-                     │   CERTIFICATES · GEAR · STORE          │
+                     │   CERTIFICATES · GEAR                  │
                      │   Fetches /components/*.html partials  │
                      └───────────────────┬────────────────────┘
                                          │
@@ -57,9 +57,8 @@ Instead of hardcoding a monolithic 2,000-line HTML file, sections are separated 
   - `PROJECTS_MANIFEST`: Header, Projects Hero, Projects Gallery, Footer, Project Modal.
   - `CERTIFICATES_MANIFEST`: Header, Certificates Hero, Certificates Gallery, Footer, Project Modal.
   - `GEAR_MANIFEST`: Header, Gear Hero, Gear, Footer, Project Modal.
-  - `STORE_MANIFEST`: Header, Store Hero, Store, Footer, Project Modal.
 - **Top Navigation Architecture**:
-  - Global Header (`components/header.html`) provides primary navigation: **Home**, **About**, **Projects**, **Certificates**, and **More ▾** (dropdown menu with **Gear** and **Store**).
+  - Global Header (`components/header.html`) provides primary navigation: **Home**, **About**, **Projects**, **Certificates**, and **Gear**.
   - Responsive drawer provides equivalent navigation structure for tablet and mobile devices.
   - Route state is managed cleanly in `assets/js/navigation.js` with active state tracking.
 - **Main Container Wrapping**: Components with `isMainChild: true` are wrapped in a semantic `<main id="main-content">` landmark.

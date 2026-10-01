@@ -2,6 +2,210 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-10-01: Update Light Mode Hover Hero Avatar to Shy Mouth-Cover Chuckle
+- **Objective**: Replace the subtle downward gaze light-mode hover state with a shy hand-over-mouth chuckle reaction, preserving the user's graduation regalia and background.
+- **Key Deliverables**:
+  - **Image Generation**: Generated high-resolution portrait options matching Karl Evan's identity, graduation cap, green stole, white gown, and desk setup with code monitor.
+  - **Selected Asset**: Option 1 (full hand covering mouth in a shy chuckle with laughing crinkled eyes).
+  - **Asset Optimization**: Deployed to `assets/images/hero/hero-light-hover.jpg` and compiled to optimized WebP (`assets/images/hero/hero-light-hover.webp`, 53.9 KB, 71.4% compression) via `python optimize.py`.
+  - **Verification**: Verified seamless crossfade animation on the homepage interactive avatar card during light-mode hover.
+
+## 2026-10-01: Stickman Preloader Display Timing Fix on Certificates & Archive Pages
+- **Objective**: Diagnose and resolve why the preloader was not visible when visiting `certificates.html`.
+- **Root Causes**:
+  1. **Fixed Timestamp Bug**: `startTime = Date.now()` was initialized at bundle load time rather than inside `PreloaderManager.init()`. On dedicated pages like `certificates.html` with few lightweight components, `ComponentLoader` finished so fast that `elapsed` exceeded `MIN_DISPLAY_TIME` (1200ms), resulting in `remainingDelay = 0ms` (instant dismissal).
+  2. **Reduced Motion Bypass**: `prefersReducedMotion() ? 0 : ...` bypassed the display duration to 0ms if system/browser animations were reduced.
+- **Fix Delivered (`assets/js/preloader.js`)**:
+  - Re-anchored `startTime = Date.now()` inside `init()`.
+  - Enforced `remainingDelay = Math.max(900, MIN_DISPLAY_TIME - elapsed)` to guarantee the stickman runner animation is clearly visible for at least 1.0s to 1.2s before smooth fade-out.
+  - Recompiled production bundles via `python optimize.py`. Verified HTTP 200 delivery.
+
+## 2026-10-01: Monochrome Black & White Contribution Matrix Palette
+- **Objective**: Convert the GitHub contribution calendar SVG cells and footer legend from emerald green to a refined Black & White / grayscale monochrome density gradient across both Light and Dark themes.
+- **Key Deliverables**:
+  - **Styles (`assets/css/sections.css`)**:
+    - **Light Theme**:
+      - `lvl-0`: `#EBEDF0` (light neutral background)
+      - `lvl-1`: `#CBD5E1` (soft silver)
+      - `lvl-2`: `#8E9BAE` (medium charcoal)
+      - `lvl-3`: `#475569` (deep slate)
+      - `lvl-4`: `#1A1A1A` (pure obsidian black)
+    - **Dark Theme**:
+      - `lvl-0`: `rgba(255, 255, 255, 0.08)` (subtle dark glass tile)
+      - `lvl-1`: `rgba(255, 255, 255, 0.25)` (muted silver white)
+      - `lvl-2`: `rgba(255, 255, 255, 0.50)` (mid-tone white)
+      - `lvl-3`: `rgba(255, 255, 255, 0.78)` (bright silver white)
+      - `lvl-4`: `#FFFFFF` (brilliant white with `drop-shadow(0 0 3px rgba(255, 255, 255, 0.4))`)
+    - **Interactive States**:
+      - Updated `.matrix-cell:focus-visible` to `stroke: var(--primary);` (and `#FFFFFF` in dark mode).
+      - Updated `.matrix-spinner` border to `var(--primary)` and `#FFFFFF`.
+  - **Build & Optimization**:
+    - Recompiled production bundles via `python optimize.py`. Verified HTTP 200 delivery.
+
+## 2026-10-01: Streamline GitHub Contributions Calendar Card (Cut Card Header)
+- **Objective**: Remove the redundant `.contrib-card-header` (containing `Activity Matrix` live pill and `github.com/Lollipop0-0` top button) from `components/activity.html` to streamline the contribution matrix card presentation.
+- **Key Deliverables**:
+  - **Component Markup (`components/activity.html`)**:
+    - Removed `.contrib-card-header` from `.contrib-calendar-card`.
+    - Retained the primary section header kicker and title (`Coding activity / GITHUB CONTRIBUTIONS`) above the showcase, the dynamic 52-week SVG grid in the center, and the `@Lollipop0-0` profile link and 5-level color legend in `.contrib-card-footer` below.
+  - **Build & Optimization**:
+    - Recompiled production bundles via `python optimize.py`. Verified HTTP 200 delivery.
+
+## 2026-10-01: Replace Mobile Drawer "Download Resume" with "Hire Me" & Cut "Contact" from Navbar
+- **Objective**: Cut the redundant "Contact" text link from the navigation drawer and replace the mobile drawer footer's "Download Resume" link with a prominent "Hire Me" primary action button linking directly to `#contact`.
+- **Key Deliverables**:
+  - **Mobile Navigation Drawer Updates (`components/header.html`)**:
+    - Removed `<a href="index.html#contact" class="mobile-nav-link">Contact</a>` from `.mobile-nav-links`, harmonizing the link structure (`Home`, `About`, `Projects`, `Certificates`, `Gear`) identically with the desktop navbar.
+    - Replaced the PDF resume download link inside `.mobile-drawer-footer` with a full-width `.btn.btn-primary` "Hire Me" CTA button:
+      ```html
+      <a href="index.html#contact" class="btn btn-primary" style="width: 100%;" aria-label="Contact Karl Evan (Hire Me)">
+        <span>Hire Me</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+      ```
+    - Clicking the button automatically closes the mobile drawer and triggers smooth scroll directly to `#contact` via `NavigationManager`.
+  - **Build & Optimization**:
+    - Recompiled production minified assets via `python optimize.py`. Verified HTTP 200 delivery.
+
+## 2026-10-01: Stickman Runner Preloader Screen (Zero-FOUC Page Entrance)
+- **Objective**: Analyze `Screen Recording 2026-10-01 200033.mp4` and implement a full-screen site preloader featuring the animated stickman running on a horizontal ground bar before someone enters/opens the portfolio website.
+- **Key Deliverables**:
+  - **Screen Recording Decompilation & Frame Extraction**:
+    - Extracted all 70 frames at 30fps from `Screen Recording 2026-10-01 200033.mp4` using `ffmpeg`.
+    - Identified complete 2.26s running cycle (35 keyframes) consisting of:
+      - Head circle with depth shading.
+      - Vertical torso stem.
+      - Tilting seesaw arm pendulum beam oscillating from -22° to +22°.
+      - Dual-tone articulated 2-segment legs (foreground leg solid black `#000000`, background depth leg `#71717A`).
+      - Horizontal ground bar/treadmill with rounded ends underneath.
+      - Subtle 4px vertical running bounce / bobbing.
+  - **Spotless Transparent WebP Asset (`assets/images/loader/stickman-loader.webp`)**:
+    - Processed all frames with Pillow and NumPy:
+      - Stripped top-right yellow UI artifact.
+      - Pure zero-thresholding of the faint center watermark ("iconscout").
+      - Generated transparent alpha antialiasing mask.
+      - Created lightweight 84 KB looped animated WebP asset with zero compression artifacts.
+  - **Critical Inline Zero-FOUC Styling (`index.html`, `about.html`, `projects.html`, `certificates.html`, `gear.html`, `404.html`)**:
+    - Embedded critical CSS in `<head>` so `#site-preloader` renders on the very first frame before external stylesheets finish downloading.
+    - Added `#site-preloader` markup directly after `<body>` across all site pages:
+      - Centered container with soft ambient glow.
+      - Stickman runner image with `fetchpriority="high"`.
+      - Branded typography (`KARL EVAN TABUNDA`), monospace kicker, and pulsing dots.
+      - Live percentage text indicator (`0%` -> `100%`) and smooth progress bar track.
+  - **Full Dark Mode & Monochrome Support (`assets/css/components.css`)**:
+    - Light Mode: Renders crisp black and charcoal runner against pure white / frosted glass.
+    - Dark Mode: Styled via `[data-theme="dark"] .preloader-stickman-img { filter: invert(1) brightness(1.25) contrast(1.1); }` rendering crisp white and silver runner on deep `#0A0A0A` obsidian background.
+    - Added fluid progress bar glow and full accessibility support (`prefers-reduced-motion`).
+  - **Preloader Lifecycle Manager (`assets/js/preloader.js`, `assets/js/app.js`)**:
+    - Engineered `PreloaderManager` coordinating progress from 0% to 100% during asynchronous component mounting (`ComponentLoader.loadAll("#app")`).
+    - Enforced optimal display timing (`MIN_DISPLAY_TIME = 1200ms`) so visitors can enjoy the stickman running animation.
+    - Configured safety fallback timer (`MAX_SAFETY_TIMEOUT = 3500ms`) to guarantee the screen is never blocked even under slow network conditions.
+    - Exit animation: Smooth 550ms scale-up and fade-out (`transform: scale(1.04); opacity: 0; pointer-events: none;`) transitioning to `display: none`.
+  - **Production Optimization**:
+    - Added `assets/js/preloader.js` to `optimize.py`. Recompiled `styles.min.css` (138.2 KB) and `bundle.min.js` (199.5 KB) cleanly. Verified HTTP 200 on all routes.
+
+## 2026-10-01: GitHub Contribution Matrix Wave Animation & Dynamic Counter Interactivity
+- **Objective**: Analyze the user's screen recording (`Screen Recording 2026-10-01 200759.mp4`) and decompile `https://iqmal.dev/` to replicate the exact animation choreography of the contribution grid, metric counters, watermark parallax, and interactive 2-line tooltip.
+- **Key Deliverables**:
+  - **Screen Recording & Source Code Analysis**:
+    - Analyzed frame-by-frame motion in `Screen Recording 2026-10-01 200759.mp4` and decompiled `iqmal.dev`'s production Webpack chunk `109pstfez-awk.js`.
+    - Identified the exact GSAP parameters: `stagger: { grid: [7, 53], from: "start", amount: 1.5 }`, `ease: "back.out(1.5)"` / `cubic-bezier(0.34, 1.56, 0.64, 1)`, and radial distance delay distribution.
+    - Noted the exact 2-line tooltip at 00:04 with contribution count on top and formatted human date (`Dec 2, 2025`) below.
+  - **Staggered Spring Wave Cell Animation (`assets/js/github.js`, `assets/css/sections.css`)**:
+    - Implemented `animateContributionGrid()` using the Web Animations API (zero external framework dependencies, zero bundle bloat).
+    - Calculated delays per cell using normalized 2D Euclidean distance from the grid origin: `d = Math.sqrt(col^2 + row^2) / Math.sqrt(52^2 + 6^2) * 1500ms`.
+    - Keyframes scale cells from `0` to `1.18` (overshoot spring at 65% timeline) and settle at `1`, with opacity transitioning from `0` to `1`.
+    - Configured `transform-box: fill-box; transform-origin: center center;` on SVG `<rect>` elements so cells scale around their individual geometric centroids rather than the SVG canvas origin.
+    - Connected an `IntersectionObserver` with a `0.15` threshold so the wave fires seamlessly the moment the showcase scrolls into view.
+  - **Dynamic Number Counters with Ease-Out**:
+    - Animated the 3 primary metric displays (`Last 365 Days`, `Longest Streak`, `Active Days`) using `requestAnimationFrame` with a smooth quadratic ease-out (`1 - (1 - p)^2`) over 1800ms.
+  - **Atmospheric Parallax Watermark**:
+    - Created `initWatermarkParallax()` translating the blurred background `CONTRIBUTIONS` typography vertically (-40px to +40px) proportional to scroll position within the section.
+  - **Interactive 2-Line Tooltip & Keyboard Accessibility**:
+    - Updated `updateTooltip()` to generate the exact two-tier structure:
+      `<span class="matrix-tooltip-count">11 contributions</span>`
+      `<span class="matrix-tooltip-date">Dec 2, 2025</span>`
+    - Formatted dates with `formatShortDate()` into readable calendar format (`MMM D, YYYY`).
+    - Added bottom arrow indicator and clamp positioning to prevent clipping at viewport edges.
+  - **Build & Optimization**:
+    - Recompiled production bundles (`styles.min.css` and `bundle.min.js`) via `python optimize.py`. Verified HTTP 200 delivery on local server.
+
+## 2026-10-01: Apply iqmal.dev-Inspired Interactive GitHub Contributions Design
+- **Objective**: Analyze the GitHub contributions showcase on `https://iqmal.dev/` and apply its interactive, editorial design architecture to Karl Evan Tabunda's portfolio (`components/activity.html`, `assets/js/github.js`, and `assets/css/sections.css`).
+- **Key Deliverables**:
+  - **Atmospheric Background Watermark (`components/activity.html`, `assets/css/sections.css`)**:
+    - Embedded a massive, blurred background typography watermark (`CONTRIBUTIONS`) with `clamp(4rem, 15vw, 15rem)` text, `opacity: 0.045`, and `blur(3px)`.
+  - **Editorial Section Header**:
+    - Structured with a monospace uppercase kicker (`CODING ACTIVITY`), uppercase heading (`GITHUB CONTRIBUTIONS`), right-aligned description, and fine dividing baseline.
+  - **Primary 2-Column Split Layout**:
+    - **Left Column (Metrics)**:
+      - Hero Metric Card: `Last 365 Days` with high-impact animated number counter (`#github-total-number`), display typography, and `contributions in the last year` subtext.
+      - 2-Column Submetrics Grid: `Longest Streak` (`#github-longest-streak`) and `Active Days` percentage (`#github-active-days`) calculated directly from real commit history.
+    - **Right Column (Interactive Calendar Matrix Card)**:
+      - Live sync indicator pill (`● Activity Matrix`) with pulsing emerald beacon and direct `@Lollipop0-0` GitHub profile link.
+      - Sleek micro-scrollbar (`.contrib-grid-scroll`) matching `iqmal.dev` (4px height with smooth rounded track and thumb).
+      - 52-week SVG grid with 12 Month labels, weekday labels (`Mon`, `Wed`, `Fri`), and rounded cells (`rx="2"`).
+      - Emerald GitHub Color Palette: `#10b981` hierarchy adapting smoothly across light and dark themes.
+      - Interactive Hover & Focus: Outline stroke highlight with brightness boost, paired with an accessible GPU-accelerated floating tooltip.
+      - Card Footer: GitHub username link on the left and 5-tier `Less` to `More` activity legend on the right.
+  - **Secondary Complementary Row**:
+    - Re-aligned **Recent Commit Activity** (live repo commit messages and timestamps) and **Top Languages Breakdown** (distribution progress bars) in matching glassmorphic cards.
+  - **Script Engine (`assets/js/github.js`)**:
+    - Implemented `calculateStats(weeks)` to derive total contributions, longest streak, current streak, active days count, and active percentage.
+    - Implemented `animateNumber()` for smooth ease-out cubic counter animation on page load.
+  - **Build & Optimization**:
+    - Successfully recompiled `assets/css/styles.min.css` and `assets/js/bundle.min.js` via `python optimize.py`.
+
+## 2026-10-01: Remove Store & Digital Goods Showcase
+- **Objective**: Completely cut the Store & Digital Goods page, templates, navigation entries, search items, and styling from the portfolio, promoting "Gear" to a clean direct navigation link.
+- **Key Deliverables**:
+  - **Template Deletion**:
+    - Removed `store.html`, `components/store.html`, and `components/store-hero.html`.
+  - **Global Header & Navigation (`components/header.html`)**:
+    - Removed the "More" dropdown and promoted "Gear" to a direct top-level link (`<a href="gear.html" class="nav-link">Gear</a>`).
+    - Cleaned up mobile drawer navigation to list `Home`, `About`, `Projects`, `Certificates`, `Gear`, and `Contact`.
+    - Removed Store cross-link CTA in `components/gear.html`.
+  - **Component & Script Logic (`assets/js/components.js`, `assets/js/navigation.js`, `assets/js/search.js`)**:
+    - Removed `STORE_MANIFEST` and store routing from `ComponentLoader`.
+    - Removed `isStorePage` route detection and active state handling from `NavigationManager`.
+    - Removed `page-store` entry from `SearchManager` dataset.
+  - **Styles (`assets/css/sections.css`)**:
+    - Removed `.store-page-section`, `.store-grid`, `.store-card`, and related styles.
+  - **Build & Optimization**:
+    - Executed `python optimize.py` successfully updating production bundles `assets/css/styles.min.css` and `assets/js/bundle.min.js`.
+
+## 2026-10-01: Fix Invisible Text & Icons on Primary Buttons in Dark Mode
+- **Objective**: Fix invisible white text and icons on `.btn-primary` buttons in dark mode where white text (`#FFFFFF`) was rendered against the white accent background (`--accent: #FFFFFF`).
+- **Key Deliverables**:
+  - **Component Styles (`assets/css/components.css`)**:
+    - Added `[data-theme="dark"] .btn-primary` rules enforcing deep black text (`color: #0A0A0A !important;` and `#000000 !important;` on hover).
+    - Explicitly set `stroke: #0A0A0A !important;` and `stroke: #000000 !important;` on hover for all nested SVG icons.
+    - Verified all buttons: Hero CTA "More About Me", project modal triggers "View Case Study →", certificate modal "View Full Image", contact CTAs, and mobile resume button.
+  - **Compilation & Validation**:
+    - Recompiled production minified CSS via `python optimize.py`.
+
+## 2026-10-01: Unified Floating Navbar Capsule (Island Layout)
+- **Objective**: Implement a single, unified floating island capsule navbar that elevates gracefully above the page content without the disjointed split-pill appearance.
+- **Key Deliverables**:
+  - **Single Capsule Architecture (`components/header.html`, `assets/css/sections.css`)**:
+    - Configured `.site-header` as a floating fixed container (`top: clamp(12px, 1.8vw, 18px); pointer-events: none;`).
+    - Styled `.nav-container` as the single unified floating capsule (`width: min(1180px, calc(100% - 32px)); height: 52px; border-radius: var(--radius-full); margin: 0 auto;`).
+    - Premium glassmorphic backdrop: `backdrop-filter: blur(20px)` with `rgba(255, 255, 255, 0.86)` in light mode and obsidian `rgba(18, 18, 18, 0.86)` with `rgba(255, 255, 255, 0.12)` border in dark mode.
+    - Inside this single cohesive capsule: brand identity (`KE / Karl Evan`) on the left, desktop navigation (`Home`, `About`, `Projects`, `Certificates`, `More ▾`) in the center, and interactive actions (`Search`, `Theme Toggle`, `Hire Me →`) on the right.
+    - Fixed scroll reading progress bar pinned to the very top edge of the viewport.
+    - Elevation boost on scroll (`.is-scrolled`) adding deeper shadow and glass opacity.
+  - **Responsive Sizing (`assets/css/responsive.css`)**:
+    - Tablet (`<= 868px`): Shrinks to `height: 48px`, compact actions, and hamburger trigger.
+    - Mobile (`<= 480px`): Sized to `height: 46px` and `calc(100% - 16px)` width.
+    - Laptops (`869px - 1100px`): Adjusted navigation gap to `16px` with auto-scaling container.
+  - **Compilation & Verification**:
+    - Recompiled `styles.min.css` and `bundle.min.js` via `python optimize.py`.
+    - Local server HTTP 200 delivery verified.
+
 ## 2026-10-01: Global Palette Conversion: Replace Blue Accents with #1A1A1A Monochrome
 - **Objective**: Eliminate all blue accent colors across the portfolio system and replace them with sleek, editorial `#1A1A1A` obsidian/charcoal monochrome tones.
 - **Key Deliverables**:

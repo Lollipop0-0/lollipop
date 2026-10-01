@@ -122,6 +122,7 @@ def bundle_js():
         "assets/js/search.js",
         "assets/js/components.js",
         "assets/js/visitors.js",
+        "assets/js/preloader.js",
         "assets/js/app.js"
     ]
     combined_js = ""

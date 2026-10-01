@@ -156,17 +156,8 @@ const SearchManager = (() => {
       badge: "Page",
       title: "Gear & Setup",
       desc: "Hardware specs: ASUS TUF A16, Lenovo Legion 27\", AULA F75, Attack Shark X11, iPhone 13, iPhone 11, Soundcore R50i",
-      keywords: ["gear", "setup", "hardware", "workspace", "asus", "a16", "tuf", "laptop", "lenovo", "legion", "monitor", "aula", "f75", "comic", "keycaps", "keyboard", "attack", "shark", "x11", "attackshark", "mouse", "iphone", "iphone13", "iphone11", "apple", "ios", "soundcore", "r50i", "anker", "earbuds", "audio", "more"],
+      keywords: ["gear", "setup", "hardware", "workspace", "asus", "a16", "tuf", "laptop", "lenovo", "legion", "monitor", "aula", "f75", "comic", "keycaps", "keyboard", "attack", "shark", "x11", "attackshark", "mouse", "iphone", "iphone13", "iphone11", "apple", "ios", "soundcore", "r50i", "anker", "earbuds", "audio"],
       action: () => { window.location.href = "gear.html"; }
-    },
-    {
-      id: "page-store",
-      type: "section",
-      badge: "Page",
-      title: "Store & Templates",
-      desc: "Curated open-source boilerplates, PHP MVC kits, Three.js canvases, and digital goods",
-      keywords: ["store", "templates", "boilerplates", "goods", "shop", "starter kits", "open source", "resources", "more"],
-      action: () => { window.location.href = "store.html"; }
     },
     {
       id: "sec-journey",

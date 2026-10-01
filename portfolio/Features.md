@@ -193,17 +193,12 @@ This document provides a detailed breakdown of all user-facing features, their b
 
 ---
 
-## 15. Global Navigation "More" Dropdown Menu
+## 15. Global Navigation & Gear Link
 - **Location**: `components/header.html`, `assets/js/navigation.js`, `assets/css/sections.css`, `assets/css/responsive.css`
 - **Behavior**:
-  - Adds a refined "More" dropdown button with an animated chevron indicator next to "Certificates" in the desktop navigation bar.
-  - Dropdown contains:
-    - **Gear**: Direct link to `gear.html` with hardware icon, "Setup" badge, and subtitle ("Hardware, workstation & dev tools").
-    - **Store**: Direct link to `store.html` with shop icon, "Goods" badge, and subtitle ("Templates, boilerplates & resources").
-  - Features smooth hover transition with hover bridge (`::after`) to prevent cursor leave jitter, alongside full click toggle.
-  - Full keyboard accessibility: Down Arrow opens menu and focuses first item, Escape key dismisses menu and returns focus to trigger, and outside clicks dismiss automatically.
-  - Mobile drawer navigation includes a dedicated "More" section grouping sub-links for Gear and Store with icons.
-  - Active page detection lights up the "More" button when currently viewing `gear.html` or `store.html`.
+  - Refined floating island capsule navbar with desktop links: Home, About, Projects, Certificates, and Gear.
+  - Active page detection lights up the current page link (including `gear.html`).
+  - Mobile drawer navigation includes direct links to all top-level destinations.
 
 ---
 
@@ -213,16 +208,6 @@ This document provides a detailed breakdown of all user-facing features, their b
 - **Behavior**:
   - Showcases Karl Evan Tabunda's daily physical hardware and ergonomic desk setup: **ASUS TUF Gaming A16** laptop, **Lenovo Legion 27"** monitor, **AULA F75** mechanical keyboard (Comic Keycaps Edition), **Attack Shark X11** wireless mouse, **Apple iPhone 13**, **Apple iPhone 11**, and **Soundcore R50i** earbuds.
   - Interactive card grid with technical spec tags, status badges, and hardware descriptions.
-
----
-
-## 17. Dedicated Store & Digital Goods Page (`store.html`)
-- **Location**: `store.html`, `components/store-hero.html`, `components/store.html`
-- **Styles**: `assets/css/sections.css`, `assets/css/responsive.css`
-- **Behavior**:
-  - Showcases open-source boilerplates, architectural starter kits, and student resources created from real software projects.
-  - Products include: Enterprise PHP MVC Admissions Boilerplate, SmartSpace 3D Spatial Canvas Boilerplate, Editorial Developer Portfolio Template, and SneakerHub E-Commerce Storefront UI.
-  - Features price badges ("Free & Open Source", "Free Template"), feature checklists, and direct GitHub repository links.
 
 ---
 

@@ -174,15 +174,14 @@
     display: none;
   }
 
-  .floating-nav-pill {
-    padding: 0 6px;
-    height: 44px;
-    gap: 6px;
+  .nav-container {
+    height: 48px;
+    padding: 0 8px 0 16px;
+    width: calc(100% - 24px);
   }
 
-  .brand-link {
-    height: 44px;
-    padding: 0 16px;
+  .nav-actions {
+    gap: 6px;
   }
 
   .header-search-btn .search-placeholder,
@@ -744,20 +743,13 @@
 
 /* Small mobile devices (< 480px) */
 @media (max-width: 480px) {
-  .brand-link {
-    height: 42px;
-    padding: 0 14px;
-    gap: 8px;
+  .nav-container {
+    height: 46px;
+    width: calc(100% - 16px);
   }
 
   .brand-monogram {
     font-size: 1.2rem;
-  }
-
-  .floating-nav-pill {
-    height: 42px;
-    padding: 0 4px;
-    gap: 4px;
   }
 
   .hero-visual {
@@ -887,17 +879,17 @@
   /* Header & Navigation */
   .desktop-nav {
     display: flex;
-    gap: 14px;
+    gap: 16px;
   }
 
   .nav-link {
     font-size: 0.84rem;
-    padding: 6px 4px;
+    padding: 6px 2px;
   }
 
-  .floating-nav-pill {
-    padding: 0 6px 0 16px;
-    gap: 12px;
+  .nav-container {
+    padding: 0 8px 0 16px;
+    width: min(100% - 24px, 1100px);
   }
 
   .header-search-btn {

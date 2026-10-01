@@ -26,10 +26,19 @@
 })();
 
 document.addEventListener("DOMContentLoaded", async () => {
+  // 0. Initialize Site Preloader (Stickman Runner)
+  if (window.PreloaderManager) {
+    window.PreloaderManager.init();
+    window.PreloaderManager.setProgress(25);
+  }
+
   try {
     // 1. Asynchronously load and assemble all component templates into #app
     if (window.ComponentLoader) {
       await window.ComponentLoader.loadAll("#app");
+    }
+    if (window.PreloaderManager) {
+      window.PreloaderManager.setProgress(70);
     }
 
     // 2. Initialize Theme (Light / Dark)
@@ -114,6 +123,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   } catch (err) {
     console.error("Application initialization error:", err);
+  } finally {
+    // 13. Complete Preloader & Reveal Website
+    if (window.PreloaderManager) {
+      window.PreloaderManager.complete();
+    }
   }
 });
 

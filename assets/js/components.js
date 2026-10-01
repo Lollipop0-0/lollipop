@@ -63,14 +63,6 @@ const ComponentLoader = (() => {
     { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
   ];
 
-  // Dedicated Store page manifest: Header, store-hero, store, footer, project-modal
-  const STORE_MANIFEST = [
-    { name: "header", path: "components/header.html", isMainChild: false },
-    { name: "store-hero", path: "components/store-hero.html", isMainChild: true },
-    { name: "store", path: "components/store.html", isMainChild: true },
-    { name: "footer", path: "components/footer.html", isMainChild: false },
-    { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
-  ];
 
   // In-memory component template cache to eliminate redundant network roundtrips
   const componentCache = new Map();
@@ -129,10 +121,6 @@ const ComponentLoader = (() => {
       window.location.pathname.endsWith("gear.html") ||
       window.location.pathname.endsWith("/gear");
 
-    const isStorePage = appEl.getAttribute("data-page") === "store" ||
-      window.location.pathname.endsWith("store.html") ||
-      window.location.pathname.endsWith("/store");
-
     const manifest = is404Page
       ? ERROR_404_MANIFEST
       : (isAboutPage
@@ -143,9 +131,7 @@ const ComponentLoader = (() => {
                   ? CERTIFICATES_MANIFEST
                   : (isGearPage
                       ? GEAR_MANIFEST
-                      : (isStorePage
-                          ? STORE_MANIFEST
-                          : HOMEPAGE_MANIFEST)))));
+                      : HOMEPAGE_MANIFEST))));
 
     try {
       // Fetch all components concurrently
@@ -244,7 +230,6 @@ const ComponentLoader = (() => {
     PROJECTS_MANIFEST,
     CERTIFICATES_MANIFEST,
     GEAR_MANIFEST,
-    STORE_MANIFEST,
     ERROR_404_MANIFEST
   };
 })();

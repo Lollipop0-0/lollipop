@@ -272,10 +272,15 @@
 
 .nav-dropdown-wrap:hover .nav-dropdown-menu,
 .nav-dropdown-menu.is-open {
+    display: flex;
     opacity: 1;
     visibility: visible;
     transform: translateY(0) scale(1);
     pointer-events: auto;
+}
+
+.nav-dropdown-wrap:hover .nav-dropdown-menu[hidden] {
+    display: flex;
 }
 
 .nav-dropdown-item {

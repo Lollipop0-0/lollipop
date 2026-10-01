@@ -138,9 +138,13 @@ const NavigationManager = (() => {
       (document.getElementById("app") && document.getElementById("app").getAttribute("data-page") === "about");
 
     if (isAboutPage) {
+      const isStackTarget = window.location.hash === "#stack";
       navLinks.forEach(link => {
         const href = link.getAttribute("href") || "";
         if (href === "about.html" || href === "/about" || href.endsWith("/about.html") || href.includes("components/about")) {
+          link.classList.add("is-active");
+          link.setAttribute("aria-current", "page");
+        } else if (isStackTarget && (href === "about.html#stack" || href === "#stack")) {
           link.classList.add("is-active");
           link.setAttribute("aria-current", "page");
         } else {
@@ -151,6 +155,16 @@ const NavigationManager = (() => {
       if (moreTrigger) {
         moreTrigger.classList.remove("is-active");
         moreTrigger.removeAttribute("aria-current");
+      }
+      const gearItem = document.getElementById("more-link-gear");
+      if (gearItem) gearItem.classList.remove("is-active");
+      const stackItem = document.getElementById("more-link-stack");
+      if (stackItem) {
+        if (isStackTarget) {
+          stackItem.classList.add("is-active");
+        } else {
+          stackItem.classList.remove("is-active");
+        }
       }
       return;
     }
@@ -169,6 +183,14 @@ const NavigationManager = (() => {
           link.removeAttribute("aria-current");
         }
       });
+      if (moreTrigger) {
+        moreTrigger.classList.remove("is-active");
+        moreTrigger.removeAttribute("aria-current");
+      }
+      const gearItem = document.getElementById("more-link-gear");
+      if (gearItem) gearItem.classList.remove("is-active");
+      const stackItem = document.getElementById("more-link-stack");
+      if (stackItem) stackItem.classList.remove("is-active");
       return;
     }
 
@@ -190,6 +212,10 @@ const NavigationManager = (() => {
         moreTrigger.classList.remove("is-active");
         moreTrigger.removeAttribute("aria-current");
       }
+      const gearItem = document.getElementById("more-link-gear");
+      if (gearItem) gearItem.classList.remove("is-active");
+      const stackItem = document.getElementById("more-link-stack");
+      if (stackItem) stackItem.classList.remove("is-active");
       return;
     }
 
@@ -207,6 +233,14 @@ const NavigationManager = (() => {
           link.removeAttribute("aria-current");
         }
       });
+      if (moreTrigger) {
+        moreTrigger.classList.add("is-active");
+        moreTrigger.setAttribute("aria-current", "page");
+      }
+      const gearItem = document.getElementById("more-link-gear");
+      if (gearItem) gearItem.classList.add("is-active");
+      const stackItem = document.getElementById("more-link-stack");
+      if (stackItem) stackItem.classList.remove("is-active");
       return;
     }
 
@@ -228,6 +262,14 @@ const NavigationManager = (() => {
         link.removeAttribute("aria-current");
       }
     });
+    if (moreTrigger) {
+      moreTrigger.classList.remove("is-active");
+      moreTrigger.removeAttribute("aria-current");
+    }
+    const gearItem = document.getElementById("more-link-gear");
+    if (gearItem) gearItem.classList.remove("is-active");
+    const stackItem = document.getElementById("more-link-stack");
+    if (stackItem) stackItem.classList.remove("is-active");
 
     // Batch read layout metrics upfront to prevent forced synchronous reflows
     const currentScrollY = window.scrollY || window.pageYOffset || 0;
@@ -283,6 +325,19 @@ const NavigationManager = (() => {
     moreDropdownWrap = document.getElementById("more-dropdown-wrap");
     moreTrigger = document.getElementById("more-dropdown-trigger");
     moreMenu = document.getElementById("more-dropdown-menu");
+
+    let dropdownHoverTimer = null;
+    if (moreDropdownWrap) {
+      moreDropdownWrap.addEventListener("mouseenter", () => {
+        clearTimeout(dropdownHoverTimer);
+        openMoreDropdown();
+      });
+      moreDropdownWrap.addEventListener("mouseleave", () => {
+        dropdownHoverTimer = setTimeout(() => {
+          closeMoreDropdown();
+        }, 120);
+      });
+    }
 
     if (moreTrigger) {
       moreTrigger.addEventListener("click", e => {
@@ -355,11 +410,14 @@ const NavigationManager = (() => {
         if (isDrawerOpen) {
           closeDrawer();
         }
+        closeMoreDropdown();
         scrollToTarget(targetId);
       } else if (isDrawerOpen) {
         closeDrawer();
       }
     });
+
+    window.addEventListener("hashchange", updateActiveLink, { passive: true });
 
     // Scroll-spy listener throttled with requestAnimationFrame
     let ticking = false;

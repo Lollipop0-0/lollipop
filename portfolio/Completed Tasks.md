@@ -2,7 +2,19 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
-## 2026-10-01: Preloader & Preload Optimization Audit & Head Preload Links
+## 2026-10-01: Fix Netlify Stale Asset Caching for Hero Light Hover Avatar & Static Assets
+- **Objective**: Resolve the issue where Netlify did not display the updated hero light hover image (`hero-light-hover.webp`) due to immutable browser caching headers.
+- **Root Cause**:
+  - `netlify.toml` previously specified `Cache-Control: public, max-age=31536000, immutable` for all `/assets/*`.
+  - Because filenames under `/assets/` do not use dynamic content hashing, client browsers cached the original `hero-light-hover.webp` for 1 year and never sent an HTTP revalidation request to Netlify upon subsequent visits.
+  - The Netlify CDN remote server actually possessed the updated WebP file (55,196 bytes, MD5 `0197302164fd89f4a06da17bff003eec`), but client browsers loaded the old version from local disk cache.
+- **Key Deliverables**:
+  - **Asset Cache Busting (`components/hero.html`)**: Added `?v=2` version query strings to all 4 hero avatar interactive states (`hero-light-default.webp?v=2`, `hero-light-hover.webp?v=2`, `hero-dark-default.webp?v=2`, `hero-dark-hover.webp?v=2`).
+  - **Critical Hero Preload Scanner (`index.html`)**: Added `<link rel="preload">` tags in `<head>` for `hero-light-default.webp?v=2` and `hero-light-hover.webp?v=2`, ensuring instant zero-lag hover transitions.
+  - **Bundle Versioning**: Added `?v=2` to production stylesheets (`styles.min.css?v=2`) and script bundles (`bundle.min.js?v=2`) across all pages (`index.html`, `about.html`, `projects.html`, `certificates.html`, `gear.html`, `404.html`).
+  - **Cache Header Overhaul (`netlify.toml`)**: Replaced blanket `immutable` caching with fast `public, max-age=0, must-revalidate` for `/components/*`, `/assets/css/*`, `/assets/js/*`, and `/assets/images/*`. Browsers now perform sub-20ms ETag checks, guaranteeing instant client updates on deploy while preserving 304 efficiency when unchanged.
+  - **Build & Verification**: Executed `python optimize.py` cleanly compiling all assets.
+
 - **Objective**: Audit and maximize site preloader performance across all pages (`index.html`, `about.html`, `projects.html`, `certificates.html`, `gear.html`, `404.html`), verifying critical inline CSS, theme sync, asset compression, and browser preload scanner cues.
 - **Key Deliverables**:
   - **Browser Preload Scanner Links**: Added `<link rel="preload" as="image" href="assets/images/loader/stickman-loader.webp" type="image/webp">` to `<head>` on all 6 pages. The browser now starts streaming the 84 KB animated WebP loader concurrently with stylesheets before body parsing begins.

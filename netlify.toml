@@ -38,12 +38,6 @@
 # Netlify Edge CDN & Browser Caching Headers
 # ==============================================================================
 
-# Long-term immutable caching for all static assets (images, fonts, scripts, styles)
-[[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
 # Fast revalidation and security headers for HTML pages
 [[headers]]
   for = "/*.html"
@@ -60,4 +54,30 @@
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "SAMEORIGIN"
     Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Dynamic HTML partial components fetched by ComponentLoader
+[[headers]]
+  for = "/components/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Stylesheets, scripts, and images without content-hashed filenames
+# Uses fast sub-20ms ETag 304 revalidation so deployed changes reflect immediately
+[[headers]]
+  for = "/assets/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/assets/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/assets/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
 

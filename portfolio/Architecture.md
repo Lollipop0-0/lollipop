@@ -9,22 +9,26 @@ This document describes the high-level architecture, lifecycle, data flow, styli
 The portfolio is structured as a **client-side single-page application (SPA)** built with Vanilla HTML5, CSS3, and ES6+ JavaScript, with no build or compilation step.
 
 ```
-                  ┌───────────────────────────────┐
-                  │          index.html           │
-                  │   (App Shell + Mounting #app) │
-                  └──────────────┬────────────────┘
-                                 │
-                 DOMContentLoaded Event
-                                 │
-                                 ▼
-                  ┌───────────────────────────────┐
-                  │  ComponentLoader (loadAll)    │
-                  │   Fetches /components/*.html  │
-                  └──────────────┬────────────────┘
-                                 │
-                   Mounts Partials into DOM
-                                 │
-                                 ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                           Root Application Shells                               │
+│  index.html │ about.html │ projects.html │ certificates.html │ gear.html │ store.html
+│                (Ultra-thin Page Shells + Mounting Point #app)                   │
+└────────────────────────────────────────┬────────────────────────────────────────┘
+                                         │
+                               DOMContentLoaded Event
+                                         │
+                                         ▼
+                     ┌────────────────────────────────────────┐
+                     │        ComponentLoader (loadAll)       │
+                     │  Detects [data-page] & loads Manifest: │
+                     │   HOMEPAGE · ABOUT · PROJECTS ·        │
+                     │   CERTIFICATES · GEAR · STORE          │
+                     │   Fetches /components/*.html partials  │
+                     └───────────────────┬────────────────────┘
+                                         │
+                           Mounts Partials into DOM
+                                         │
+                                         ▼
      ┌─────────────────────────────────────────────────────────────┐
      │              app.js Orchestrator Pipeline                   │
      ├───────────────────────────┬─────────────────────────────────┤
@@ -52,9 +56,12 @@ Instead of hardcoding a monolithic 2,000-line HTML file, sections are separated 
   - `ABOUT_MANIFEST`: Header, About Hero, Journey, Stack, Footer, Project Modal.
   - `PROJECTS_MANIFEST`: Header, Projects Hero, Projects Gallery, Footer, Project Modal.
   - `CERTIFICATES_MANIFEST`: Header, Certificates Hero, Certificates Gallery, Footer, Project Modal.
+  - `GEAR_MANIFEST`: Header, Gear Hero, Gear, Footer, Project Modal.
+  - `STORE_MANIFEST`: Header, Store Hero, Store, Footer, Project Modal.
 - **Top Navigation Architecture**:
-  - Global Header (`components/header.html`) provides a focused 4-page navigation: **Home**, **About**, **Projects**, and **Certificates**.
-  - Route state is managed cleanly in `assets/js/navigation.js`.
+  - Global Header (`components/header.html`) provides primary navigation: **Home**, **About**, **Projects**, **Certificates**, and **More ▾** (dropdown menu with **Gear** and **Store**).
+  - Responsive drawer provides equivalent navigation structure for tablet and mobile devices.
+  - Route state is managed cleanly in `assets/js/navigation.js` with active state tracking.
 - **Main Container Wrapping**: Components with `isMainChild: true` are wrapped in a semantic `<main id="main-content">` landmark.
 
 ---

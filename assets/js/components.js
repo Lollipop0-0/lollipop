@@ -54,6 +54,24 @@ const ComponentLoader = (() => {
     { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
   ];
 
+  // Dedicated Gear page manifest: Header, gear-hero, gear, footer, project-modal
+  const GEAR_MANIFEST = [
+    { name: "header", path: "components/header.html", isMainChild: false },
+    { name: "gear-hero", path: "components/gear-hero.html", isMainChild: true },
+    { name: "gear", path: "components/gear.html", isMainChild: true },
+    { name: "footer", path: "components/footer.html", isMainChild: false },
+    { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
+  ];
+
+  // Dedicated Store page manifest: Header, store-hero, store, footer, project-modal
+  const STORE_MANIFEST = [
+    { name: "header", path: "components/header.html", isMainChild: false },
+    { name: "store-hero", path: "components/store-hero.html", isMainChild: true },
+    { name: "store", path: "components/store.html", isMainChild: true },
+    { name: "footer", path: "components/footer.html", isMainChild: false },
+    { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
+  ];
+
   // In-memory component template cache to eliminate redundant network roundtrips
   const componentCache = new Map();
 
@@ -107,6 +125,14 @@ const ComponentLoader = (() => {
       window.location.pathname.endsWith("certificates.html") ||
       window.location.pathname.endsWith("/certificates");
 
+    const isGearPage = appEl.getAttribute("data-page") === "gear" ||
+      window.location.pathname.endsWith("gear.html") ||
+      window.location.pathname.endsWith("/gear");
+
+    const isStorePage = appEl.getAttribute("data-page") === "store" ||
+      window.location.pathname.endsWith("store.html") ||
+      window.location.pathname.endsWith("/store");
+
     const manifest = is404Page
       ? ERROR_404_MANIFEST
       : (isAboutPage
@@ -115,7 +141,11 @@ const ComponentLoader = (() => {
               ? PROJECTS_MANIFEST
               : (isCertificatesPage
                   ? CERTIFICATES_MANIFEST
-                  : HOMEPAGE_MANIFEST)));
+                  : (isGearPage
+                      ? GEAR_MANIFEST
+                      : (isStorePage
+                          ? STORE_MANIFEST
+                          : HOMEPAGE_MANIFEST)))));
 
     try {
       // Fetch all components concurrently
@@ -211,6 +241,10 @@ const ComponentLoader = (() => {
     fetchComponent,
     HOMEPAGE_MANIFEST,
     ABOUT_MANIFEST,
+    PROJECTS_MANIFEST,
+    CERTIFICATES_MANIFEST,
+    GEAR_MANIFEST,
+    STORE_MANIFEST,
     ERROR_404_MANIFEST
   };
 })();

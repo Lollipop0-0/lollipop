@@ -11,6 +11,9 @@ const NavigationManager = (() => {
   let closeDrawerBtn = null;
   let navLinks = [];
   let sections = [];
+  let moreDropdownWrap = null;
+  let moreTrigger = null;
+  let moreMenu = null;
 
   let isDrawerOpen = false;
 
@@ -63,6 +66,43 @@ const NavigationManager = (() => {
   }
 
   /**
+   * Open the "More" dropdown menu
+   */
+  function openMoreDropdown() {
+    if (!moreMenu || !moreTrigger) return;
+    moreMenu.removeAttribute("hidden");
+    moreMenu.classList.add("is-open");
+    if (moreDropdownWrap) moreDropdownWrap.classList.add("is-open");
+    moreTrigger.setAttribute("aria-expanded", "true");
+  }
+
+  /**
+   * Close the "More" dropdown menu
+   */
+  function closeMoreDropdown() {
+    if (!moreMenu || !moreTrigger) return;
+    moreMenu.classList.remove("is-open");
+    if (moreDropdownWrap) moreDropdownWrap.classList.remove("is-open");
+    moreTrigger.setAttribute("aria-expanded", "false");
+    setTimeout(() => {
+      if (moreTrigger && moreTrigger.getAttribute("aria-expanded") === "false") {
+        moreMenu.setAttribute("hidden", "");
+      }
+    }, 160);
+  }
+
+  /**
+   * Toggle the "More" dropdown menu
+   */
+  function toggleMoreDropdown() {
+    if (moreTrigger && moreTrigger.getAttribute("aria-expanded") === "true") {
+      closeMoreDropdown();
+    } else {
+      openMoreDropdown();
+    }
+  }
+
+  /**
    * Smoothly scroll to a section by target ID
    * @param {string} targetId
    */
@@ -99,7 +139,7 @@ const NavigationManager = (() => {
 
     if (isAboutPage) {
       navLinks.forEach(link => {
-        const href = link.getAttribute("href");
+        const href = link.getAttribute("href") || "";
         if (href === "about.html" || href === "/about" || href.endsWith("/about.html") || href.includes("components/about")) {
           link.classList.add("is-active");
           link.setAttribute("aria-current", "page");
@@ -108,6 +148,10 @@ const NavigationManager = (() => {
           link.removeAttribute("aria-current");
         }
       });
+      if (moreTrigger) {
+        moreTrigger.classList.remove("is-active");
+        moreTrigger.removeAttribute("aria-current");
+      }
       return;
     }
 
@@ -142,7 +186,59 @@ const NavigationManager = (() => {
           link.removeAttribute("aria-current");
         }
       });
+      if (moreTrigger) {
+        moreTrigger.classList.remove("is-active");
+        moreTrigger.removeAttribute("aria-current");
+      }
       return;
+    }
+
+    const isGearPage = window.location.pathname.endsWith("gear.html") ||
+      (document.getElementById("app") && document.getElementById("app").getAttribute("data-page") === "gear");
+
+    if (isGearPage) {
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href") || "";
+        if (href === "gear.html" || href === "/gear" || href.endsWith("/gear.html")) {
+          link.classList.add("is-active");
+          link.setAttribute("aria-current", "page");
+        } else {
+          link.classList.remove("is-active");
+          link.removeAttribute("aria-current");
+        }
+      });
+      if (moreTrigger) {
+        moreTrigger.classList.add("is-active");
+        moreTrigger.setAttribute("aria-current", "page");
+      }
+      return;
+    }
+
+    const isStorePage = window.location.pathname.endsWith("store.html") ||
+      (document.getElementById("app") && document.getElementById("app").getAttribute("data-page") === "store");
+
+    if (isStorePage) {
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href") || "";
+        if (href === "store.html" || href === "/store" || href.endsWith("/store.html")) {
+          link.classList.add("is-active");
+          link.setAttribute("aria-current", "page");
+        } else {
+          link.classList.remove("is-active");
+          link.removeAttribute("aria-current");
+        }
+      });
+      if (moreTrigger) {
+        moreTrigger.classList.add("is-active");
+        moreTrigger.setAttribute("aria-current", "page");
+      }
+      return;
+    }
+
+    // On other pages, reset More dropdown button active indicator
+    if (moreTrigger) {
+      moreTrigger.classList.remove("is-active");
+      moreTrigger.removeAttribute("aria-current");
     }
 
     // On homepage, Home navigation link remains active
@@ -207,6 +303,44 @@ const NavigationManager = (() => {
     // Ensure About navigation always targets root about.html (guard against static host pretty-url rewrites)
     document.querySelectorAll('a[href*="components/about"]').forEach(link => {
       link.setAttribute("href", "about.html");
+    });
+
+    // More dropdown bindings
+    moreDropdownWrap = document.getElementById("more-dropdown-wrap");
+    moreTrigger = document.getElementById("more-dropdown-trigger");
+    moreMenu = document.getElementById("more-dropdown-menu");
+
+    if (moreTrigger) {
+      moreTrigger.addEventListener("click", e => {
+        e.stopPropagation();
+        toggleMoreDropdown();
+      });
+
+      // Keyboard support for More button
+      moreTrigger.addEventListener("keydown", e => {
+        if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openMoreDropdown();
+          const firstItem = moreMenu ? moreMenu.querySelector(".nav-dropdown-item") : null;
+          if (firstItem) firstItem.focus();
+        }
+      });
+    }
+
+    if (moreMenu) {
+      moreMenu.addEventListener("keydown", e => {
+        if (e.key === "Escape") {
+          closeMoreDropdown();
+          if (moreTrigger) moreTrigger.focus();
+        }
+      });
+    }
+
+    // Close More dropdown when clicking outside
+    document.addEventListener("click", e => {
+      if (moreDropdownWrap && !moreDropdownWrap.contains(e.target)) {
+        closeMoreDropdown();
+      }
     });
 
     // Mobile toggle & close bindings

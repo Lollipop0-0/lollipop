@@ -2,6 +2,141 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-09-30: Expand Gear Showcase with iPhone 13, iPhone 11, and Soundcore R50i
+- **Objective**: Expand the daily hardware showcase to 7 devices by generating commercial studio photography and interactive dual-layer hover pairs for Karl's mobile testing and audio devices: Apple iPhone 13, Apple iPhone 11, and Anker Soundcore R50i True Wireless Earbuds.
+- **Key Deliverables**:
+  - **AI Product Photography & Transparent Cutouts**:
+    - Generated 3 commercial product studio shots using DeepMind Imagen via `generate_image`:
+      1. **Apple iPhone 13**: Midnight finish, diagonal dual-camera module, flat aluminum frame, glass back with Apple logo.
+      2. **Apple iPhone 11**: Pure White finish, silver-accented aluminum frame, classic vertical dual-camera module, glossy white glass back.
+      3. **Anker Soundcore R50i**: Deep Marine Blue pebble charging case with braided lanyard loop and dual blue stem earbuds with Soundcore branding.
+    - Processed 600×600 transparent cutouts and generated dual-layer pairs:
+      - `assets/images/gear/color/{name}.webp` (full color on hover)
+      - `assets/images/gear/{name}.webp` (monochrome default state)
+  - **Component & Metadata Updates**:
+    - Updated [components/gear.html](file:///c:/xampp/htdocs/lollipop/components/gear.html) count to `07` and mounted all three new gear cards with technical specs lines.
+    - Updated [gear.html](file:///c:/xampp/htdocs/lollipop/gear.html) metadata, description, and keywords.
+    - Updated [assets/js/search.js](file:///c:/xampp/htdocs/lollipop/assets/js/search.js) index with `iphone`, `iphone13`, `iphone11`, `apple`, `ios`, `soundcore`, `r50i`, `anker`, `earbuds`, and `audio`.
+    - Recompiled production bundles with `python optimize.py`.
+
+## 2026-09-30: Update AULA F75 Hardware Imagery to Comic Keycaps Edition
+- **Objective**: Replace the standard AULA F75 keyboard assets with the user's authentic setup configuration: the AULA F75 featuring Comic / Manga Cel-Shaded Keycaps with 2D sketch outlines, pop-art novelty keys, and top-right rotary knob.
+- **Key Deliverables**:
+  - **Commercial Studio Product Photography Generation**:
+    - Generated high-resolution studio product shot using Imagen via `generate_image` capturing the complete AULA F75 75% mechanical keyboard with white casing, metallic volume knob, and comic-themed cel-shaded keycaps (bold inked outlines, "ZAP!" spacebar, "BOOM!" enter key, and pop-art novelties).
+    - Extracted transparent background and produced dual-layer 600x600 WebP asset pair:
+      - `assets/images/gear/color/aula-f75.webp` (vibrant full-color on hover)
+      - `assets/images/gear/aula-f75.webp` (clean monochrome default with preserved alpha)
+  - **Component & Metadata Synchronization**:
+    - Updated [components/gear.html](file:///c:/xampp/htdocs/lollipop/components/gear.html) specs line to `75% Layout · Comic Keycaps · Tri-Mode Wireless` and image `alt` attributes.
+    - Updated [assets/js/search.js](file:///c:/xampp/htdocs/lollipop/assets/js/search.js) keywords index to include `comic` and `keycaps`.
+    - Recompiled production bundles with `python optimize.py`.
+
+## 2026-09-30: Replicate marwieang.com/gear Concept with AI-Generated Imagery & Dual-Layer Hover
+- **Objective**: Replicate the minimal, editorial layout and interactive dual-layer color-hover mechanism of `https://www.marwieang.com/gear` on Karl's portfolio, generating commercial studio photography for the 4 hardware items (ASUS A16, Lenovo Legion 27", AULA F75, Attack Shark X11) and packaging them as transparent WebP assets.
+- **Key Deliverables**:
+  - **AI Product Photography Generation**:
+    - Created 4 studio product shots using DeepMind Imagen via `generate_image`:
+      1. **ASUS TUF Gaming A16**: Open angle with backlit keyboard, mecha-gray finish, and sharp 16" display.
+      2. **Lenovo Legion 27" Gaming Monitor**: Front 3/4 perspective with angular Legion V-stand and thin bezels.
+      3. **AULA F75 Mechanical Keyboard**: 75% compact layout with retro PBT keycaps and top-right rotary knob.
+      4. **Attack Shark X11 Mouse**: Ergonomic wireless mouse resting on its dedicated magnetic RGB charging dock.
+    - Processed transparent cutouts and generated dual-layer pairs:
+      - `assets/images/gear/{name}.webp` (monochrome/clean default)
+      - `assets/images/gear/color/{name}.webp` (vibrant full-color on hover)
+  - **Component Structure (`components/gear-hero.html`, `components/gear.html`)**:
+    - Hero: Minimal back navigation link (`← Home`), headline `Gear`, subtext `The hardware I use every day.`
+    - Section Head: `.gear-head` with `.gear-head-label` ("Setup") and `.gear-head-count` ("04").
+    - Cards: Dual-image stack (`.gear-color` with `opacity: 0`, `.gear-mono` with `opacity: 1`), smooth cross-fade and scale on hover, followed by bold title and middle-dot specs line.
+  - **CSS Styling (`assets/css/sections.css`)**:
+    - Restricted column container to `720px` for authentic editorial framing.
+    - Styled rounded image containers with light/dark surface tokens, smooth bezier transitions, and mobile responsive column stacking.
+  - **Production Optimization**:
+    - Recompiled minified CSS and bundled JS with `python optimize.py`.
+    - Validated all JavaScript modules with `node -c`.
+
+## 2026-09-30: Configure Exact Hardware Setup in Gear Showcase
+- **Objective**: Update the dedicated gear showcase page (`gear.html` / `components/gear.html`) strictly to the user's 4 physical hardware devices (ASUS TUF Gaming A16 laptop, Lenovo Legion 27" monitor, AULA F75 mechanical keyboard, Attack Shark X11 wireless mouse), removing extraneous categories and updating all metadata and search indices.
+- **Key Deliverables**:
+  - **Gear Showcase Component (`components/gear.html`)**:
+    - Replaced multi-category template with a clean single category "Workstation & Peripherals".
+    - Configured 4 detailed hardware cards:
+      1. **ASUS TUF Gaming A16**: 16" 165Hz FHD+ display, AMD Ryzen 7, Radeon graphics, PCIe 4.0 NVMe, dual-fan cooling.
+      2. **Lenovo Legion 27"**: 27" Fast IPS panel, high refresh rate, 99% sRGB color gamut, 0.5ms response time, ergonomic stand.
+      3. **AULA F75**: 75% compact layout, gasket mount structure, tri-mode wireless (2.4G/BT/Wired), hot-swappable PCB, rotary volume knob.
+      4. **Attack Shark X11**: Tri-mode wireless connectivity, magnetic RGB charging dock, ultra-lightweight shell, precision optical sensor, PTFE glide skates.
+  - **Gear Hero & Meta Tags (`components/gear-hero.html`, `gear.html`)**:
+    - Updated hero kicker to `WORKSPACE • HARDWARE & PERIPHERALS` and narrative copy to highlight computing and peripherals.
+    - Updated SEO title, meta description, keywords, Open Graph, and Twitter metadata to reference the exact 4 devices.
+  - **Command Search Index (`assets/js/search.js`)**:
+    - Updated `page-gear` item title, description, and keywords with `asus`, `a16`, `lenovo`, `legion`, `aula`, `f75`, `attackshark`, `x11` for instant search discovery.
+  - **Production Optimization**:
+    - Recompiled minified CSS and bundled JS via `optimize.py`.
+    - Validated all JavaScript modules with `node -c`.
+
+## 2026-09-30: Remove "Stack" & "Journey" Links from Global Navigation Bar
+- **Objective**: Cut the "Stack" and "Journey" navigation links from both the desktop navbar and mobile drawer in `components/header.html`, simplify active state tracking in `assets/js/navigation.js`, and restore standard navigation spacing.
+- **Key Deliverables**:
+  - **Global Header (`components/header.html`)**:
+    - Removed `<a href="about.html#stack" class="nav-link">Stack</a>` and `<a href="about.html#journey" class="nav-link">Journey</a>` from `.desktop-nav`.
+    - Removed `<a href="about.html#stack" class="mobile-nav-link">Stack</a>` and `<a href="about.html#journey" class="mobile-nav-link">Journey</a>` from `.mobile-nav-links` in the mobile drawer.
+    - Preserved the clean navigation structure: `Home`, `About`, `Projects`, `Certificates`, and `More ▾` (Gear & Store).
+  - **Navigation Logic (`assets/js/navigation.js`)**:
+    - Simplified `isAboutPage` route detection in `updateActiveLink()` to highlight the "About" link when browsing `about.html`, removing the unnecessary `#stack` and `#journey` scroll offset calculations.
+  - **Stylesheets (`assets/css/sections.css`, `assets/css/responsive.css`)**:
+    - Restored `.desktop-nav { gap: 28px; }` in `sections.css`.
+    - Removed redundant `@media (max-width: 1040px) and (min-width: 869px)` intermediate breakpoint in `responsive.css`.
+  - **Production Optimization**:
+    - Recompiled minified CSS (`assets/css/styles.min.css`) and bundled JS (`assets/js/bundle.min.js`) via `optimize.py`.
+    - Validated all JavaScript modules with `node -c`.
+
+## 2026-09-30: Restore Dedicated "Stack" & "Journey" Links to Global Navigation Bar
+- **Objective**: Restore dedicated navigation links for "Stack" (Things I Build With) and "Journey" (Development Journey & Currently Figuring Things Out) to the global navigation bar (both desktop navbar and mobile drawer), complete with cross-page anchor routing and dynamic in-page scroll-spy.
+- **Key Deliverables**:
+  - **Global Header (`components/header.html`)**:
+    - Added `<a href="about.html#stack" class="nav-link">Stack</a>` and `<a href="about.html#journey" class="nav-link">Journey</a>` to `.desktop-nav` preceding the "More" dropdown.
+    - Added corresponding `<a href="about.html#stack" class="mobile-nav-link">Stack</a>` and `<a href="about.html#journey" class="mobile-nav-link">Journey</a>` to `.mobile-nav-links` in the mobile drawer.
+  - **Stylesheets (`assets/css/sections.css`, `assets/css/responsive.css`)**:
+    - Balanced desktop navbar gap to `22px` for comfortable 7-item layout.
+    - Added `@media (max-width: 1040px) and (min-width: 869px) { .desktop-nav { gap: 14px; } }` intermediate breakpoint to ensure zero wrapping or clipping on laptops.
+  - **Navigation Scroll-Spy (`assets/js/navigation.js`)**:
+    - Enhanced `updateActiveLink()` when on `about.html`: dynamically detects whether the user is viewing `#about-intro` ("About"), `#journey` ("Journey"), or `#stack` ("Stack") and updates `.is-active` / `aria-current="page"` in real-time as the user scrolls.
+  - **Production Optimization**:
+    - Recompiled minified CSS (`assets/css/styles.min.css`) and bundled JS (`assets/js/bundle.min.js`) via `optimize.py`.
+    - Validated all JavaScript modules with `node -c`.
+
+
+## 2026-09-30: Add Navbar "More" Dropdown with Gear & Store (Desktop & Mobile)
+- **Objective**: Add a refined "More" dropdown menu to the global navbar containing "Gear" and "Store", implement full keyboard accessibility and mobile drawer support, and build dedicated showcase pages (`gear.html` and `store.html`) with editorial design and command search integration.
+- **Key Deliverables**:
+  - **Global Header Component (`components/header.html`)**:
+    - Added `#more-dropdown-wrap` with `#more-dropdown-trigger` button, chevron indicator, and accessible popover menu `#more-dropdown-menu`.
+    - Added "Gear" item with hardware icon, title, "Setup" badge, and subtitle ("Hardware, workstation & dev tools").
+    - Added "Store" item with shop icon, title, "Goods" badge, and subtitle ("Templates, boilerplates & resources").
+    - Updated mobile drawer navigation with a dedicated "More" section and styled sub-links for Gear and Store with icons.
+  - **Stylesheets (`assets/css/sections.css`, `assets/css/responsive.css`)**:
+    - Created `.nav-dropdown-wrap`, `.nav-dropdown-trigger`, `.dropdown-chevron`, and `.nav-dropdown-menu` with backdrop-filter blur and theme tokens.
+    - Added hover bridge (`.nav-dropdown-wrap::after`) to prevent cursor leave jitter.
+    - Added `.gear-page-section`, `.gear-category`, `.gear-grid`, `.gear-card`, `.store-page-section`, `.store-grid`, and `.store-card`.
+    - Added `.mobile-nav-divider`, `.mobile-nav-group`, `.mobile-nav-group-title`, and `.mobile-nav-sublink` styles.
+  - **Navigation Module (`assets/js/navigation.js`)**:
+    - Implemented `openMoreDropdown()`, `closeMoreDropdown()`, and `toggleMoreDropdown()`.
+    - Added click toggle, outside click dismissal, Escape key closing, and ArrowDown keyboard focus traversal.
+    - Added active route detection for `gear.html` and `store.html` (highlights More trigger and active dropdown/mobile item).
+  - **Component Loader (`assets/js/components.js`)**:
+    - Added `GEAR_MANIFEST` (`components/gear-hero.html`, `components/gear.html`).
+    - Added `STORE_MANIFEST` (`components/store-hero.html`, `components/store.html`).
+    - Wired `data-page="gear"` and `data-page="store"` in `loadAll()`.
+  - **Command Search Module (`assets/js/search.js`)**:
+    - Added search items `page-gear` and `page-store` so typing "gear" or "store" in `Ctrl+K` quickly jumps to the pages.
+  - **Dedicated Root Pages & Partials**:
+    - Created `gear.html` and `components/gear-hero.html`, `components/gear.html`.
+    - Created `store.html` and `components/store-hero.html`, `components/store.html`.
+  - **Asset Optimization**:
+    - Recompiled minified CSS (`assets/css/styles.min.css`) and bundled JS (`assets/js/bundle.min.js`) via `optimize.py`.
+    - Verified syntax with `node -c` and confirmed HTTP 200 responses on Apache.
+
+
 ## 2026-09-22: Full Static Frontend Performance & Production Optimization
 - **Objective**: Optimize the static portfolio website for loading speed, mobile responsiveness, Core Web Vitals (LCP, CLS, FID/INP), and Lighthouse performance without modifying any visual styling, layout, or content.
 - **Key Deliverables**:

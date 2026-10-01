@@ -110,6 +110,47 @@
   padding-left: 20px;
 }
 
+.mobile-nav-divider {
+  height: 1px;
+  background-color: var(--border);
+  margin: 10px 4px 6px;
+}
+
+.mobile-nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mobile-nav-group-title {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  padding: 6px 16px 2px;
+}
+
+.mobile-nav-sublink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9375rem;
+  padding: 10px 16px;
+  color: var(--secondary);
+}
+
+.mobile-nav-sublink-icon {
+  color: var(--secondary);
+  flex-shrink: 0;
+  transition: color var(--transition-fast);
+}
+
+.mobile-nav-sublink:hover .mobile-nav-sublink-icon,
+.mobile-nav-sublink.is-active .mobile-nav-sublink-icon {
+  color: var(--accent);
+}
+
 .mobile-drawer-footer {
   margin-top: auto;
   padding-top: 20px;
@@ -118,6 +159,7 @@
   flex-direction: column;
   gap: 16px;
 }
+
 
 /* ==========================================================================
    Mobile & Small Tablet Breakpoint (<= 868px, e.g. iPad Mini 768px, phones)
@@ -375,7 +417,8 @@
     padding: 48px 0;
   }
 
-  .certificates-grid {
+  .certificates-grid,
+  .gear-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 18px;
   }
@@ -599,7 +642,8 @@
     gap: 24px;
   }
 
-  .certificates-grid {
+  .certificates-grid,
+  .gear-grid {
     grid-template-columns: 1fr;
     gap: 18px;
   }
@@ -974,8 +1018,9 @@
     gap: 18px;
   }
 
-  /* Certificates */
-  .certificates-grid {
+  /* Certificates & Gear */
+  .certificates-grid,
+  .gear-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 18px;
   }

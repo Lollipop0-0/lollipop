@@ -59,6 +59,13 @@ These rules govern all code modifications, architecture design, and development 
 
 ---
 
+## 6. Git & Version Control Rules
+- **No Automatic Pushing**: NEVER automatically push (`git push`) to remote (`origin/main` or any remote branch). Keep all changes, compiles, and commits strictly local.
+- **User Authorization Required**: Only run `git push` when the USER explicitly requests a push.
+- **Local Verification First**: Run `optimize.py`, bundle checks, and local browser/node validation locally without pushing to remote.
+
+---
+
 ## Cross References
 - System Structure: [[Architecture]]
 - File Responsibilities: [[File Map]]

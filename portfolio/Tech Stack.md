@@ -1,11 +1,30 @@
 # Tech Stack Documentation
 
 ## Overview
-The "Things I Build With" section (`#stack`) highlights the core technologies, tools, environments, and AI assistants used daily in development workflows.
+The Technology Stack is housed on its own dedicated page (`tech-stack.html`, accessible via header `More → Tech Stack`) featuring an architectural, high-fidelity developer showcase inspired by Naphier Node (`naphiernode.vercel.app`). It highlights core languages, frameworks, runtime environments, databases, developer tools, and AI assistants used across Karl Evan's projects.
 
-## Data Source
-- **File**: `assets/js/data.js`
-- **Object**: `PORTFOLIO_DATA.techStack`
+---
+
+## Dedicated Page Architecture
+- **Page Route**: `tech-stack.html` (`data-page="tech-stack"`)
+- **Manifest**: `TECH_STACK_MANIFEST` in `assets/js/components.js`:
+  1. `header` (`components/header.html`)
+  2. `stack-hero` (`components/stack-hero.html`)
+  3. `stack` (`components/stack.html`)
+  4. `project-modal` (`components/project-modal.html`)
+- **Navigation Integration**:
+  - Desktop Header: `More` dropdown → `Tech Stack` (`tech-stack.html`).
+  - Mobile Drawer: Direct `Tech Stack` navigation link.
+  - Command Palette (`search.js`): Quick search triggers direct routing to `tech-stack.html`.
+
+---
+
+## Data Source & SVG Icon Dictionary
+- **Data File**: `assets/js/data.js` (`window.PORTFOLIO_DATA.techStack`)
+- **Icons Dictionary**: `assets/js/tech-icons.js` (`window.TECH_ICONS`)
+  - Contains exact, optimized SVG paths and viewboxes for all 18 tech items.
+
+---
 
 ## Stack Categories & Items
 
@@ -38,20 +57,27 @@ The "Things I Build With" section (`#stack`) highlights the core technologies, t
 - **Gemini**: Google Gemini for architectural planning, code reasoning, prompt engineering, and debugging.
 - **Codex**: AI code generation, agentic development, and automated scaffolding.
 
-## Architecture & Rendering
-- **Component File**: `components/stack.html` (contains container `<div id="tech-stack-container" class="stack-grid"></div>`).
-- **Rendering Logic**: `assets/js/app.js` (`renderTechStack()`). Iterates over `Object.entries(window.PORTFOLIO_DATA.techStack)` and dynamically mounts `.stack-category-card` elements with bullets (`•`) and skill titles.
-- **Styling**: `assets/css/sections.css` (`.stack-grid`, `.stack-category-card`, `.stack-category-header`, `.stack-category-indicator`, `.stack-category-title`, `.stack-items-list`, `.stack-item`).
-- **Responsive Behavior**:
-  - Desktop (> 868px): CSS Grid auto-fit with `minmax(160px, 1fr)` ensuring all 6 cards sit cleanly in a row or wrap proportionally.
-  - Tablet (≤ 868px): 2 columns (`grid-template-columns: 1fr 1fr`).
-- **Search Integration**: `assets/js/search.js` indexes individual stack items for the interactive quick-search palette (`Cmd/Ctrl + K`).
+---
+
+## Architectural UI & Interactive Features (Naphier Node Pattern)
+- **`<TECH-STACK/>` Terminal Header**: Monospace kicker, live items count pill (`18 Technologies`), and architectural subtitle.
+- **6 Category Sections**:
+  - Each section features a monospace kicker (`[01/06]`, `[02/06]`, etc.), category title, and an icon grid (`.naphier-tech-grid`).
+- **Interactive Tech Card (`.naphier-tech-card`)**:
+  - Crisp high-resolution SVG icon (`.naphier-tech-icon-box`).
+  - Primary tool title (`.naphier-tech-name`) and description (`.naphier-tech-desc`).
+  - **`<USED-IN-PROJECTS/>` Tag Filter**:
+    - Highlights projects that utilize this specific technology (e.g. `SmartSpace`, `Celestine University`, `Library System`).
+    - Clicking on any project tag directly launches the WAI-ARIA accessible `ModalManager` dialog displaying detailed architecture, screenshots, and live repository links.
+- **Responsive Layout**:
+  - Desktop (> 868px): CSS Grid auto-fill with responsive 280px minimum width cards.
+  - Mobile (≤ 640px): Single-column cards with touch-optimized target sizes.
 
 ---
 
 ## Cross References
-- Architecture & Data Flow: [[Architecture]]
-- Features Overview: [[Features]]
+- System Structure: [[Architecture]]
 - File Responsibilities: [[File Map]]
-- Layout Decisions: [[Technical Decisions]]
-- Project Rules: [[Project Rules]]
+- Non-Negotiable Rules: [[Project Rules]]
+- System Decisions: [[Technical Decisions]]
+

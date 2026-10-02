@@ -132,6 +132,7 @@ def bundle_js():
     print("\n[3/3] Compiling & Bundling JavaScript...")
     js_files = [
         "assets/js/data.js",
+        "assets/js/sound.js",
         "assets/js/theme.js",
         "assets/js/navigation.js",
         "assets/js/error-state.js",

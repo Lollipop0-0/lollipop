@@ -202,6 +202,47 @@ This document provides a detailed breakdown of all user-facing features, their b
 
 ---
 
+## 17. Custom SVG Cursor & Radial Click Burst Interaction (marwieang.com inspired)
+- **Location**: `assets/css/base.css`, `assets/css/components.css`, `assets/js/app.js` (`initClickBurst`)
+- **Styles**: `assets/css/base.css` (`html { cursor: url(...) }`), `assets/css/components.css` (`.click-burst`, `@keyframes click-burst`)
+- **Behavior**:
+  - **Custom SVG Angled Arrow**: Crisp 24×24px minimal SVG triangle pointer (`path d="M3 3v17l5.2-4.6h7.2z"` with white fill and `#111113` outline) with hotspot at `3 3`, perfectly contrasting across both light and dark backgrounds.
+  - **Radial Click Burst**: Spawns 5 radial sparks upon pointerdown at angles `[135°, 180°, 225°, 270°, 315°]` from the exact click coordinate.
+  - **Theme Adaptive**: Particles use `var(--primary)`, delivering dark slate sparks in light mode and bright glowing white sparks in dark mode.
+  - **Motion-Safe**: Respects `@media (prefers-reduced-motion: reduce)` by disabling spark generation.
+
+---
+
+## 18. Tactile Acoustic UI Sound & Ambient Lo-Fi Music Engine
+- **Location**: `assets/js/sound.js`, `components/header.html`, `assets/css/sections.css`, `assets/css/components.css`, `assets/js/app.js`
+- **Architecture**: Native Web Audio API (`AudioContext`) real-time synthesis engine modeled after Naphier Node (`naphiernode.vercel.app`) with generative warm ambient lo-fi music synthesis.
+- **Zero Assets / Zero Overhead**: Pure oscillator and filter synthesis requiring zero external `.mp3` or `.wav` files, zero extra network requests, and zero decoding lag.
+- **Ambient Lo-Fi Background Music**:
+  - Continuous 4-chord Neo-Soul progression (Dmaj9 → Bm9 → Gmaj7(#11) → A13sus4) looping seamlessly.
+  - Warm polyphonic dual-oscillator chorus (detuned by ±3.5 cents) through a 1050 Hz lowpass filter with slow 700ms attack and 1400ms release crossfading, anchored by deep 170 Hz sub-bass.
+  - Smooth fade-in (600ms) on start and fade-out (450ms) on stop.
+  - Custom `<audio id="bg-music-audio">` fallback support if an external audio file is provided.
+- **Interactive On/Off Controls**:
+  - **Desktop Header Button (`#music-toggle-btn`)**: 36px circular capsule button in navbar actions.
+    - Active: 3-bar animated jumping equalizer wave (`.music-bars`) pulsing via `@keyframes musicBarWave`.
+    - Muted: Crisp musical note icon with diagonal mute slash.
+  - **Mobile Drawer Row (`#mobile-music-toggle-btn`)**: Dedicated control row with animated toggle switch (`.mobile-toggle-switch`).
+  - **Keyboard Shortcut**: Press `M` anytime (outside input/textarea fields) to toggle sound & music.
+  - **Audio Confirmation**: Upbeat ascending chime on turning ON; soft descending pop on turning OFF.
+- **Sound Palette (Tactile Feedback)**:
+  - **Mechanical Click (`playClick`)**: Lowpass-filtered (1600 Hz) triangle wave frequency ramping from 580 Hz down to 240 Hz over 40ms.
+  - **Micro-Tick Hover (`playHover`)**: High-frequency sine wave (2200 Hz to 1400 Hz over 25ms, gain 0.02) with 75ms throttling to prevent flutter during fast mouse movement across links and cards.
+  - **Navigation Leap (`playNavigate`)**: Harmonized dual-sine pop (520 Hz / 780 Hz ramping to 650 Hz / 975 Hz over 70ms) triggering on navigation clicks and smooth section scroll jumps.
+  - **Harmonic Theme Chime (`playTheme`)**: Rich harmonized dual-sine chime (440 Hz / 660 Hz ramping to 880 Hz / 1320 Hz over 100ms) accompanying the digital matrix rainfall transition.
+  - **Modal / Search Open (`playOpen`)**: Ascending sine wave (480 Hz to 880 Hz over 60ms) triggered on modal dialog, quick command palette, and mobile drawer open.
+  - **Modal / Search Dismiss (`playClose`)**: Descending sine wave (780 Hz to 420 Hz over 55ms) triggered on modal dialog, quick command palette, and mobile drawer close.
+- **Resiliency & Autoplay Compliance**:
+  - Defaults to OFF on initial visit for visitor comfort and strict browser autoplay policy compliance.
+  - Automatically unlocks the browser's suspended `AudioContext` on first user gesture (`pointerdown`, `keydown`, `touchstart`).
+  - Persists user mute/active preference across page reloads and visits via `localStorage.getItem("ket_portfolio_sound")`.
+
+---
+
 ## Cross References
 - Architecture: [[Architecture]]
 - File Map: [[File Map]]

@@ -42,12 +42,39 @@ const GitHubManager = (() => {
   async function fetchContributions() {
     lastErrorStatus = 0;
 
+    // Tier 0: High-speed sessionStorage cache (TTL: 15 minutes)
+    const CACHE_KEY = `ket_github_contribs_${USERNAME.toLowerCase()}`;
+    const CACHE_TTL_MS = 15 * 60 * 1000;
+    try {
+      if (typeof window !== "undefined" && window.sessionStorage) {
+        const raw = window.sessionStorage.getItem(CACHE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.timestamp && (Date.now() - parsed.timestamp < CACHE_TTL_MS) && parsed.calendar) {
+            return parsed.calendar;
+          }
+        }
+      }
+    } catch (e) {}
+
+    const persistToSession = (cal) => {
+      try {
+        if (typeof window !== "undefined" && window.sessionStorage && cal) {
+          window.sessionStorage.setItem(CACHE_KEY, JSON.stringify({
+            timestamp: Date.now(),
+            calendar: cal
+          }));
+        }
+      } catch (e) {}
+    };
+
     // Tier 1: Local PHP proxy (XAMPP) or Netlify rewritten endpoint
     try {
       const res = await fetch(`api/contributions.php?username=${encodeURIComponent(USERNAME)}`);
       if (res.ok) {
         const data = await res.json().catch(() => null);
         if (data && data.contributionCalendar && Array.isArray(data.contributionCalendar.weeks)) {
+          persistToSession(data.contributionCalendar);
           return data.contributionCalendar;
         }
       } else {
@@ -63,6 +90,7 @@ const GitHubManager = (() => {
       if (res.ok) {
         const data = await res.json().catch(() => null);
         if (data && data.contributionCalendar && Array.isArray(data.contributionCalendar.weeks)) {
+          persistToSession(data.contributionCalendar);
           return data.contributionCalendar;
         }
       } else if (!lastErrorStatus) {
@@ -78,6 +106,7 @@ const GitHubManager = (() => {
       if (res.ok) {
         const data = await res.json().catch(() => null);
         if (data && data.contributionCalendar && Array.isArray(data.contributionCalendar.weeks)) {
+          persistToSession(data.contributionCalendar);
           return data.contributionCalendar;
         }
       } else if (!lastErrorStatus) {

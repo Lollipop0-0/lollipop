@@ -228,6 +228,11 @@ const ThemeManager = (() => {
       return;
     }
 
+    // Play harmonic theme transition chime
+    if (window.SoundManager) {
+      window.SoundManager.playTheme();
+    }
+
     // 2. Check prefers-reduced-motion
     const prefersReducedMotion = Boolean(
       window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches

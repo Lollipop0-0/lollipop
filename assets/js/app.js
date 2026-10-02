@@ -41,6 +41,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       window.PreloaderManager.setProgress(70);
     }
 
+    // 1.5. Initialize Web Audio Synthesizer (SoundManager)
+    if (window.SoundManager) {
+      window.SoundManager.init();
+    }
+
     // 2. Initialize Theme (Light / Dark)
     if (window.ThemeManager) {
       window.ThemeManager.init();
@@ -60,6 +65,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderFiguringOut();
     initHeroWordRotator();
     initHeroInteractiveAvatar();
+    initClickBurst();
 
     // 4.5. Initialize Scroll Reveal for dynamically rendered cards
     if (window.NavigationManager && typeof window.NavigationManager.initScrollReveal === "function") {
@@ -645,15 +651,15 @@ function filterTechProjects(toolName, toolKey, toolNote) {
           </div>
           <div class="stack-card-actions">
             ${!isCert ? `
-              <button type="button" class="stack-card-btn stack-card-btn-primary" onclick="if(window.ModalManager){window.ModalManager.openModal('${escapeHtml(m.id)}');}">
+              <button type="button" class="stack-card-btn stack-card-btn-primary" data-modal-project="${escapeHtml(m.id)}" onclick="if(window.ModalManager){(window.ModalManager.openModal||window.ModalManager.open)('${escapeHtml(m.id)}', this);}">
                 <span>View Details</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </button>
             ` : `
-              <a href="certificates.html#${escapeHtml(m.id)}" class="stack-card-btn stack-card-btn-primary">
+              <button type="button" class="stack-card-btn stack-card-btn-primary" data-modal-certificate="${escapeHtml(m.id)}" onclick="if(window.ModalManager){(window.ModalManager.openCertificate||window.ModalManager.open)('${escapeHtml(m.id)}', this);}">
                 <span>View Credential</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-              </a>
+              </button>
             `}
           </div>
         </div>
@@ -1056,5 +1062,55 @@ function initHeroInteractiveAvatar() {
     }
   });
 }
+
+/**
+ * Click Burst Particle Interaction (Adopted from marwieang.com)
+ * Spawns 5 radial sparks radiating from the pointer on mouse click with tactile acoustic feedback.
+ */
+function initClickBurst() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const angles = [135, 180, 225, 270, 315];
+  const prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  window.addEventListener("pointerdown", (e) => {
+    if (e.button !== undefined && e.button !== 0) return;
+
+    // Tactile acoustic UI feedback (Web Audio synthesizer)
+    if (window.SoundManager) {
+      window.SoundManager.playClick();
+    }
+
+    if (prefersReducedMotion) return;
+
+    const burst = document.createElement("div");
+    burst.className = "click-burst";
+    burst.style.left = `${e.clientX}px`;
+    burst.style.top = `${e.clientY}px`;
+    for (const angle of angles) {
+      const spark = document.createElement("span");
+      spark.style.setProperty("--a", `${angle - 90}deg`);
+      burst.appendChild(spark);
+    }
+    document.body.appendChild(burst);
+    setTimeout(() => {
+      burst.remove();
+    }, 500);
+  });
+
+  // Tactile micro-tick acoustic feedback on hovering interactive elements
+  document.addEventListener("mouseover", (e) => {
+    if (!e.target || !e.target.closest) return;
+    const interactive = e.target.closest("a, button, .btn, .nav-link, .nav-dropdown-item, .project-card, .gear-card, .naphier-tech-card, .cert-marquee-item, .card");
+    if (interactive && !interactive.contains(e.relatedTarget)) {
+      if (window.SoundManager) {
+        window.SoundManager.playHover();
+      }
+    }
+  }, { passive: true });
+}
+
 
 

@@ -405,6 +405,7 @@ const SearchManager = (() => {
 
   function open() {
     if (!modalBackdrop) return;
+    if (window.SoundManager) window.SoundManager.playOpen();
     modalBackdrop.classList.add("is-open");
     modalBackdrop.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
@@ -423,6 +424,7 @@ const SearchManager = (() => {
 
   function close() {
     if (!modalBackdrop) return;
+    if (window.SoundManager) window.SoundManager.playClose();
     modalBackdrop.classList.remove("is-open");
     modalBackdrop.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";

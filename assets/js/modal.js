@@ -12,6 +12,26 @@ const ModalManager = (() => {
 
   let lastFocusedElement = null;
   let focusableElements = [];
+  let listenersAttached = false;
+
+  function ensureElements() {
+    if (!modal) modal = document.getElementById("project-modal");
+    if (!modalBackdrop) modalBackdrop = document.getElementById("modal-backdrop");
+    if (!closeBtn) closeBtn = document.getElementById("modal-close-btn");
+    if (!modalTitle) modalTitle = document.getElementById("modal-title");
+    if (!modalBody) modalBody = document.getElementById("modal-body");
+
+    if (closeBtn && !closeBtn._hasModalCloseListener) {
+      closeBtn._hasModalCloseListener = true;
+      closeBtn.addEventListener("click", close);
+    }
+    if (modalBackdrop && !modalBackdrop._hasModalCloseListener) {
+      modalBackdrop._hasModalCloseListener = true;
+      modalBackdrop.addEventListener("click", close);
+    }
+
+    return Boolean(modal && modalBackdrop && modalBody);
+  }
 
   /**
    * Populate modal with project details and display it
@@ -19,7 +39,7 @@ const ModalManager = (() => {
    * @param {HTMLElement} triggerElement - Element that triggered the modal
    */
   function open(projectId, triggerElement) {
-    if (!modal) return;
+    if (!ensureElements()) return;
     lastFocusedElement = triggerElement || document.activeElement;
 
     if (modal) modal.classList.remove("modal-cert-mode");
@@ -51,7 +71,16 @@ const ModalManager = (() => {
       }
     }
 
-    if (!project) return;
+    if (!project) {
+      if (window.PORTFOLIO_DATA && Array.isArray(window.PORTFOLIO_DATA.certificates)) {
+        const cert = window.PORTFOLIO_DATA.certificates.find(c => c.id === targetId || c.id === projectId);
+        if (cert) {
+          openCertificate(cert.id, triggerElement);
+          return;
+        }
+      }
+      return;
+    }
 
     renderProjectContent(project);
 
@@ -69,6 +98,7 @@ const ModalManager = (() => {
     if (modalBackdrop) modalBackdrop.classList.add("is-active");
     document.body.classList.add("modal-locked");
     modal.setAttribute("aria-hidden", "false");
+    if (window.SoundManager) window.SoundManager.playOpen();
 
     // Setup focus trap
     updateFocusableElements();
@@ -83,7 +113,7 @@ const ModalManager = (() => {
    * @param {HTMLElement} triggerElement - Element that triggered the modal
    */
   function openCertificate(certId, triggerElement) {
-    if (!modal) return;
+    if (!ensureElements()) return;
     lastFocusedElement = triggerElement || document.activeElement;
 
     let cert = null;
@@ -100,6 +130,7 @@ const ModalManager = (() => {
     if (modalBackdrop) modalBackdrop.classList.add("is-active");
     document.body.classList.add("modal-locked");
     modal.setAttribute("aria-hidden", "false");
+    if (window.SoundManager) window.SoundManager.playOpen();
 
     updateFocusableElements();
     if (closeBtn) {
@@ -295,7 +326,9 @@ const ModalManager = (() => {
    * Close modal and restore focus to trigger button
    */
   function close() {
+    if (!ensureElements()) return;
     if (!modal || !modal.classList.contains("is-active")) return;
+    if (window.SoundManager) window.SoundManager.playClose();
     modal.classList.remove("is-active");
     if (modalBackdrop) modalBackdrop.classList.remove("is-active");
     modal.classList.remove("modal-cert-mode");
@@ -369,59 +402,49 @@ const ModalManager = (() => {
    * Initialize modal listeners
    */
   function init() {
-    modal = document.getElementById("project-modal");
-    modalBackdrop = document.getElementById("modal-backdrop");
-    closeBtn = document.getElementById("modal-close-btn");
-    modalTitle = document.getElementById("modal-title");
-    modalBody = document.getElementById("modal-body");
+    ensureElements();
 
-    if (!modal) return;
+    if (!listenersAttached) {
+      listenersAttached = true;
+      document.addEventListener("keydown", handleKeyDown);
 
-    if (closeBtn) {
-      closeBtn.addEventListener("click", close);
-    }
+      // Global listener for elements requesting project or certificate modal
+      document.addEventListener("click", e => {
+        const projTrigger = e.target.closest("[data-modal-project]");
+        if (projTrigger) {
+          e.preventDefault();
+          const projectId = projTrigger.getAttribute("data-modal-project");
+          open(projectId, projTrigger);
+          return;
+        }
 
-    if (modalBackdrop) {
-      modalBackdrop.addEventListener("click", close);
-    }
-
-    document.addEventListener("keydown", handleKeyDown);
-
-    // Global listener for elements requesting project or certificate modal
-    document.addEventListener("click", e => {
-      const projTrigger = e.target.closest("[data-modal-project]");
-      if (projTrigger) {
-        e.preventDefault();
-        const projectId = projTrigger.getAttribute("data-modal-project");
-        open(projectId, projTrigger);
-        return;
-      }
-
-      const certTrigger = e.target.closest("[data-modal-certificate]");
-      if (certTrigger) {
-        e.preventDefault();
-        const certId = certTrigger.getAttribute("data-modal-certificate");
-        openCertificate(certId, certTrigger);
-        return;
-      }
-    });
-
-    // Handle Enter/Space on focused certificate card
-    document.addEventListener("keydown", e => {
-      if (e.key === "Enter" || e.key === " ") {
-        const certTrigger = document.activeElement ? document.activeElement.closest("[data-modal-certificate]") : null;
-        if (certTrigger && modal && !modal.classList.contains("is-active")) {
+        const certTrigger = e.target.closest("[data-modal-certificate]");
+        if (certTrigger) {
           e.preventDefault();
           const certId = certTrigger.getAttribute("data-modal-certificate");
           openCertificate(certId, certTrigger);
+          return;
         }
-      }
-    });
+      });
+
+      // Handle Enter/Space on focused certificate card
+      document.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") {
+          const certTrigger = document.activeElement ? document.activeElement.closest("[data-modal-certificate]") : null;
+          if (certTrigger && modal && !modal.classList.contains("is-active")) {
+            e.preventDefault();
+            const certId = certTrigger.getAttribute("data-modal-certificate");
+            openCertificate(certId, certTrigger);
+          }
+        }
+      });
+    }
   }
 
   return {
     init,
     open,
+    openModal: open,
     openCertificate,
     close
   };

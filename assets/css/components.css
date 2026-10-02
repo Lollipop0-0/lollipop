@@ -915,6 +915,78 @@
   color: var(--accent);
 }
 
+/* Mobile Drawer Music & Sound Row */
+.mobile-music-row {
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.mobile-music-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 14px;
+  background-color: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.mobile-music-toggle-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.mobile-music-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mobile-music-icon {
+  color: var(--accent);
+}
+
+.mobile-toggle-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--border);
+  padding: 3px 8px 3px 6px;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  transition: all var(--transition-fast);
+  color: var(--secondary);
+}
+
+.mobile-toggle-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background-color: currentColor;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform var(--transition-fast);
+}
+
+.mobile-music-toggle-btn.is-active .mobile-toggle-switch,
+.mobile-music-toggle-btn[aria-pressed="true"] .mobile-toggle-switch {
+  background-color: var(--primary);
+  color: var(--bg);
+}
+
+.mobile-music-toggle-btn.is-active .mobile-toggle-thumb,
+.mobile-music-toggle-btn[aria-pressed="true"] .mobile-toggle-thumb {
+  transform: translateX(3px);
+  background-color: var(--surface);
+}
+
 /* Search Modal Backdrop */
 .search-modal-backdrop {
   position: fixed;
@@ -1774,5 +1846,44 @@
   .preloader-dots span {
     animation: none;
     opacity: 1;
+  }
+}
+
+/* ==========================================================================
+   Click Burst Particle Effect (Adopted from marwieang.com)
+   ========================================================================== */
+
+.click-burst {
+  position: fixed;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+.click-burst span {
+  background-color: var(--primary);
+  transform-origin: 50% 0;
+  border-radius: 1px;
+  width: 2px;
+  height: 7px;
+  animation: 0.42s cubic-bezier(0.2, 0.7, 0.3, 1) forwards click-burst;
+  position: absolute;
+  top: 0;
+  left: -1px;
+}
+
+@keyframes click-burst {
+  0% {
+    transform: rotate(var(--a)) translateY(4px) scaleY(1);
+    opacity: 1;
+  }
+  to {
+    transform: rotate(var(--a)) translateY(13px) scaleY(0.3);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .click-burst {
+    display: none !important;
   }
 }

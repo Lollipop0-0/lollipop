@@ -12,6 +12,7 @@ This document provides a complete inventory of project files and their specific 
 | `certificates.html` | Standalone application shell for Dedicated Certificates Directory mounting `CERTIFICATES_MANIFEST`. |
 | `about.html` | Standalone application shell for Detailed About page mounting `ABOUT_MANIFEST`. |
 | `gear.html` | Standalone application shell for Dedicated Gear & Workspace page mounting `GEAR_MANIFEST`. |
+| `tech-stack.html` | Standalone application shell for Dedicated Tech Stack page mounting `TECH_STACK_MANIFEST`. |
 | `404.html` | Standalone custom error page with theme switcher, Newsreader typography, and "Back Home" CTA. |
 | `.htaccess` | Apache configuration routing 404 and 500 error documents to `/lollipop/404.html` with security headers. |
 | `README.md` | Comprehensive project setup, execution guide, folder overview, and architectural reference. |
@@ -37,9 +38,10 @@ This document provides a complete inventory of project files and their specific 
 | `components/certificates-gallery.html` | Dedicated certificates directory gallery showcasing verified Sololearn credentials. |
 | `components/gear-hero.html` | Gear page hero header with workspace kicker, title, and setup narrative. |
 | `components/gear.html` | Dedicated gear and workstation showcase with categorized cards for hardware, dev tools, and software. |
+| `components/stack-hero.html` | Dedicated Tech Stack page hero header with architectural title, subtitle, and live tech count badge. |
+| `components/stack.html` | Dedicated architectural Tech Stack showcase with 6 categories, verified SVG tool icons, and interactive `<USED-IN-PROJECTS/>` project modal filter pills. |
 | `components/work.html` | Featured Project deep dive (Celestine University of the Pacific) and categorized Project Archive with filtering tabs. |
 | `components/activity.html` | GitHub activity overview, live profile stats, languages breakdown, and interactive contribution calendar matrix. |
-| `components/stack.html` | "Things I Build With" container hosting categorized technology and tool cards. |
 | `components/certificates.html` | "Certificates & Certifications" container hosting verified Sololearn course credentials and credential ID inspector triggers. |
 | `components/journey.html` | Academic and programming development timeline alongside the "Currently Figuring Out" exploration cards. |
 | `components/contact.html` | Contact information, verified channels, validated contact form, and transparent `mailto:` launch system. |
@@ -63,6 +65,8 @@ This document provides a complete inventory of project files and their specific 
 | File | Module / Responsibility |
 |---|---|
 | `assets/js/data.js` | Single source of truth for portfolio data: personal bio, featured project, archive projects, tech stack categories, timeline, and current studies (`PORTFOLIO_DATA`). |
+| `assets/js/sound.js` | `SoundManager`: Web Audio API synthesizer engine providing zero-overhead, tactile acoustic feedback (click pops, hover micro-ticks, navigation pops, theme chimes, modal/drawer open/close sounds). |
+| `assets/js/tech-icons.js` | Raw SVG icon paths and viewbox dictionary for all programming languages, tools, and platforms (`TECH_ICONS`). |
 | `assets/js/theme.js` | `ThemeManager`: Light and dark mode toggling, `localStorage` persistence (`ket_portfolio_theme`), system preference detection, and contribution chart theme syncing. |
 | `assets/js/navigation.js` | `NavigationManager`: Smooth scrolling to section anchors, active section scrollspy, mobile navigation drawer open/close. |
 | `assets/js/error-state.js` | `ErrorState`: Reusable HTTP status handler, error card generator, repository status checking with 30-min cache, and full-page 404/500 rendering. |

@@ -1,65 +1,52 @@
 # Current Task
 
 ## Status: Complete / Idle
-**Last Updated**: September 30, 2026
+**Last Updated**: October 2, 2026
 
 ---
 
 ## Active Task Summary
-- **Task**: Adopt marwieang.com/gear Concept with AI-Generated Gear Pictures and Dual-Layer Color Hover
-- **Context & Implementation**:
-  1. **Generated Product Imagery**:
-     - Generated hyper-realistic commercial studio photography using DeepMind Imagen via `generate_image` for all 7 setup items:
-       - **Laptop**: ASUS TUF Gaming A16 (`assets/images/gear/color/asus-a16.webp` & `assets/images/gear/asus-a16.webp`).
-       - **Monitor**: Lenovo Legion 27" Gaming Monitor (`assets/images/gear/color/lenovo-legion-27.webp` & `assets/images/gear/lenovo-legion-27.webp`).
-       - **Keyboard**: AULA F75 75% Gasket Mechanical Keyboard (Comic Keycaps Edition, `assets/images/gear/color/aula-f75.webp` & `assets/images/gear/aula-f75.webp`).
-       - **Mouse**: Attack Shark X11 with Magnetic RGB Dock (`assets/images/gear/color/attackshark-x11.webp` & `assets/images/gear/attackshark-x11.webp`).
-       - **Phone (Primary)**: Apple iPhone 13 Midnight (`assets/images/gear/color/iphone-13.webp` & `assets/images/gear/iphone-13.webp`).
-       - **Phone (Secondary / AR Test)**: Apple iPhone 11 White (`assets/images/gear/color/iphone-11.webp` & `assets/images/gear/iphone-11.webp`).
-       - **Audio**: Anker Soundcore R50i True Wireless Earbuds (Blue, `assets/images/gear/color/soundcore-r50i.webp` & `assets/images/gear/soundcore-r50i.webp`).
-     - Extracted clean transparent alpha backgrounds and prepared dual-layer color / monochrome transparent pairs.
-  2. **marwieang.com/gear Architecture (`components/gear.html`, `components/gear-hero.html`)**:
-     - Adopted clean minimal header: Back to Home link (`← Home`), page title `Gear`, lead sentence `The hardware I use every day.`
-     - Replicated section head: `.gear-head` with `.gear-head-label` ("Setup") and tabular `.gear-head-count` ("07").
-     - Dual-layer hover interaction:
-       - Default: Crisp monochrome render (`.gear-mono`) inside `.gear-image` container.
-       - Hover: Smoothly cross-fades into full-color vibrant product render (`.gear-color`) with subtle scale effect (`transform: scale(1.035)`).
-     - Product detail line: `.gear-text` featuring bold title `.gear-name` and clean middle-dot separated specs `.gear-detail`.
-  3. **Responsive & Theme Styles (`assets/css/sections.css`)**:
-     - Configured `.gear-hero-container` and `.gear-content-container` max-width at `720px` for that focused, editorial single-column aesthetic.
-     - Handled light and dark mode backgrounds (`#17171b` in dark mode) and responsive 1-column layout on mobile (`<= 640px`).
-  4. **Verification**:
-     - Recompiled minified CSS and bundled JS with `python optimize.py`.
-     - Validated all JavaScript modules with `node -c`.
-     - Confirmed HTTP 200 on Apache.
+- **Tasks**:
+  1. **Sound & Ambient Lo-Fi Music On/Off Toggle Engine**: Added dedicated `#music-toggle-btn` in desktop navbar capsule and `#mobile-music-toggle-btn` in mobile drawer with live animated 3-bar equalizer waves (`.music-bars`), keyboard shortcut (`M`), state persistence, ascending activation chime, soft mute pop, and procedural ambient lo-fi chord synthesis.
+  2. **Comprehensive Website Performance & Core Web Vitals Optimization**: Audited and optimized image compression (all WebP), CLS elimination (explicit dimensions on gear images), server and edge caching (`.htaccess` mod_deflate/mod_expires, `netlify.toml` immutable caching), API response caching (15-min sessionStorage for GitHub contributions), input debouncing, and bundle minification while strictly preserving visual identity and functionality.
+  3. **Fixed "View Details" Modal Trigger on Tech Stack Page (`tech-stack.html`)**: Resolved the unhandled error where `window.ModalManager.openModal` was invoked but did not exist on `ModalManager` (which exported `open`). Added `ensureElements()` lazy element lookup, aliased `openModal: open`, and added `data-modal-project` and `data-modal-certificate` attributes so clicking "View Details" opens the modal dialog seamlessly.
+  4. **Tactile Acoustic UI Sound Engine (Web Audio API Synthesizer)**: Implemented low-latency sound synthesis (`assets/js/sound.js`) inspired by Naphier Node (`naphiernode.vercel.app`), creating click pops, hover micro-ticks, navigation pops, theme switch chimes, and modal/search open/close sounds without any external audio asset overhead.
+  5. **Adopted Custom SVG Cursor & Radial Click Burst from marwieang.com**: Extracted the exact minimal SVG arrow pointer (`<path d='M3 3v17l5.2-4.6h7.2z' fill='white' stroke='%23111113' stroke-width='1.5'/>`) and implemented the signature 5-spark radial click-burst particle interaction on mouse clicks.
+  6. **Fixed Weird Active Cell in Dark Mode Navigation Dropdown**: Replaced the solid white blinding block with an elevated dark slate icon container (`#252528`), ensuring the white SVG icon is crisp and clearly visible. Refined the active row background and badge integration for dark mode.
+  7. **Cut Tech Stack from About Page**: Removed tech section from `about.html`, allowing the narrative story, background, and timeline to flow cleanly.
+  8. **Dedicated Tech Stack Page (`tech-stack.html`)**: Created dedicated, standalone Tech Stack page adopting the architectural, high-fidelity developer showcase inspired by Naphier Node (`naphiernode.vercel.app`).
+  9. **Strict Git & Version Control Rule**: Enforced Rule 6 in `portfolio/Project Rules.md` forbidding automatic git pushes (`git push`). All commits and compiles remain strictly local until explicitly commanded by the user.
 
 ---
 
-## Applied Homepage Sequence (01 to 05)
-1. **Hero**: Minimal student intro (`components/hero.html` with primary button "More About Me" linking to `about.html`).
-2. **01 — Currently Building** (`components/currently-building-section.html`, kicker `01`):
-   - Celestine University of the Pacific
-   - System Integration Architecture · Collaborative Project
-   - Enrollment & Admissions Management System
-3. **02 — Selected Work** (`components/selected-work.html`, kicker `02`):
-   - 1. SmartSpace (`06`)
-   - 2. Hotel Management System (`05`)
-   - 3. Inventory Management System (`02`)
-   - 4. Library Management System (`03`)
-   - 5. UI-SneakerHub (`04`)
-   - "Explore All Projects (6) →" button linking to `projects.html`
-4. **03 — Certificates & Certifications** (`components/certificates.html`, kicker `03`):
-   - Verified Sololearn credentials in JavaScript, HTML, CSS, and C++ with dynamic marquee and credential inspection modal.
-   - "Explore All Certificates (4) →" button linking to `certificates.html`
-5. **04 — GitHub Activity** (`components/activity.html`, kicker `04`):
-   - Live contribution matrix, profile badge, recent activity feed (`#github-activity-feed`), and top languages breakdown (`#github-languages-list`).
-6. **05 — Get in Touch** (`components/contact.html`, kicker `05`):
-   - Contact methods list and interactive `#contact-form` with validation and error states.
+## Key Deliverables & Implementation
+
+### 1. Isolated `about.html` Narrative Flow
+- Removed `stack.html` from `ABOUT_MANIFEST` in `assets/js/components.js`.
+- `about.html` now mounts: `header` → `about-hero` → `journey` → `footer` → `project-modal`.
+- Updated CTA buttons on certificates gallery to distinguish between reading the story (`about.html`) and exploring technologies (`tech-stack.html`).
+
+### 2. High-Fidelity Naphier Node Inspired Tech Stack (`tech-stack.html`)
+- **Page Shell**: `tech-stack.html` configured with `data-page="tech-stack"`.
+- **Hero Header (`components/stack-hero.html`)**: Monospace terminal kicker `<TECH-STACK/>`, title, subtitle, and live count pill (`18 Technologies`).
+- **Interactive Component (`components/stack.html`)**:
+  - 6 Categorized sections (`[01/06] WEB`, `[02/06] SOFTWARE`, `[03/06] DATABASE`, `[04/06] TOOLS`, `[05/06] UI/UX`, `[06/06] AI`).
+  - High-resolution SVG tool icons (`assets/js/tech-icons.js`) for PHP, HTML, CSS, JavaScript, Bootstrap, Java, C++, MySQL, MariaDB, Git, GitHub, VS Code, NetBeans, XAMPP, Figma, Gemini, and Codex.
+  - Interactive `<USED-IN-PROJECTS/>` pill tags displaying which projects use each tool. Clicking any tag opens `ModalManager` with full architecture, screenshots, and live demo links.
+- **Navigation & Routing**:
+  - Desktop header `More` dropdown links to `tech-stack.html`.
+  - Mobile navigation drawer includes direct `Tech Stack` link.
+  - Quick Search dialog (`search.js`) routes "Technology Stack" directly to `tech-stack.html`.
+
+### 3. Strict Git Policy
+- **Rule 6 in `portfolio/Project Rules.md`**: No auto-pushing under any circumstances.
+- All testing, verification, and asset compilation via `optimize.py` are strictly local.
 
 ---
 
 ## Verification & Status
-- Footer and visitor tracker cut and fully retired; no background network polling, heartbeats, or storage writes.
-- All remaining JS modules pass syntax checks with zero errors.
-- Chrome CDP audit confirms zero overflow, zero collision, and correct link resolution.
-- Branch: `main`.
+- `tech-stack.html` returns HTTP 200 with zero console errors.
+- `about.html` returns HTTP 200 with zero console errors and clean narrative layout.
+- JavaScript syntax check (`node -c assets/js/bundle.min.js`) passed with exit code 0.
+- All changes remain local on branch `main`. No push executed.
+

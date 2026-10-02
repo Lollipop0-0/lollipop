@@ -22,6 +22,7 @@ const NavigationManager = (() => {
    */
   function openDrawer() {
     if (!mobileDrawer) return;
+    if (window.SoundManager) window.SoundManager.playOpen();
     isDrawerOpen = true;
     mobileDrawer.classList.add("is-open");
     if (mobileBackdrop) mobileBackdrop.classList.add("is-visible");
@@ -43,6 +44,7 @@ const NavigationManager = (() => {
    */
   function closeDrawer() {
     if (!mobileDrawer || !isDrawerOpen) return;
+    if (window.SoundManager) window.SoundManager.playClose();
     isDrawerOpen = false;
     mobileDrawer.classList.remove("is-open");
     if (mobileBackdrop) mobileBackdrop.classList.remove("is-visible");
@@ -70,6 +72,7 @@ const NavigationManager = (() => {
    */
   function openMoreDropdown() {
     if (!moreMenu || !moreTrigger) return;
+    if (window.SoundManager) window.SoundManager.playOpen();
     moreMenu.removeAttribute("hidden");
     moreMenu.classList.add("is-open");
     if (moreDropdownWrap) moreDropdownWrap.classList.add("is-open");
@@ -81,6 +84,7 @@ const NavigationManager = (() => {
    */
   function closeMoreDropdown() {
     if (!moreMenu || !moreTrigger) return;
+    if (window.SoundManager) window.SoundManager.playClose();
     moreMenu.classList.remove("is-open");
     if (moreDropdownWrap) moreDropdownWrap.classList.remove("is-open");
     moreTrigger.setAttribute("aria-expanded", "false");
@@ -109,6 +113,7 @@ const NavigationManager = (() => {
   function scrollToTarget(targetId) {
     const targetElement = document.getElementById(targetId);
     if (!targetElement) return;
+    if (window.SoundManager) window.SoundManager.playNavigate();
 
     // Use CSS scroll-behavior: smooth with scroll-margin-top
     targetElement.scrollIntoView({ behavior: "smooth", block: "start" });

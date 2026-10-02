@@ -2,6 +2,161 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-10-02: Implement Sound & Ambient Lo-Fi Music On/Off Toggle Engine
+- **Objective**: Add an interactive On/Off toggle control for sound effects and background ambient music, with real-time animated equalizer feedback, keyboard accessibility (`M` key), persistent state, and generative warm lo-fi chords.
+- **Key Deliverables**:
+  - **Generative Ambient Music Synthesizer (`assets/js/sound.js`)**:
+    - Synthesizes a soothing 4-chord Neo-Soul / Lo-Fi jazz ambient progression (Dmaj9 → Bm9 → Gmaj7(#11) → A13sus4) on an endless seamless loop.
+    - Zero external media assets required (0 KB download), avoiding bandwidth overhead, latency, and CORS/404 issues.
+    - Soft polyphonic dual oscillators (sine + triangle) detuned by ±3.5 cents for authentic analog chorus warmth through a 1050 Hz lowpass filter.
+    - Gentle 700ms attack and 1400ms release crossfading between measures, anchored by a deep resonant sub-bass foundation (sine wave, 170 Hz lowpass).
+    - Custom `<audio id="bg-music-audio">` fallback support if an external MP3 file is placed in the project.
+  - **Desktop Header Capsule Toggle (`components/header.html`, `assets/css/sections.css`)**:
+    - Embedded `.music-toggle-btn` (#music-toggle-btn) into desktop navbar `.nav-actions` right beside the theme preference toggle.
+    - Active State: Renders a 3-bar animated jumping equalizer wave (`.music-bars`) pulsing via `@keyframes musicBarWave`, with subtle glow and `aria-pressed="true"`.
+    - Muted/Off State: Renders a clean musical note icon with a diagonal mute slash, `aria-pressed="false"`.
+    - Tooltip & ARIA: Informative titles ("Sound & Music: ON (Click or press 'M' to mute)" vs "Sound & Music: OFF (Click or press 'M' to play)").
+  - **Mobile Navigation Drawer Integration (`components/header.html`, `assets/css/components.css`)**:
+    - Embedded `.mobile-music-row` with a toggle switch (`.mobile-toggle-switch` and `.mobile-toggle-thumb`) beneath the search input in the mobile drawer.
+    - Displays active status label ("ON" / "OFF") and synchronized pill animation.
+  - **Audio Feedback & Keyboard Accessibility**:
+    - Ascending 4-note chime (C5 → E5 → G5 → B5) upon turning sound/music ON.
+    - Soft descending pop upon turning sound/music OFF.
+    - Global keyboard shortcut: Pressing `M` (when not typing in an input or textarea) instantly toggles music and sound state.
+    - Mute synchronization: When toggled OFF, all UI sound effects (click, hover micro-ticks, theme chimes, navigation pops) are silenced; when toggled ON, both background music and UI sound effects are active.
+    - Preference persistence in `localStorage.getItem("ket_portfolio_sound")`.
+  - **Build & Compilation**:
+    - Recompiled production minified stylesheets (`assets/css/styles.min.css`, 149.7 KB) and bundles (`assets/js/bundle.min.js`, 231.4 KB) via `python optimize.py`.
+    - Validated syntax with `node -c assets/js/bundle.min.js` (exit code 0).
+    - Adhered 100% to Rule 6: Strictly local compilation and verification, zero git push.
+
+## 2026-10-02: Comprehensive Website Performance & Core Web Vitals Optimization
+- **Objective**: Full performance audit and optimization across speed, responsiveness, Core Web Vitals (LCP, CLS, INP, FCP), asset caching, and payload compression, strictly preserving visual fidelity, layouts, typography, and animations.
+- **Audited & Implemented Deliverables**:
+  1. **Image Compression & Format Modernization**:
+     - All content images (hero states, project previews, certificate mockups, hardware gear, preloader frames) converted to WebP.
+     - Preserved exact dimensions, crop framing, and aspect ratios.
+     - Reductions: Hero photo (1,996.9 KB → 28.9 KB, 98.6%), Project mockups (500–670 KB → 56–75 KB, 88–90%), Certificates (150 KB → 21 KB, 86%), Stickman loader (82 KB → 53 KB, 35%).
+  2. **Cumulative Layout Shift (CLS) Elimination**:
+     - Added explicit `width="600" height="600" loading="lazy" decoding="async"` to all 14 images in `components/gear.html`.
+     - Confirmed all project and certificate image tags across `projects.js`, `modal.js`, and `app.js` maintain explicit dimensions and CSS `aspect-ratio: 16 / 9` and `16 / 11`.
+  3. **High-Efficiency Server & Edge Caching**:
+     - **`.htaccess`**: Added `mod_deflate` GZIP compression for all text/html, css, js, json, svg, and font formats; enabled `mod_expires` (1-year immutable caching for static images, css, js, woff2); configured strict security headers (`nosniff`, `SAMEORIGIN`).
+     - **`netlify.toml`**: Replaced counterproductive `max-age=0` headers with `Cache-Control = "public, max-age=31536000, immutable"` for `/assets/images/*` and `max-age=604800, stale-while-revalidate=86400` for `/assets/css/*` and `/assets/js/*`.
+  4. **API Response Caching & Payload Optimization**:
+     - **`assets/js/github.js`**: Added client-side `sessionStorage` caching with a 15-minute TTL to `fetchContributions()`, preventing redundant network requests when visitors navigate between pages.
+     - **`api/contributions.php`**: Verified 6-hour disk caching with `X-Cache: HIT` header.
+  5. **Input Debouncing & Render Efficiency**:
+     - Verified 120ms debounce timer on command palette / search dialog input (`assets/js/search.js`).
+     - Verified all scroll-spy and parallax listeners in `navigation.js` and `github.js` utilize `window.requestAnimationFrame` throttling and `{ passive: true }` flags to avoid scroll jank.
+  6. **Asset Bundling & Production Minification**:
+     - Recompiled `assets/css/styles.min.css` (146.6 KB, 25.5% reduction).
+     - Bundled and minified `assets/js/bundle.min.js` (224.3 KB, 23.2% reduction) using `rjsmin`.
+     - Script loaded via deferred execution (`<script defer src="assets/js/bundle.min.js?v=2">`) to eliminate render blocking.
+  7. **Strict Compliance**:
+     - Adhered 100% to Rule 6: All tests, compiles, and audits were executed locally. Zero git push executed.
+
+## 2026-10-02: Fix "View Details" Modal Trigger on Tech Stack Page (`tech-stack.html`)
+- **Objective**: Fix the non-responsive "View Details" buttons inside the interactive `<USED-IN-PROJECTS/>` panel on `tech-stack.html`.
+- **Root Cause**:
+  1. **Method Name Mismatch**: The generated project cards rendered `onclick="window.ModalManager.openModal(id)"`, but `ModalManager` only exported `open(projectId, triggerElement)`, resulting in a silent `TypeError: window.ModalManager.openModal is not a function`.
+  2. **Missing Data Attribute**: The buttons lacked `data-modal-project="${m.id}"`, preventing the global document-level click listener from intercepting the click via event delegation.
+  3. **Premature `init()` Abort**: If `ModalManager.init()` ran before `#project-modal` was injected by `ComponentLoader`, it returned early before document listeners were attached.
+- **Key Deliverables**:
+  - **Modal Manager Hardening (`assets/js/modal.js`)**:
+    - Added `ensureElements()` to lazily retrieve `#project-modal`, `#modal-backdrop`, `#modal-close-btn`, and `#modal-body` on demand.
+    - Exported `openModal: open` alias on `ModalManager` to support both API styles seamlessly.
+    - Added certificate ID fallback directly into `open()` so calling `open("cert-xxx")` gracefully delegates to `openCertificate()`.
+    - Bound document-level click and keydown listeners unconditionally regardless of DOM component insertion timing.
+  - **Tech Stack Card Template (`assets/js/app.js`)**:
+    - Added `data-modal-project="${escapeHtml(m.id)}"` and resilient inline handler `(window.ModalManager.openModal || window.ModalManager.open)('${escapeHtml(m.id)}', this)` to all project cards.
+    - Updated credential cards to include `data-modal-certificate="${escapeHtml(m.id)}"` and `openCertificate()`, enabling instant modal inspection on `tech-stack.html` without forced page redirects.
+  - **Asset Compilation & Verification**:
+    - Compiled `assets/js/bundle.min.js` (223.6 KB) via `optimize.py`.
+    - Syntax checked and verified with Node.js unit tests.
+    - Complied strictly with Rule 6: All changes local, zero git push.
+
+## 2026-10-02: Implement Tactile Acoustic UI Sound Engine (Web Audio API Synthesizer)
+- **Objective**: Add acoustic feedback to the portfolio matching the tactile, modern developer aesthetic of Naphier Node (`naphiernode.vercel.app`), creating a satisfying, reactive multi-sensory web experience.
+- **Key Deliverables**:
+  - **Zero-Dependency Sound Manager (`assets/js/sound.js`)**:
+    - Synthesizes low-latency audio via native Web Audio API (`AudioContext`).
+    - Eliminates external media files (`.mp3`/`.wav`), preventing extra HTTP requests, bandwidth consumption, and audio buffer decoding delays.
+    - Automatic AudioContext unlock on first user gesture (`pointerdown`, `keydown`, `touchstart`).
+    - Persistent mute state support stored in `localStorage.getItem("ket_portfolio_sound")`.
+  - **Sound Palette Implementation**:
+    - **Mechanical Click (`playClick`)**: Lowpass-filtered (1600 Hz) triangle wave sweeping from 580 Hz down to 240 Hz over 40ms. Wired to `pointerdown` synchronously alongside the 5-spark click burst.
+    - **Micro-Tick Hover (`playHover`)**: High-frequency sine wave (2200 Hz to 1400 Hz over 25ms, gain 0.02) with 75ms throttling to prevent audio chatter on rapid pointer movement across links and cards.
+    - **Navigation Leap (`playNavigate`)**: Harmonized dual-sine wave (520 Hz / 780 Hz to 650 Hz / 975 Hz over 70ms) on section scroll jumps and page navigation.
+    - **Theme Chime (`playTheme`)**: Harmonized dual-sine chime (440 Hz / 660 Hz to 880 Hz / 1320 Hz over 100ms) synchronized with the digital rainfall theme switch.
+    - **Modal / Search Open (`playOpen`)**: Ascending sine wave (480 Hz to 880 Hz over 60ms) on opening project modal, certificate modal, command palette, and mobile drawer.
+    - **Modal / Search Dismiss (`playClose`)**: Descending sine wave (780 Hz to 420 Hz over 55ms) on dismissing overlays.
+  - **Pipeline Compilation & Bundle Integration**:
+    - Registered `assets/js/sound.js` in `optimize.py` before other modules to guarantee early global availability.
+    - Compiled `assets/js/bundle.min.js` (222.7 KB).
+    - Verified syntax (`node -c assets/js/bundle.min.js`) with zero errors.
+    - Complied with Rule 6: Strictly local, zero git push.
+
+## 2026-10-02: Adopt Custom SVG Cursor & Radial Click Burst from marwieang.com
+- **Objective**: Implement the exact, signature custom cursor pointer and animated click burst particle effect from `https://www.marwieang.com/` across the entire portfolio.
+- **Key Deliverables**:
+  - **Custom SVG Angled Cursor (`assets/css/base.css`)**:
+    - Extracted exact minimal SVG triangle arrow: `<path d='M3 3v17l5.2-4.6h7.2z' fill='white' stroke='%23111113' stroke-width='1.5' stroke-linejoin='round'/>` with hotspot `3 3`.
+    - Applied globally to `html { cursor: url(...) 3 3, auto; }`.
+    - Universal light/dark contrast: white body with dark charcoal `#111113` outline guarantees instant legibility against both light and dark themes.
+  - **Radial Click Burst Interaction (`assets/css/components.css`, `assets/js/app.js`)**:
+    - Implemented `initClickBurst()` listening to `pointerdown` for primary mouse clicks (`e.pointerType === 'mouse' && e.button === 0`).
+    - Spawns 5 radial spark rays fanning outward at angles `[135°, 180°, 225°, 270°, 315°]` from the exact click coordinate.
+    - Responsive to theme tokens (`var(--primary)`: dark slate in light mode, crisp white in dark mode).
+    - Smooth keyframe physics (`cubic-bezier(0.2, 0.7, 0.3, 1)`) with automatic DOM cleanup after 500ms.
+    - Motion-safe: Disabled when `prefers-reduced-motion: reduce` is active.
+  - **Compilation & Verification**:
+    - Recompiled production bundles via `optimize.py` (`styles.min.css` at 146.6 KB, `bundle.min.js` at 216.0 KB).
+    - Syntax checked `node -c assets/js/bundle.min.js` (passed with code 0).
+    - Adhered 100% to Rule 6: Strictly local, zero git push.
+
+## 2026-10-02: Fix Weird Active Cell in Dark Mode Navigation Dropdown ("More" Menu)
+- **Objective**: Fix the awkward, inverted active cell in the desktop "More" dropdown menu (`#more-dropdown-menu`) under dark mode where the icon box turned into a solid, glaring white box with an invisible white icon.
+- **Root Cause**:
+  - `.nav-dropdown-item.is-active .dropdown-item-icon-box` was hardcoded to `background-color: var(--accent); color: #ffffff;`.
+  - In dark mode (`[data-theme="dark"]`), `--accent` resolves to `#FFFFFF`.
+  - This resulted in both the background and the SVG stroke being `#FFFFFF`, making the icon box a blinding blank white square with zero icon visibility.
+  - Additionally, `.nav-dropdown-item.is-active` used `var(--accent-light)` (`rgba(255, 255, 255, 0.12)`), making the row look cloudy, while the `.dropdown-item-badge` looked like a sunken dark cutout.
+- **Key Deliverables (`assets/css/sections.css`)**:
+  - **Dark Mode Active Icon Box**: Replaced the glaring `#FFFFFF` background with an elevated dark slate container (`#252528`, `border: 1px solid rgba(255, 255, 255, 0.3)`), ensuring the `#FFFFFF` SVG icon is crisp, centered, and 100% visible with a subtle ambient glow (`box-shadow: 0 0 14px rgba(255, 255, 255, 0.06)`).
+  - **Refined Active Cell Background**: Styled `[data-theme="dark"] .nav-dropdown-item.is-active` with `rgba(255, 255, 255, 0.07)` and a subtle `border: 1px solid rgba(255, 255, 255, 0.14)`, replacing the cloudy wash with a clean glass/slate card aesthetic.
+  - **Active Badge Integration**: Updated the active badge to `rgba(255, 255, 255, 0.1)` background with crisp `#FFFFFF` typography.
+  - **Menu Surface Alignment**: Updated `[data-theme="dark"] .nav-dropdown-menu` to `rgba(20, 20, 20, 0.96)` to seamlessly match the site-wide obsidian dark surface palette.
+  - **Production Compilation**: Recompiled `assets/css/styles.min.css` via `optimize.py` (all local, zero push).
+
+## 2026-10-02: Dedicated Tech Stack Page (`tech-stack.html`), Cut Tech Section from About, & Strict Git Push Policy
+- **Objective**:
+  1. Cut the Tech Stack section from `about.html` so the About page focuses purely on the personal story, development milestones, and learning journey without clutter.
+  2. House the complete, interactive architectural Tech Stack on its own dedicated `tech-stack.html` page inspired by Naphier Node (`naphiernode.vercel.app`).
+  3. Enforce a strict non-negotiable rule forbidding automatic git pushes to remote.
+- **Key Deliverables**:
+  - **About Page Streamlining (`assets/js/components.js`, `about.html`)**:
+    - Removed `components/stack.html` from `ABOUT_MANIFEST`.
+    - `about.html` now renders: Header → About Hero narrative → Journey & Timeline → Footer → Project Modal.
+  - **Dedicated Tech Stack Page (`tech-stack.html`, `components/stack-hero.html`, `components/stack.html`)**:
+    - Created standalone `tech-stack.html` mounting `TECH_STACK_MANIFEST`.
+    - Hero header with `<TECH-STACK/>` terminal branding, title, subtitle, and live count badge (`18 Technologies`).
+    - 6 Categorized sections (`[01/06] WEB`, `[02/06] SOFTWARE`, `[03/06] DATABASE`, `[04/06] TOOLS`, `[05/06] UI/UX`, `[06/06] AI`).
+    - Raw SVG icons dictionary (`assets/js/tech-icons.js`) for all 18 tools and languages.
+    - Interactive `<USED-IN-PROJECTS/>` tag filters: clicking any project pill dynamically launches `ModalManager` with full architecture, screenshots, and live demo links.
+  - **Navigation Integration (`components/header.html`, `assets/js/navigation.js`, `assets/js/search.js`)**:
+    - Desktop navigation `More` dropdown routes to `tech-stack.html`.
+    - Mobile navigation drawer includes direct `Tech Stack` link.
+    - Command palette (`search.js`) routes "Technology Stack" directly to `tech-stack.html`.
+    - Updated certificates gallery footer CTAs to separate story reading from tech stack exploration.
+  - **Strict Git & Version Control Rule (`portfolio/Project Rules.md`)**:
+    - Added Rule 6 ("Git & Version Control Rules: No Automatic Pushing").
+    - **Never** automatically run `git push origin ...`. All operations, tests, and builds remain 100% local until the user explicitly requests a push.
+  - **Asset Optimization & Syntax Verification**:
+    - Compiled local production CSS (`styles.min.css`) and JS (`bundle.min.js`) via `optimize.py`.
+    - Passed syntax validation with `node -c assets/js/bundle.min.js`.
+    - Both `about.html` and `tech-stack.html` return HTTP 200 with zero errors.
+
 ## 2026-10-02: Conservative Mobile PageSpeed & Core Web Vitals Optimization (Zero Visual Regression)
 - **Objective**: Optimize Google PageSpeed Insights mobile performance, LCP, INP, and CLS without altering any visual design, image proportions, crop, framing, or animations.
 - **Strict Visual & Proportional Preservation**:

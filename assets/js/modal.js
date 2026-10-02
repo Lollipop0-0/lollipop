@@ -30,6 +30,29 @@ const ModalManager = (() => {
       modalBackdrop.addEventListener("click", close);
     }
 
+    // Scroll Trap: Prevent background page scroll leakage when scrolling over modal or backdrop
+    if (modalBackdrop && !modalBackdrop._hasScrollTrap) {
+      modalBackdrop._hasScrollTrap = true;
+      modalBackdrop.addEventListener("wheel", (e) => {
+        e.preventDefault();
+      }, { passive: false });
+      modalBackdrop.addEventListener("touchmove", (e) => {
+        e.preventDefault();
+      }, { passive: false });
+    }
+
+    if (modal && !modal._hasScrollTrap) {
+      modal._hasScrollTrap = true;
+      modal.addEventListener("wheel", (e) => {
+        if (!modalBody) return;
+        // If scrolling on header or outer dialog frame, route scroll delta directly to modalBody
+        if (!e.target.closest("#modal-body")) {
+          modalBody.scrollTop += e.deltaY;
+          e.preventDefault();
+        }
+      }, { passive: false });
+    }
+
     return Boolean(modal && modalBackdrop && modalBody);
   }
 
@@ -96,7 +119,9 @@ const ModalManager = (() => {
 
     modal.classList.add("is-active");
     if (modalBackdrop) modalBackdrop.classList.add("is-active");
+    document.documentElement.classList.add("modal-locked");
     document.body.classList.add("modal-locked");
+    if (modalBody) modalBody.scrollTop = 0;
     modal.setAttribute("aria-hidden", "false");
     if (window.SoundManager) window.SoundManager.playOpen();
 
@@ -128,7 +153,9 @@ const ModalManager = (() => {
 
     modal.classList.add("is-active");
     if (modalBackdrop) modalBackdrop.classList.add("is-active");
+    document.documentElement.classList.add("modal-locked");
     document.body.classList.add("modal-locked");
+    if (modalBody) modalBody.scrollTop = 0;
     modal.setAttribute("aria-hidden", "false");
     if (window.SoundManager) window.SoundManager.playOpen();
 
@@ -332,6 +359,7 @@ const ModalManager = (() => {
     modal.classList.remove("is-active");
     if (modalBackdrop) modalBackdrop.classList.remove("is-active");
     modal.classList.remove("modal-cert-mode");
+    document.documentElement.classList.remove("modal-locked");
     document.body.classList.remove("modal-locked");
     modal.setAttribute("aria-hidden", "true");
 

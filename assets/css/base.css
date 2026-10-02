@@ -84,9 +84,12 @@ html.dark body::before {
 }
 
 /* Modal and Drawer scroll lock */
+html.modal-locked,
 body.modal-locked,
+html.drawer-locked,
 body.drawer-locked {
-  overflow: hidden;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
 }
 
 /* Accessible Skip Link */

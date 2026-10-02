@@ -106,6 +106,7 @@ def minify_css():
         "assets/css/base.css",
         "assets/css/components.css",
         "assets/css/sections.css",
+        "assets/css/guide.css",
         "assets/css/responsive.css"
     ]
     combined_css = ""
@@ -131,6 +132,7 @@ def minify_css():
 def bundle_js():
     print("\n[3/3] Compiling & Bundling JavaScript...")
     js_files = [
+        "assets/js/sweetalert2.all.min.js",
         "assets/js/data.js",
         "assets/js/sound.js",
         "assets/js/theme.js",
@@ -144,6 +146,7 @@ def bundle_js():
         "assets/js/components.js",
         "assets/js/preloader.js",
         "assets/js/tech-icons.js",
+        "assets/js/guide.js",
         "assets/js/app.js"
     ]
     combined_js = ""

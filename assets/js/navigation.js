@@ -26,6 +26,7 @@ const NavigationManager = (() => {
     isDrawerOpen = true;
     mobileDrawer.classList.add("is-open");
     if (mobileBackdrop) mobileBackdrop.classList.add("is-visible");
+    document.documentElement.classList.add("drawer-locked");
     document.body.classList.add("drawer-locked");
 
     if (mobileToggle) {
@@ -48,6 +49,7 @@ const NavigationManager = (() => {
     isDrawerOpen = false;
     mobileDrawer.classList.remove("is-open");
     if (mobileBackdrop) mobileBackdrop.classList.remove("is-visible");
+    document.documentElement.classList.remove("drawer-locked");
     document.body.classList.remove("drawer-locked");
 
     if (mobileToggle) {
@@ -307,16 +309,6 @@ const NavigationManager = (() => {
       }
     }
 
-    // Smoothly hide hero scroll indicator when scrolled down
-    const scrollIndicator = document.getElementById("hero-scroll-indicator");
-    if (scrollIndicator) {
-      if (currentScrollY > 60) {
-        scrollIndicator.classList.add("is-scrolled-hidden");
-      } else {
-        scrollIndicator.classList.remove("is-scrolled-hidden");
-      }
-    }
-
     // Update top reading scroll progress bar
     const progressBar = document.getElementById("scroll-progress-bar");
     if (progressBar) {
@@ -536,6 +528,8 @@ const NavigationManager = (() => {
     init,
     openDrawer,
     closeDrawer,
+    openMoreDropdown,
+    closeMoreDropdown,
     scrollToTarget,
     initScrollReveal
   };

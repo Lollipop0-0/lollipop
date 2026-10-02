@@ -57,6 +57,7 @@ This document provides a complete inventory of project files and their specific 
 | `assets/css/base.css` | Reset rules, base element typography, skip links, `.container` width rules, subtle editorial grid pattern. |
 | `assets/css/components.css` | Universal reusable UI elements: buttons, badges, status indicators, code snippet stickers, photo frames, and modal dialog. |
 | `assets/css/sections.css` | Specific layouts for Hero, About, Work, Activity, Stack, Journey, Contact, and Footer. |
+| `assets/css/guide.css` | Styling for autonomous tour guide cursor (`#guideCursor`), speech bubble, invitation modal with mobile backdrop (`#guideInvite`), click barrier overlay (`#guideClickGuard`), floating stop button (`#guideStopWrap`), SweetAlert2 custom theming, and floating replay pill (`#guidePrompt`). |
 | `assets/css/responsive.css` | Mobile navigation drawer, responsive layout overrides for tablet (`≤ 868px`) and mobile (`≤ 480px`), and reduced-motion queries. |
 
 ---
@@ -64,6 +65,7 @@ This document provides a complete inventory of project files and their specific 
 ## JavaScript Modules (`assets/js/`)
 | File | Module / Responsibility |
 |---|---|
+| `assets/js/sweetalert2.all.min.js` | SweetAlert2 standalone library bundled locally for beautiful, responsive modal confirmation dialogs with zero external CDN dependencies. |
 | `assets/js/data.js` | Single source of truth for portfolio data: personal bio, featured project, archive projects, tech stack categories, timeline, and current studies (`PORTFOLIO_DATA`). |
 | `assets/js/sound.js` | `SoundManager`: Web Audio API synthesizer engine providing zero-overhead, tactile acoustic feedback (click pops, hover micro-ticks, navigation pops, theme chimes, modal/drawer open/close sounds). |
 | `assets/js/tech-icons.js` | Raw SVG icon paths and viewbox dictionary for all programming languages, tools, and platforms (`TECH_ICONS`). |
@@ -77,6 +79,7 @@ This document provides a complete inventory of project files and their specific 
 | `assets/js/search.js` | `SearchManager`: Fast command palette / search dialog (`Cmd/Ctrl + K`) indexing all projects, tech stack, milestones, and sections with keyboard navigation. |
 | `assets/js/components.js` | `ComponentLoader`: Concurrently fetches all component partials in `components/` and injects them into `#app`. |
 | `assets/js/preloader.js` | `PreloaderManager`: Animated stickman runner loading experience, progress computation, and smooth transition. |
+| `assets/js/guide.js` | `GuideManager`: Autonomous guide tour cursor (`#guideCursor`), decision-enforcing invitation flow (`#guideInvite`), protective click barrier (`#guideClickGuard`), floating stop button (`#guideStopBtn`) with SweetAlert2 confirmation dialog, minimum-jerk trajectory physics, human typing cadence, session persistence, and `?tour` URL query support. |
 | `assets/js/app.js` | Main orchestrator initializing modules sequentially once the DOM is fully loaded and components are mounted. |
 
 ---

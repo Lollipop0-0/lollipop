@@ -374,6 +374,8 @@
   opacity: 0;
   visibility: hidden;
   transition: opacity var(--transition-base), visibility var(--transition-base);
+  overscroll-behavior: none;
+  touch-action: none;
 }
 
 .modal-backdrop.is-active {
@@ -399,6 +401,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  overscroll-behavior: contain;
   transition: all var(--transition-base);
 }
 
@@ -414,6 +417,7 @@
   justify-content: space-between;
   padding: 18px 24px;
   border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
 .modal-title {
@@ -442,9 +446,33 @@
 }
 
 .modal-scroll-body {
+  flex: 1 1 auto;
+  min-height: 0;
   padding: 24px;
   overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.modal-scroll-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-scroll-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-scroll-body::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: var(--radius-full);
+}
+
+.modal-scroll-body::-webkit-scrollbar-thumb:hover {
+  background-color: var(--secondary);
 }
 
 .modal-badges-row {

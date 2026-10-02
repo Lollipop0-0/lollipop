@@ -2,6 +2,242 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-10-02: Clean, Minimal Tour Invitation Modal (Cut Picture & AI Fluff)
+- **Objective**: Redesign the tour invite modal (`#guideInvite`), stripping away the avatar photo, rainbow gradient rings, glowing orbs, green radar pings, and feature chips to create an authentic, human, non-AI modal dialog that simply and directly asks visitors if they want a tour guide.
+- **Key Deliverables**:
+  - **Removed AI Visuals (`assets/js/guide.js` & `assets/css/guide.css`)**:
+    - Completely cut the picture/avatar image and frame (`.gi-spotlight`, `.gi-avatar-frame`, `.gi-avatar-img`).
+    - Removed gradient glow background orb (`.gi-glow-orb`).
+    - Removed radar pulse status indicators (`.gi-badge`, `.gi-pulse`, `.gi-status-ping`).
+    - Removed feature chips (`.gi-features-list`, `.gi-chip`).
+  - **Clean Typography & Actions**:
+    - Title: `Want a quick tour?`
+    - Subtitle: `I can show you around the key sections and features.`
+    - Side-by-side action buttons: `No, thanks` (secondary) and `Yes, guide me` (primary).
+    - Compact, centered 320px dialog card with clean surface styling matching the portfolio's native tokens.
+  - **Button Contrast & Typography Fix (`assets/css/guide.css`)**:
+    - Resolved black-on-black button text issue where `.gi-btn-primary` used non-existent `--background` variable. Explicitly set `color: #ffffff !important;` in light mode and `color: #09090b !important;` on white background in dark mode.
+  - **Asset Recompilation (`optimize.py`)**: Generated updated `styles.min.css` (161.9 KB) and `bundle.min.js` (338.0 KB). Syntax checked with `node -c` (exit code 0).
+
+## 2026-10-02: Mobile Menu Toggle Tour Guidance & Pre-Drawer Sequence
+- **Objective**: On mobile devices, guide visitors directly to the header's hamburger menu toggle button (`#mobile-menu-toggle`) before opening the navigation drawer, explaining its purpose, animating it with simulated tap/hover styling, playing an acoustic pop, opening the drawer, and continuing through the drawer items.
+- **Key Deliverables**:
+  - **Component Markup (`components/header.html`)**: Added `id="mobile-menu-toggle"` and `data-guide="mobile-menu-toggle"` to `<button type="button" class="mobile-menu-toggle">` for precise targeting.
+  - **Tour Step Choreography (`assets/js/guide.js`)**:
+    - Inserted the `menu` step immediately following `profile` and preceding `about`:
+      - Guarded with `skip: () => !isMobile()` so desktop walkthrough continues guiding top nav links without delay or jumps.
+      - Targets `[data-guide="mobile-menu-toggle"]` / `#mobile-menu-toggle` / `.mobile-menu-toggle`.
+      - Positioned below the toggle button (`at: "below"`). Speech bubble clamps within viewport boundaries and flips left to avoid edge clipping.
+      - Speaks: *"Tap the menu toggle anytime to open navigation links and explore pages."*
+      - On completion (`after`): Triggers acoustic pop (`SoundManager.playPop()`), opens the drawer (`NavigationManager.openDrawer()`), and pauses for drawer slide-in (`await sleep(400)`).
+  - **Simulated Hover & Tap Styling (`assets/css/guide.css`)**:
+    - Added `.mobile-menu-toggle.gc-hover` transition and styling (`color: var(--primary) !important; background-color: var(--surface) !important; border-color: var(--primary) !important; transform: scale(1.08); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);`).
+  - **Asset Recompilation (`optimize.py`)**: Generated updated `styles.min.css` (164.0 KB) and `bundle.min.js` (340.0 KB). Syntax checked with `node -c` (exit code 0). Rule 6 strictly respected (zero git push).
+
+## 2026-10-02: Centered & Ultra-Refined Tour Invitation Modal Redesign
+- **Objective**: Center the post-preload tour invitation modal (`#guideInvite`) on the viewport (resolving the bottom-docked sheet positioning) and transform its visual aesthetic into a state-of-the-art, spotlight modal with rich glassmorphism, ambient glow, avatar halo, and vertical action hierarchy.
+- **Key Deliverables**:
+  - **Centered Viewport Presentation (`assets/css/guide.css`)**:
+    - Replaced mobile bottom-docked (`align-items: flex-end`) and desktop bottom-right floating cards with a fully centered modal layout (`display: flex; align-items: center; justify-content: center;`).
+    - Added deep cinematic backdrop blur (`backdrop-filter: blur(14px) saturate(160%)`) with darkened obsidian overlay in dark mode and subtle tint in light mode.
+  - **Avatar Spotlight & Ambient Aura**:
+    - Centered 72px squircle avatar frame with a vibrant 3-color gradient ring (`#6366f1` indigo -> `#38bdf8` sky -> `#ec4899` pink) and ambient glow.
+    - Pulsing live emerald beacon badge on the avatar corner indicating Karl's guide presence.
+    - Radial gradient orb (`.gi-glow-orb`) illuminating the top of the card with dynamic light.
+  - **Feature Chips & Content Architecture**:
+    - Added 3 preview feature chips (`Featured Projects`, `Tech Stack`, `Workstation`) setting clear expectations for the walkthrough.
+    - High-impact headline ("Want a quick guided tour? 👋") and clean, readable description.
+  - **Vertical Action Hierarchy**:
+    - Replaced the cramped side-by-side buttons (which awkwardly broke "No, I'll explore on my / own" onto two lines) with full-width, generous tap targets:
+      - Primary CTA: High-contrast pill button (`Yes, guide me ->`) with hover lift and arrow glide.
+      - Secondary CTA: Clean ghost button (`No, I'll explore on my own`) with smooth hover highlight.
+  - **Recompiled Assets (`optimize.py`)**: Generated updated `styles.min.css` (163.8 KB) and `bundle.min.js` (339.4 KB). Syntax validated with `node -c` (exit code 0). Rule 6 strictly respected (zero git push).
+
+## 2026-10-02: Comprehensive User Interaction Lockout During Guided Tour
+- **Objective**: While on the guided tour, prevent the user from performing any actions (clicking links/cards/buttons, scrolling via wheel/touch/keys, triggering keyboard shortcuts like Ctrl+K or M, text selection, drag-and-drop, context menus) except interacting with the Stop Guide button (`#guideStopBtn`) and the SweetAlert2 confirmation dialog.
+- **Key Deliverables**:
+  - **Capture-Phase Event Interception (`assets/js/guide.js`)**:
+    - Created `lockUserInteractions()` and `unlockUserInteractions()` using window-level capture listeners (`{ capture: true, passive: false }`).
+    - **Pointer / Touch Blocker**: Intercepts `click`, `mousedown`, `mouseup`, `pointerdown`, `pointerup`, `touchstart`, `touchend`, `touchmove`, `contextmenu`, `dblclick`, and `auxclick`. Allows ONLY events originating inside `#guideStopWrap` or `.swal2-container`, immediately calling `e.preventDefault()`, `e.stopPropagation()`, and `e.stopImmediatePropagation()` for all other targets.
+    - **Scroll & Wheel Blocker**: Intercepts `wheel` and `touchmove` events across the entire viewport.
+    - **Keyboard Blocker**: Intercepts `keydown`, `keyup`, and `keypress`. If SweetAlert2 confirmation is open, allows navigation keys within the dialog; if SweetAlert2 is not open, allows `Escape` to trigger stop confirmation and blocks all other keys (including `Ctrl+K` search modal, `M` music toggle, `Tab`, `Space`, `Enter`, and arrows).
+    - **Focus Shield & Selection Blocker**: Automatically blurs any active element on start and blurs any element attempting focus; blocks `dragstart` and `selectstart`.
+  - **Styles & Scroll Locking (`assets/css/guide.css`)**:
+    - Added `html.tour-locked, body.tour-locked` with `overflow: hidden !important; overscroll-behavior: none !important; touch-action: none !important; user-select: none !important;`.
+    - Set default cursor across underlying elements and reinforced `#guideClickGuard` at `width: 100vw; height: 100vh; z-index: 9400;`.
+  - **Lifecycle Integration**:
+    - Activated in `start()` upon tour launch.
+    - Cleanly deactivated in `stop()` and upon natural completion in `run()`.
+  - **Production Compilation (`optimize.py`)**: Recompiled `styles.min.css` (161.9 KB) and `bundle.min.js` (338.4 KB). Syntax checked with `node -c` (exit code 0). Rule 6 strictly respected (zero git push).
+
+## 2026-10-02: Remove Hero Scroll-Down Animated Indicator
+- **Objective**: Completely remove the `#hero-scroll-indicator` capsule button and its associated scroll-tracking logic and CSS animations from the hero section across desktop and mobile.
+- **Key Deliverables**:
+  - **Markup Cut (`components/hero.html`)**: Removed `#hero-scroll-indicator`, `.hero-scroll-down-btn`, `.scroll-mouse-capsule`, `.scroll-mouse-dot`, and `.scroll-down-arrow`.
+  - **Navigation Script Cleanup (`assets/js/navigation.js`)**: Removed scroll listener logic that checked `#hero-scroll-indicator` and toggled `.is-scrolled-hidden`.
+  - **Styles Cleanup (`assets/css/sections.css` & `assets/css/responsive.css`)**:
+    - Removed all CSS rules for `.hero-scroll-indicator-wrap`, `.hero-scroll-down-btn`, and keyframe animations (`scroll-dot-slide`, `scroll-arrow-nudge`, `scroll-indicator-float`).
+    - Removed obsolete prefers-reduced-motion overrides from `responsive.css`.
+  - **Asset Recompilation (`optimize.py`)**: Generated updated `styles.min.css` (161.5 KB, saving 2.3 KB) and `bundle.min.js` (335.3 KB). Syntax validated with `node -c` (exit code 0). Rule 6 strictly respected (zero git push).
+
+## 2026-10-02: Show More Dropdown & Guide Gear and Tech Stack Separately
+- **Objective**: Display the "More" dropdown during the guide tour on both desktop and mobile, and guide visitors through its individual items ("Gear" and "Tech Stack") separately with dedicated pointers, simulated hover effects, and narrations.
+- **Key Deliverables**:
+  - **Dropdown State Exhibition**: On desktop, the guide invokes `openMoreDropdown()` so the `#more-dropdown-menu` visually expands and displays its setup/skills options. On mobile, it points to the "More" section header within the open drawer.
+  - **Separate Guidance Steps (`assets/js/guide.js`)**:
+    - **More Step (`more`)**: Highlights the More trigger/group header: *"Under More, you'll find additional details on my workstation gear and tech stack."*
+    - **Gear Step (`gear`)**: Glides to `#more-link-gear` (desktop) / `.mobile-nav-sublink[href*="gear"]` (mobile) and highlights it: *"Gear: Explore my workstation setup, hardware, and developer equipment."*
+    - **Tech Stack Step (`stack`)**: Glides to `#more-link-stack` (desktop) / `.mobile-nav-sublink[href*="tech-stack"]` (mobile) and highlights it: *"Tech Stack: Explore the languages, frameworks, databases, and AI tools I build with."*
+  - **Automated Dropdown Teardown**: Upon transitioning to the `search` step, stopping, or exiting the tour, `closeMoreDropdown()` cleanly closes the dropdown and resets the trigger state.
+  - **Markup & Styling Enhancements**:
+    - Added `data-guide="nav-gear"` and `data-guide="nav-stack"` to both desktop dropdown links and mobile drawer sublinks in `components/header.html`.
+    - Styled `.nav-dropdown-item.gc-hover` in `assets/css/guide.css` with active background and translateX micro-animation.
+    - Exported `openMoreDropdown` and `closeMoreDropdown` on `NavigationManager` in `assets/js/navigation.js`.
+  - **Recompiled Assets (`optimize.py`)**: Rebuilt `styles.min.css` (163.8 KB) and `bundle.min.js` (335.5 KB), verified syntax with `node -c` (exit code 0). Rule 6 strictly respected (zero git push).
+
+## 2026-10-02: Add Missing Certificates / Certification Tour Step in Mobile Drawer & Desktop Nav
+- **Objective**: Fix the tour sequence on mobile (and desktop) where the autonomous guide skipped over the `Certificates` link, jumping directly from `Projects` to `Tech Stack`.
+- **Key Deliverables**:
+  - **Tour Step Addition (`assets/js/guide.js`)**: Inserted the `certificates` step right after `projects` and before `stack`.
+  - **Selector Resolution**: Dynamically targets `.mobile-nav-links a[href*="certificates"]` (inside the open mobile drawer) on mobile view, and `[data-guide="nav-certificates"]` / `.desktop-nav a[href*="certificates"]` on desktop view.
+  - **Dialog Copy**: Added natural typing cadence narration: *"Explore my verified programming certifications and course credentials."*
+  - **Markup Annotation (`components/header.html`)**: Added `data-guide="nav-certificates"` to both desktop and mobile navigation links.
+  - **Recompiled Assets (`optimize.py`)**: Generated updated `styles.min.css` (163.7 KB) and `bundle.min.js` (333.4 KB), verified with `node -c`. Rule 6 respected (zero git push).
+
+## 2026-10-02: Implement Mobile Guide Decision Flow, Click Barrier, Stop Button & SweetAlert2 Confirmation
+- **Objective**: On mobile phones (and desktop), ask visitors if they want to be guided ("if no then no, if yes then guide them"). While guiding, prevent users from clicking underlying page elements (click barrier), and add a dedicated stop button with SweetAlert2 confirmation dialog to exit anytime.
+- **Key Deliverables**:
+  - **Decision-Enforcing Invitation Flow ("If no then no, if yes then guide them")**:
+    - Enhanced `#guideInvite` modal with focused backdrop overlay on mobile.
+    - If the user selects **"No, I'll explore on my own"** (or dismisses): immediately closes, records `ket_guide_tour_choice: "no"` in `sessionStorage`, does not start the tour, leaves the page undisturbed, and displays the subtle `#guidePrompt` replay pill at the bottom.
+    - If the user selects **"Yes, guide me"**: starts the tour (`start()`), activates the full click barrier, and displays the floating Stop Guide button.
+  - **Full Click Barrier Overlay (`#guideClickGuard`)**:
+    - Created fixed overlay at `z-index: 9400` covering the viewport during the walkthrough.
+    - Intercepts and stops propagation for `click`, `mousedown`, `mouseup`, `touchstart`, `touchend`, `touchmove`, `pointerdown`, and `contextmenu`.
+    - Prevents visitors from accidentally clicking links, cards, buttons, or toggles while the autonomous cursor navigates.
+  - **Dedicated Floating Stop Guide Button (`#guideStopWrap` / `#guideStopBtn`)**:
+    - Placed at `z-index: 9600` (above the click barrier at 9400 and cursor at 9500) fixed in the bottom center thumb zone (`bottom: 24px; left: 50%; transform: translateX(-50%);`).
+    - Styled with an active pulsating indicator, "Stop Guide" label, and `✕` icon with glassmorphic backdrop.
+  - **SweetAlert2 Confirmation Dialog Integration**:
+    - Downloaded and bundled standalone SweetAlert2 package locally (`assets/js/sweetalert2.all.min.js`) into `bundle.min.js` (zero CDN dependencies).
+    - Clicking Stop Guide (or pressing `Escape`) pauses the guide animation (`paused = true`) and triggers SweetAlert2 asking: *"Stop the tour? Are you sure you want to stop the guided walkthrough?"*.
+    - **Confirmed ("Yes, stop tour")**: Cleans up the walkthrough, deactivates `#guideClickGuard`, hides `#guideStopWrap`, closes mobile drawer if open, and reveals the `#guidePrompt` replay pill.
+    - **Cancelled ("Keep watching")**: Unpauses the guide and smoothly resumes playback.
+  - **Asset Compilation & Validation**:
+    - Recompiled production bundles via `python optimize.py` (`styles.min.css` 163.7 KB, `bundle.min.js` 333.0 KB).
+    - Syntax checked with `node -c assets/js/bundle.min.js` (exit code 0).
+    - Rule 6 strictly respected (zero git push).
+
+
+- **Objective**: Resolve the bug shown in screenshot where the tour speech bubble ("Hover over or tap my portrait to reveal interactive character...") was partially cut off at the left screen edge and overlapped the hero headline text ("Tabunda").
+- **Root Causes**:
+  1. **Rigid Left CSS Translation**: In `assets/css/guide.css`, `.is-left .gc-tag` was hardcoded to `transform: translate(calc(-100% - 1px), 19px)`. Whenever the cursor was near the left or center of smaller/medium viewports (`cursor.x < bubbleWidth`), shifting 100% of the bubble width left pushed the bubble's left edge into negative coordinates (`x < 0`), truncating the beginning words ("Hov...", "inter...").
+  2. **Colliding Anchor Position**: The `profile` step anchored at the bottom edge (`at: "below"`) of the 430px tall photo card, placing the pointer and its bubble directly over the hero headline ("Karl Evan Tabunda") and bio text.
+- **Key Deliverables**:
+  - **Dynamic JavaScript Boundary Clamping (`assets/js/guide.js`)**:
+    - Replaced rigid CSS translation in `place()` with dynamic viewport boundary clamping:
+      `clampedScreenX = clamp(idealScreenX, 14, Math.max(14, screenW - w - 14))`
+      `clampedScreenY = clamp(idealScreenY, 12, screenH - h - 12)`
+    - Guaranteed that the speech bubble never clips off either the left (`>= 14px`) or right edge of the viewport.
+    - Updated `assets/css/guide.css` to only toggle corner `border-radius` based on `is-up` / `is-left`, giving `tag.style.transform` direct mathematical authority over screen coordinates.
+  - **Clear Portrait Anchor (`at: "top"`)**:
+    - Updated the `profile` step to anchor at Karl's portrait at the top of the photo card (`r.top + 36`), lifting the cursor and bubble into the upper visual open space, completely clear of the hero headline text below.
+    - Added `overflow-wrap: break-word` to `.gc-text`.
+  - **Recompiled & Validated**:
+    - Ran `python optimize.py` to regenerate production assets (`styles.min.css` 158.8 KB, `bundle.min.js` 251.8 KB).
+    - Syntax checked with `node -c assets/js/bundle.min.js` (exit code 0).
+    - Rule 6 compliant (zero git push).
+
+## 2026-10-02: Implement Post-Preload Guide Invitation Card & Mobile Drawer Tour Guidance
+- **Objective**: Ask visitors right after the stickman runner preloader whether they want a guided tour, and extend the autonomous guide system to seamlessly support mobile phones, automatically opening the mobile navigation drawer to guide visitors through navigation links without navigating away from the page.
+- **Key Deliverables**:
+  - **Post-Preload Tour Invitation Card (`#guideInvite` in `assets/js/guide.js` & `assets/css/guide.css`)**:
+    - Listens for `preloader:complete` (or checks `document.body.classList.contains("page-ready")`).
+    - Spawns an elegant, non-intrusive glassmorphic prompt card with Karl's avatar thumbnail, asking: *"Want a quick guided tour? 👋"*
+    - **"Yes, guide me" Button**: Initiates the autonomous tour with smooth camera scroll and acoustic pop (`SoundManager.playPop()`).
+    - **"I'll explore on my own" Button & "X" Dismiss**: Closes the prompt cleanly, stores `ket_guide_tour_seen = "1"` in `sessionStorage`, and activates the bottom `#guidePrompt` replay pill ("Take the tour again").
+    - Full keyboard accessibility (Enter / Space / Escape).
+  - **Mobile Phone Navigation Tour & Mobile Drawer Opening**:
+    - Removed desktop-only media query restrictions, providing full responsiveness on mobile screens (`<= 868px`).
+    - Added automatic drawer coordination: when reaching navigation items (`About`, `Projects`, `Tech Stack`), the guide invokes `window.NavigationManager.openDrawer()`, smoothly scrolls items into view, and highlights them with synthetic `.gc-hover` WITHOUT clicking/navigating away.
+    - When moving from the drawer back to top bar controls (`Search Bar`, `Light/Dark Mode`, `Music Toggle`), the guide automatically closes the drawer (`window.NavigationManager.closeDrawer()`).
+  - **Asset Compilation & Validation**:
+    - Recompiled production minified assets via `python optimize.py` (`styles.min.css` 158.9 KB, `bundle.min.js` 251.1 KB).
+    - Syntax checked with `node -c assets/js/bundle.min.js` (exit code 0).
+    - Strictly Rule 6 compliant (zero git push).
+
+## 2026-10-02: Fix Modal Scroll Interference & Background Page Scroll Chaining
+- **Objective**: Fix the bug where attempting to scroll inside open modals (`#project-modal`, certificates, search) caused the main background page to scroll instead of the modal content.
+- **Root Causes**:
+  1. **Missing Root Element Lock**: `modal-locked` was only added to `document.body` with `body.modal-locked { overflow: hidden; }`. Because `html` remained unlocked with `overflow-x: hidden; scroll-behavior: smooth;`, desktop browser viewports delegated mouse wheel and touch gestures directly to `html` / `window.scrollY`.
+  2. **Flexbox Content Sizing (`min-height: auto`)**: `.modal-scroll-body` lacked `flex: 1 1 auto; min-height: 0;`. Under CSS flexbox rules, items default to `min-height: auto`, which caused tall content to expand beyond the flex container without activating `.modal-scroll-body`'s internal scrollbar, passing wheel events upward to the viewport.
+  3. **Missing Overscroll Containment**: Neither `.modal-dialog`, `.modal-scroll-body`, nor `.modal-backdrop` had `overscroll-behavior: contain` or `none`, causing scroll chaining to leak to the document body.
+  4. **Uncaptured Header & Frame Wheel Events**: Scrolling while the cursor was positioned over `.modal-header-bar`, borders, or `#modal-backdrop` was unhandled and passed through to the background page.
+- **Key Deliverables**:
+  - **Comprehensive HTML & Body Lock (`assets/css/base.css`, `assets/js/modal.js`, `assets/js/search.js`, `assets/js/navigation.js`)**:
+    - Added `html.modal-locked, body.modal-locked, html.drawer-locked, body.drawer-locked { overflow: hidden !important; overscroll-behavior: none !important; }`.
+    - Updated `modal.js`, `search.js`, and `navigation.js` to synchronously toggle `modal-locked` and `drawer-locked` on both `document.documentElement` and `document.body`.
+  - **Flexbox Scroll Container Optimization (`assets/css/components.css`)**:
+    - Added `flex: 1 1 auto; min-height: 0; overscroll-behavior: contain; touch-action: pan-y;` to `.modal-scroll-body`.
+    - Added `flex-shrink: 0;` to `.modal-header-bar`.
+    - Added `overscroll-behavior: contain;` to `.modal-dialog` and `overscroll-behavior: none; touch-action: none;` to `.modal-backdrop`.
+    - Added thin custom scrollbar styling (`scrollbar-width: thin;`) with smooth rounded thumbs for both dark and light modes.
+  - **Smart Wheel Event Redirection & Scroll Trap (`assets/js/modal.js`)**:
+    - Attached non-passive wheel and touchmove handlers to `#modal-backdrop` calling `e.preventDefault()`, completely neutralizing background scroll leakage.
+    - Attached non-passive wheel handler to `#project-modal` redirecting wheel events on the header or modal borders directly into `modalBody.scrollTop += e.deltaY`, preventing any scroll fallthrough.
+    - Reset `modalBody.scrollTop = 0;` whenever a project or certificate modal opens.
+  - **Asset Compilation & Validation**:
+    - Recompiled production minified stylesheets (`styles.min.css`, 154.1 KB) and script bundles (`bundle.min.js`, 245.4 KB) via `python optimize.py`.
+    - Validated syntax with `node -c assets/js/bundle.min.js` (exit code 0).
+    - 100% Rule 6 compliant (strictly local, zero git push).
+
+## 2026-10-02: Implement Autonomous Guide Tour Cursor (`#guideCursor`) & Replay Prompt (`#guidePrompt`) from bryllim.com
+- **Objective**: Analyze the autonomous virtual guide tour cursor and floating replay prompt (`guidePrompt`) from `https://www.bryllim.com/` and implement the complete feature in Karl Evan Tabunda's portfolio system with high-fidelity minimum-jerk spring physics, realistic human typing cadence, session persistence, and full dark/light theme integration.
+- **Deep Analysis of bryllim.com's System**:
+  - **`#guideCursor` Virtual Tour Pointer**:
+    - An autonomous pointer arrow with inner body and rim stroke that flips with the theme (dark ink on light paper, pure white on obsidian dark).
+    - An expanding speech bubble (`.gc-tag`) displaying creator name (`Karl`) that transitions into dialogue state (`.gc-tag.is-talking`).
+    - Grapheme-segmented typewriter with pre-measured layout box (`[data-gc-measure]`) to prevent line wrapping jumps.
+    - Variable human typing pace (7-20ms base, 80-150ms punctuation holds, 60-150ms thinking pauses on spaces, typing caret tracking).
+    - Minimum-jerk mathematical formulation (`e = u * u * u * (u * (u * 6 - 15) + 10)`) coupled with numerical spring simulation (`SPRING = 190, DAMPING = 2 * Math.sqrt(SPRING) * 0.82`), curved S-paths, and realistic resting hand tremors.
+    - Smart viewport clipping protection: tag automatically flips `is-up` or `is-left` when near viewport edges.
+    - Target highlighting: adds `.gc-hover` to target elements so they activate visually while the guide points to them.
+  - **`#guidePrompt` Floating Replay Capsule**:
+    - Centered bottom glassmorphic pill (`bottom: 24px`, `border-radius: 9999px`, `backdrop-filter: blur(16px)`).
+    - Interactive controls: `take the tour again` (`[data-guide-replay]`) and dismiss `✕` (`[data-guide-dismiss]`).
+    - Session storage persistence: stored in `sessionStorage` (`ket_guide_tour_seen`, `ket_guide_tour_prompt`).
+    - Direct URL parameter trigger: supports `?tour` query parameter to force replay anytime.
+    - Desktop & motion accessibility: strictly constrained to `(min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)`. Automatically pauses if modals, drawer, or search overlays are open (`isAway()`).
+- **Key Deliverables in Karl's System**:
+  - **`assets/css/guide.css`**: Complete styling for `#guideCursor`, speech bubble, caret, hover simulation, and `#guidePrompt` with light/dark theme adaptation.
+  - **`assets/js/guide.js`**: `GuideManager` engine with DOM injection, spring physics, typing engine, 7-step portfolio tour (Hero Greeting → Interactive Portrait → Projects & Case Studies → Tech Stack & Gear → Lo-Fi Music/Sound Toggle → Hire Me Contact CTA → Goodbye & Prompt Reveal).
+  - **Preloader Coordination**: Synchronized with `PreloaderManager` so the tour cleanly starts after the stickman runner completes and the page is ready.
+  - **Acoustic Feedback**: Connected to `SoundManager` for soft click and hover audio feedback.
+  - **Production Optimization (`optimize.py`)**: Included in `assets/css/styles.min.css` (153.5 KB) and `assets/js/bundle.min.js` (244.4 KB).
+  - **Strict Git Policy**: 100% Rule 6 compliant (strictly local, zero git push).
+
+## 2026-10-02: Disambiguate Java vs JavaScript & Update Java SVG Icon on Tech Stack Page (`tech-stack.html`)
+- **Objective**: Fix the bug where clicking the Java button on `tech-stack.html` displayed JavaScript web projects and Sololearn's JavaScript certificate, and update the Java icon to the official coffee cup icon to distinctly differentiate Java from JavaScript.
+- **Root Cause**:
+  1. `findToolConnections(toolName, toolKey)` in `assets/js/app.js` utilized loose substring matching (`normT.includes(normalizedSearch)`). Because `"javascript".includes("java")` is `true`, searching for `"java"` matched all 4 web projects with JavaScript tags and Sololearn's JavaScript certificate.
+  2. Inside `filterTechProjects()`, tag highlighting used `t.toLowerCase().includes(toolName.toLowerCase())`, which highlighted the `JavaScript` pill inside project cards when Java was selected.
+  3. In `assets/js/tech-icons.js`, `getToolSvg()` had a fallback search where `k.includes(normKey)` could match `"javascript"` for `"java"`.
+- **Key Deliverables**:
+  - **Strict Language Disambiguation (`assets/js/app.js`)**:
+    - Added `isJava` (`"java"`, `"java oop"`, `"java swing"`, `"java se"`) and `isJavaScript` (`"javascript"`, `"js"`) guards.
+    - When `isJava` is active, it strictly rejects any match containing `"javascript"` or `"js"`.
+    - Sololearn's *Introduction to JavaScript* (`cert-javascript`) is explicitly bypassed when searching for Java.
+    - Inside `filterTechProjects()`, tag highlighting strictly separates Java from JavaScript tags.
+  - **Official Steaming Coffee Cup Icon for Java (`assets/js/tech-icons.js`)**:
+    - Replaced the Java SVG path with the official steaming coffee cup icon (`viewBox: "0 0 384 512"`, brand red `#EA2D2E`), completely distinct from the yellow square `JS` JavaScript icon (`#F7DF1E`).
+    - Added strict guard in `getToolSvg()` preventing `normKey === "java"` from ever falling back to `javascript`.
+  - **Appropriate Coursework Competency Fallback**:
+    - When Java is selected, it correctly displays the `<ACTIVE-COMPETENCY/>` card for *Java in Daily Practice: Object-oriented principles, encapsulation, inheritance & Swing GUIs* without displaying unrelated web JavaScript applications.
+  - **Build & Compilation**:
+    - Recompiled production minified stylesheets (`assets/css/styles.min.css`, 149.7 KB) and script bundles (`assets/js/bundle.min.js`, 231.8 KB) via `python optimize.py`.
+    - Validated syntax with `node -c assets/js/bundle.min.js` (exit code 0).
+    - Adhered 100% to Rule 6: Strictly local compilation and verification, zero git push.
+
 ## 2026-10-02: Implement Sound & Ambient Lo-Fi Music On/Off Toggle Engine
 - **Objective**: Add an interactive On/Off toggle control for sound effects and background ambient music, with real-time animated equalizer feedback, keyboard accessibility (`M` key), persistent state, and generative warm lo-fi chords.
 - **Key Deliverables**:

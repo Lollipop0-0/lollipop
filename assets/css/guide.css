@@ -1,0 +1,809 @@
+/* ==========================================================================
+   Autonomous Tour Guide System & Guide Prompt (Desktop & Mobile Adaptive)
+   Inspired by bryllim.com with tactile acoustic UI integration
+   ========================================================================== */
+
+/* Autonomous Tour Guide Cursor */
+#guideCursor {
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9500;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  will-change: transform;
+}
+
+#guideCursor.is-here {
+  opacity: 1;
+}
+
+#guideCursor.is-away {
+  opacity: 0;
+}
+
+.gc-arrow {
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  width: 24px;
+  height: 24px;
+  overflow: visible;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.28));
+}
+
+.gc-arrow path {
+  stroke-linejoin: round;
+}
+
+/* Rim adapts to background for crisp edge contrast */
+.gc-rim {
+  stroke: var(--bg);
+  stroke-width: 6.5;
+}
+
+/* Body adapts to primary ink */
+.gc-body {
+  fill: var(--primary);
+  stroke: var(--primary);
+  stroke-width: 4;
+}
+
+/* Dynamic name tag that expands into dialogue speech bubble */
+.gc-tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 5px 11px 6px;
+  border-radius: 4px 15px 15px 15px;
+  background: var(--primary);
+  color: var(--bg);
+  font-family: var(--font-sans);
+  white-space: nowrap;
+  box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.45);
+  transform: translate3d(16px, 19px, 0);
+  transition: transform 0.28s cubic-bezier(0.3, 1.2, 0.4, 1), border-radius 0.25s ease;
+  max-width: min(290px, calc(100vw - 32px));
+  box-sizing: border-box;
+}
+
+#guideCursor.is-up .gc-tag {
+  border-radius: 15px 15px 15px 4px;
+}
+
+#guideCursor.is-left .gc-tag {
+  border-radius: 15px 4px 15px 15px;
+}
+
+#guideCursor.is-up.is-left .gc-tag {
+  border-radius: 15px 15px 4px 15px;
+}
+
+.gc-name {
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  transition: opacity 0.25s ease;
+}
+
+.gc-tag.is-talking .gc-name {
+  opacity: 0.6;
+}
+
+.gc-clip {
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  transition: width 0.16s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.gc-text {
+  position: relative;
+  width: max-content;
+  max-width: 250px;
+  padding-top: 1px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.45;
+  white-space: normal;
+}
+
+.gc-measure {
+  position: absolute;
+  left: 0;
+  top: 0;
+  visibility: hidden;
+}
+
+.gc-ch {
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.gc-ch.is-on {
+  opacity: 1;
+}
+
+.gc-caret {
+  position: absolute;
+  left: 0;
+  top: 3px;
+  width: 1.5px;
+  height: 14px;
+  border-radius: 1px;
+  background: var(--bg);
+  opacity: 0;
+  transition: transform 0.07s linear, opacity 0.2s ease;
+}
+
+.gc-tag.is-typing .gc-caret {
+  opacity: 0.9;
+}
+
+/* Target element simulated hover activation */
+.gc-hover {
+  color: var(--primary) !important;
+  text-shadow: 0 0 1px currentColor;
+}
+
+/* Floating Tour Prompt Pill (take the tour again) */
+#guidePrompt {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 8500;
+  padding: 3px 5px 3px 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.88);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 28px -10px rgba(0, 0, 0, 0.25);
+  font-family: var(--font-mono);
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 12px);
+  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.45s;
+}
+
+[data-theme="dark"] #guidePrompt {
+  background: rgba(20, 20, 20, 0.88);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 32px -10px rgba(0, 0, 0, 0.7);
+}
+
+#guidePrompt.is-on {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+  transition-delay: 0s;
+}
+
+.gp-replay {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px 6px 10px;
+  border-radius: var(--radius-full);
+  color: var(--secondary);
+  font-size: 11.5px;
+  line-height: 1;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gp-replay svg {
+  width: 13px;
+  height: 13px;
+  transition: transform 0.3s ease;
+}
+
+.gp-dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gp-dismiss svg {
+  width: 11px;
+  height: 11px;
+}
+
+.gp-replay:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--primary);
+}
+
+.gp-replay:hover svg {
+  transform: rotate(-45deg);
+}
+
+[data-theme="dark"] .gp-replay:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--primary);
+}
+
+.gp-dismiss:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--primary);
+}
+
+[data-theme="dark"] .gp-dismiss:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--primary);
+}
+
+/* ==========================================================================
+   Guide Invitation Modal (Clean, Minimal, Non-AI Dialog)
+   ========================================================================== */
+
+#guideInvite {
+  position: fixed;
+  inset: 0;
+  z-index: 9700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+}
+
+#guideInvite.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition-delay: 0s;
+}
+
+.gi-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  z-index: 1;
+  cursor: pointer;
+}
+
+:root:not([data-theme="dark"]) .gi-backdrop {
+  background: rgba(15, 23, 42, 0.25);
+}
+
+#guideInvite.is-visible .gi-backdrop {
+  opacity: 1;
+}
+
+.gi-card {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 330px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  padding: 22px 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-sizing: border-box;
+  transform: scale(0.95) translateY(8px);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
+  opacity: 0;
+}
+
+[data-theme="dark"] .gi-card {
+  background: #18181b;
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+#guideInvite.is-visible .gi-card {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+.gi-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.gi-close-btn:hover {
+  background: var(--surface-alt);
+  color: var(--primary);
+}
+
+.gi-body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-right: 18px;
+  text-align: left;
+}
+
+.gi-title {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.gi-desc {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--secondary);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.gi-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.gi-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.gi-btn-primary {
+  background: var(--primary);
+  color: #ffffff !important;
+  border: 1px solid var(--primary);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.16);
+}
+
+.gi-btn-primary:hover {
+  opacity: 0.94;
+  transform: translateY(-1px);
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .gi-btn-primary {
+  background: #ffffff !important;
+  color: #09090b !important;
+  border-color: #ffffff !important;
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .gi-btn-primary:hover {
+  background: #f4f4f5 !important;
+  color: #000000 !important;
+}
+
+.gi-btn-secondary {
+  background: var(--surface-alt);
+  color: var(--primary);
+  border: 1px solid var(--border);
+}
+
+.gi-btn-secondary:hover {
+  background: var(--border);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+[data-theme="dark"] .gi-btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: #e4e4e7;
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+[data-theme="dark"] .gi-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+@keyframes giPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(1.3); }
+}
+
+/* Synthetic hover states triggered during autonomous tour */
+.nav-link.gc-hover,
+.nav-dropdown-trigger.gc-hover,
+.mobile-nav-link.gc-hover,
+.mobile-nav-sublink.gc-hover,
+.header-search-btn.gc-hover,
+.mobile-search-trigger.gc-hover,
+.mobile-menu-toggle.gc-hover,
+.theme-toggle-btn.gc-hover,
+.music-toggle-btn.gc-hover,
+.mobile-music-toggle-btn.gc-hover,
+.nav-resume-btn.gc-hover {
+  transition: all 0.25s ease;
+}
+
+.nav-link.gc-hover,
+.nav-dropdown-trigger.gc-hover,
+.mobile-nav-link.gc-hover,
+.mobile-nav-sublink.gc-hover,
+.nav-dropdown-item.gc-hover {
+  color: var(--primary) !important;
+  background-color: var(--surface-alt) !important;
+}
+
+.nav-dropdown-item.gc-hover {
+  border-color: var(--border-subtle, var(--border)) !important;
+  transform: translateX(3px);
+}
+
+.header-search-btn.gc-hover,
+.mobile-search-trigger.gc-hover {
+  border-color: var(--border-hover, var(--primary)) !important;
+  background-color: var(--surface-alt) !important;
+  color: var(--primary) !important;
+  transform: translateY(-0.5px);
+}
+
+.mobile-menu-toggle.gc-hover {
+  color: var(--primary) !important;
+  background-color: var(--surface) !important;
+  border-color: var(--primary) !important;
+  transform: scale(1.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+.theme-toggle-btn.gc-hover,
+.music-toggle-btn.gc-hover,
+.mobile-music-toggle-btn.gc-hover {
+  color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  background-color: var(--surface) !important;
+  transform: translateY(-0.5px);
+}
+
+.nav-resume-btn.gc-hover,
+.mobile-drawer-footer a.gc-hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.hero-photo-card.gc-hover {
+  transform: rotate(0deg) scale(1.02);
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.32);
+}
+
+:root:not([data-theme="dark"]) .hero-photo-card.gc-hover .hero-img-light-default {
+  opacity: 0;
+  visibility: hidden;
+}
+
+:root:not([data-theme="dark"]) .hero-photo-card.gc-hover .hero-img-light-hover {
+  opacity: 1;
+  visibility: visible;
+  z-index: 2;
+  transform: scale(1.015);
+}
+
+[data-theme="dark"] .hero-photo-card.gc-hover .hero-img-dark-default {
+  opacity: 0;
+  visibility: hidden;
+}
+
+[data-theme="dark"] .hero-photo-card.gc-hover .hero-img-dark-hover {
+  opacity: 1;
+  visibility: visible;
+  z-index: 2;
+  transform: scale(1.015);
+}
+
+/* ==========================================================================
+   Complete Interaction Lock During Tour
+   ========================================================================== */
+
+html.tour-locked,
+body.tour-locked {
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  touch-action: none !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+html.tour-locked *:not(#guideStopWrap):not(#guideStopWrap *):not(.swal2-container):not(.swal2-container *) {
+  cursor: default !important;
+}
+
+/* ==========================================================================
+   Click Guard Barrier (Blocks underlying clicks during active guide)
+   ========================================================================== */
+
+#guideClickGuard {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9400; /* Above page content, below guide cursor (9500) and stop button (9600) */
+  background: transparent;
+  pointer-events: none;
+  opacity: 0;
+  cursor: default;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#guideClickGuard.is-active {
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  cursor: default !important;
+}
+
+/* ==========================================================================
+   Tour Stop Button (Dedicated Exit with SweetAlert Confirmation)
+   ========================================================================== */
+
+#guideStopWrap {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translate(-50%, 14px) scale(0.92);
+  z-index: 9600; /* Above click guard & cursor */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.35s;
+}
+
+#guideStopWrap.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, 0) scale(1);
+  transition-delay: 0s;
+}
+
+.guide-stop-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px 8px 12px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.94);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.32);
+  box-shadow: 0 10px 28px -6px rgba(239, 68, 68, 0.28), 0 4px 12px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  touch-action: manipulation;
+}
+
+[data-theme="dark"] .guide-stop-btn {
+  background: rgba(22, 22, 26, 0.94);
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.35);
+  box-shadow: 0 12px 32px -6px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(248, 113, 113, 0.15);
+}
+
+.guide-stop-btn:hover {
+  transform: translateY(-1.5px);
+  background: #ef4444;
+  color: #ffffff;
+  border-color: #ef4444;
+  box-shadow: 0 14px 32px -6px rgba(239, 68, 68, 0.45);
+}
+
+[data-theme="dark"] .guide-stop-btn:hover {
+  background: #ef4444;
+  color: #ffffff;
+  border-color: #ef4444;
+  box-shadow: 0 14px 34px -6px rgba(239, 68, 68, 0.55);
+}
+
+.guide-stop-btn:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.guide-stop-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 8px currentColor;
+  animation: giPulse 1.8s infinite ease-in-out;
+}
+
+.guide-stop-x {
+  transition: transform 0.2s ease;
+}
+
+.guide-stop-btn:hover .guide-stop-x {
+  transform: rotate(90deg);
+}
+
+/* ==========================================================================
+   SweetAlert2 Custom Portfolio Styling
+   ========================================================================== */
+
+.swal2-container.ket-swal-container {
+  z-index: 10000 !important;
+  background: rgba(0, 0, 0, 0.55) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+.swal2-popup.ket-swal-popup {
+  border-radius: 22px !important;
+  padding: 24px 22px 22px !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 24px 60px -12px rgba(15, 23, 42, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+  font-family: var(--font-sans) !important;
+  max-width: min(390px, calc(100vw - 32px)) !important;
+  box-sizing: border-box !important;
+}
+
+[data-theme="dark"] .swal2-popup.ket-swal-popup {
+  background: rgba(24, 24, 28, 0.98) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 28px 70px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
+}
+
+.swal2-title.ket-swal-title {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: var(--primary) !important;
+  padding: 10px 0 4px !important;
+  margin: 0 !important;
+  line-height: 1.35 !important;
+}
+
+.swal2-html-container.ket-swal-text {
+  font-size: 13.5px !important;
+  color: var(--secondary) !important;
+  line-height: 1.5 !important;
+  margin: 6px 0 0 !important;
+  padding: 0 !important;
+}
+
+.swal2-actions.ket-swal-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  margin: 20px 0 0 !important;
+  width: 100% !important;
+}
+
+.ket-swal-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 38px !important;
+  padding: 0 18px !important;
+  border-radius: var(--radius-full) !important;
+  font-family: var(--font-sans) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-sizing: border-box !important;
+}
+
+.ket-swal-confirm-danger {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+  border: 1px solid #ef4444 !important;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35) !important;
+  flex: 1.1 !important;
+}
+
+.ket-swal-confirm-danger:hover {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.5) !important;
+  transform: translateY(-1px) !important;
+}
+
+.ket-swal-cancel {
+  background: var(--surface-alt) !important;
+  color: var(--secondary) !important;
+  border: 1px solid var(--border) !important;
+  flex: 1 !important;
+}
+
+.ket-swal-cancel:hover {
+  background: var(--border) !important;
+  color: var(--primary) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .gc-arrow {
+    width: 20px;
+    height: 20px;
+  }
+
+  .gc-text {
+    max-width: min(220px, calc(100vw - 60px));
+    font-size: 12px;
+  }
+
+  .gc-tag {
+    padding: 4px 8px 5px;
+    max-width: calc(100vw - 36px);
+  }
+
+  #guidePrompt {
+    bottom: 16px;
+    max-width: calc(100vw - 32px);
+  }
+
+  #guideStopWrap {
+    bottom: 18px;
+  }
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  #guideCursor,
+  #guidePrompt,
+  #guideInvite,
+  #guideClickGuard,
+  #guideStopWrap {
+    display: none !important;
+  }
+}

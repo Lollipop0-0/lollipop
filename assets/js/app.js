@@ -108,6 +108,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
+    // 10.5. Initialize Autonomous Guide Tour & Guide Prompt (Bryl Lim inspired)
+    if (window.GuideManager) {
+      window.GuideManager.init();
+    }
+
     // 11. Back to Top Smooth Scroll
     const backToTopBtn = document.getElementById("back-to-top");
     if (backToTopBtn) {
@@ -498,19 +503,36 @@ function findToolConnections(toolName, toolKey) {
   if (typeof window === "undefined" || !window.PORTFOLIO_DATA) return [];
   const normalizedSearch = (toolName || "").toLowerCase().trim();
   const searchKey = (toolKey || "").toLowerCase().trim();
+  const isJava = normalizedSearch === "java" || searchKey === "java";
+  const isJavaScript = normalizedSearch === "javascript" || searchKey === "javascript" || normalizedSearch === "js" || searchKey === "js";
   const results = [];
 
   const matchesTech = (techList) => {
     if (!Array.isArray(techList)) return false;
     return techList.some(t => {
       const normT = (t || "").toLowerCase().trim();
+
+      // Strict disambiguation: Java is NOT JavaScript!
+      if (isJava) {
+        if (normT === "javascript" || normT === "js" || normT.includes("javascript")) {
+          return false;
+        }
+        return normT === "java" || normT === "java oop" || normT === "java swing" || normT === "java se";
+      }
+
+      if (isJavaScript) {
+        if (normT === "java") {
+          return false;
+        }
+        return normT === "javascript" || normT === "js" || normT.includes("javascript");
+      }
+
       return normT === normalizedSearch ||
              normT === searchKey ||
              normT.includes(normalizedSearch) ||
              normalizedSearch.includes(normT) ||
              (normalizedSearch === "php" && normT.includes("php")) ||
              (normalizedSearch.includes("mysql") && normT.includes("mysql")) ||
-             (normalizedSearch === "javascript" && (normT === "js" || normT.includes("javascript"))) ||
              (normalizedSearch === "mvc architecture" && normT === "mvc") ||
              (normalizedSearch === "html5" && normT.includes("html")) ||
              (normalizedSearch === "css3" && normT.includes("css")) ||
@@ -559,7 +581,14 @@ function findToolConnections(toolName, toolKey) {
   // 3. Sololearn Certificates
   const certs = window.PORTFOLIO_DATA.certificates || [];
   certs.forEach(c => {
-    if (matchesTech(c.skills) || (c.title && c.title.toLowerCase().includes(normalizedSearch))) {
+    // If searching for Java, do NOT match JavaScript certificates
+    if (isJava) {
+      const titleLower = (c.title || "").toLowerCase();
+      if (titleLower.includes("javascript") || c.id === "cert-javascript") {
+        return;
+      }
+    }
+    if (matchesTech(c.skills) || (!isJava && c.title && c.title.toLowerCase().includes(normalizedSearch))) {
       results.push({
         type: "certificate",
         id: c.id,
@@ -644,8 +673,16 @@ function filterTechProjects(toolName, toolKey, toolNote) {
           <p class="stack-card-desc">${escapeHtml(m.description)}</p>
           <div class="stack-card-tech-tags">
             ${(m.technologies || []).map(t => {
-              const isMatch = t.toLowerCase().includes((toolName || '').toLowerCase()) ||
-                              (toolName || '').toLowerCase().includes(t.toLowerCase());
+              const normTag = t.toLowerCase();
+              let isMatch = false;
+              if ((toolName || '').toLowerCase() === "java") {
+                isMatch = (normTag === "java" || normTag === "java oop" || normTag === "java swing");
+              } else if ((toolName || '').toLowerCase() === "javascript") {
+                isMatch = (normTag === "javascript" || normTag === "js");
+              } else {
+                isMatch = normTag.includes((toolName || '').toLowerCase()) ||
+                          (toolName || '').toLowerCase().includes(normTag);
+              }
               return `<span class="stack-card-tech-tag font-mono ${isMatch ? 'is-highlight' : ''}">${escapeHtml(t)}</span>`;
             }).join('')}
           </div>

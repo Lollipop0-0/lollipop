@@ -408,6 +408,7 @@ const SearchManager = (() => {
     if (window.SoundManager) window.SoundManager.playOpen();
     modalBackdrop.classList.add("is-open");
     modalBackdrop.setAttribute("aria-hidden", "false");
+    document.documentElement.classList.add("modal-locked");
     document.body.style.overflow = "hidden";
 
     if (searchInput) {
@@ -427,6 +428,7 @@ const SearchManager = (() => {
     if (window.SoundManager) window.SoundManager.playClose();
     modalBackdrop.classList.remove("is-open");
     modalBackdrop.setAttribute("aria-hidden", "true");
+    document.documentElement.classList.remove("modal-locked");
     document.body.style.overflow = "";
 
     if (desktopTrigger) {

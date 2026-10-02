@@ -160,7 +160,7 @@ function renderSelectedProjects() {
   if (albumContainer) {
     albumContainer.innerHTML = selectedProjects.map((project, idx) => `
       <div class="work-album-item" data-album-index="${idx}" data-project-id="${escapeHtml(project.id)}" role="button" tabindex="0" aria-label="View ${escapeHtml(project.title)}">
-        <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)}" class="work-album-img" width="1376" height="768" loading="lazy" decoding="async" draggable="false">
+        <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)}" class="work-album-img" width="1376" height="768" loading="lazy" decoding="async" draggable="false" style="aspect-ratio: 16 / 9;">
       </div>
     `).join("");
   }
@@ -168,7 +168,7 @@ function renderSelectedProjects() {
   // 2. Render Mobile Stack items into #work-mobile-stack
   if (mobileStack) {
     mobileStack.innerHTML = selectedProjects.map((project, idx) => `
-      <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)}" class="stacked-image" data-stack-index="${idx}" data-project-id="${escapeHtml(project.id)}" width="1376" height="768" loading="lazy" decoding="async" draggable="false">
+      <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.title)}" class="stacked-image" data-stack-index="${idx}" data-project-id="${escapeHtml(project.id)}" width="1376" height="860" loading="lazy" decoding="async" draggable="false" style="aspect-ratio: 16 / 10;">
     `).join("");
   }
 
@@ -583,7 +583,7 @@ function renderCertificates() {
     return `
       <article class="certificate-card" data-modal-certificate="${escapeHtml(cert.id)}" role="button" tabindex="${isAriaHidden ? "-1" : "0"}" aria-label="View ${escapeHtml(cert.title)} certificate details">
         <div class="cert-card-media">
-          <img src="${escapeHtml(cert.image)}" alt="${escapeHtml(cert.title)} Sololearn Certificate" class="cert-img-thumb" width="1024" height="722" loading="lazy" decoding="async">
+          <img src="${escapeHtml(cert.image)}" alt="${escapeHtml(cert.title)} Sololearn Certificate" class="cert-img-thumb" width="1024" height="722" loading="lazy" decoding="async" style="aspect-ratio: 16 / 11;">
           <div class="cert-media-badge">
             <span class="cert-gold-star">★</span>
             <span>Completed</span>

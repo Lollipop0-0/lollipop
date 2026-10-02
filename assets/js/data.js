@@ -188,6 +188,98 @@ const PORTFOLIO_DATA = {
   ],
 
   techStack: {
+    categories: [
+      {
+        id: "frontend",
+        idx: "01",
+        title: "Frontend",
+        tag: "<frontend/>",
+        kicker: "<FRONTEND/>",
+        tools: [
+          { name: "HTML5", key: "html5", note: "Semantic structure, accessible markup, and forms" },
+          { name: "CSS3", key: "css3", note: "Modern layout, Flexbox, Grid, custom properties & animations" },
+          { name: "JavaScript", key: "javascript", note: "ES6+ logic, DOM manipulation, and asynchronous APIs" },
+          { name: "Bootstrap", key: "bootstrap", note: "Responsive grid systems and institutional portal UI" },
+          { name: "Tailwind CSS", key: "tailwindcss", note: "Utility-first modern styling tokens & components" },
+          { name: "Three.js", key: "threejs", note: "3D scene graphs, lighting, camera controls & spatial canvas" },
+          { name: "Vite", key: "vite", note: "Next-gen frontend tooling and high-speed build server" },
+          { name: "React", key: "react", note: "Component-driven architectures, hooks, and reactive UI" }
+        ]
+      },
+      {
+        id: "backend",
+        idx: "02",
+        title: "Backend",
+        tag: "<backend/>",
+        kicker: "<BACKEND/>",
+        tools: [
+          { name: "PHP", key: "php", note: "Server-side business logic, session security & database integration" },
+          { name: "MVC Architecture", key: "mvc", note: "Clean separation of Models, Views, and Controllers" },
+          { name: "Laravel", key: "laravel", note: "Modern PHP framework, routing, migrations & REST API backend" },
+          { name: "REST APIs", key: "restapi", note: "Stateless JSON endpoints, CRUD handling & integration" },
+          { name: "Node.js", key: "nodejs", note: "Asynchronous backend runtimes & local automation tooling" },
+          { name: "Python", key: "python", note: "Procedural scripting, algorithmic logic & data manipulation" }
+        ]
+      },
+      {
+        id: "database-cloud",
+        idx: "03",
+        title: "Databases & Cloud",
+        tag: "<database-cloud/>",
+        kicker: "<DATABASES-CLOUD/>",
+        tools: [
+          { name: "MySQL", key: "mysql", note: "Relational schema design, primary/foreign keys & ACID transactions" },
+          { name: "MariaDB", key: "mariadb", note: "Robust open-source relational database engine" },
+          { name: "phpMyAdmin", key: "phpmyadmin", note: "Visual database administration, schema inspection & SQL queries" },
+          { name: "Supabase", key: "supabase", note: "Postgres-backed database with realtime subscriptions" },
+          { name: "Firebase", key: "firebase", note: "NoSQL document collections and cloud application services" },
+          { name: "PostgreSQL", key: "postgresql", note: "Advanced relational database engine with strict integrity" }
+        ]
+      },
+      {
+        id: "systems-core",
+        idx: "04",
+        title: "Languages & Systems",
+        tag: "<systems-core/>",
+        kicker: "<SYSTEMS-CORE/>",
+        tools: [
+          { name: "C++", key: "cpp", note: "Procedural problem-solving, memory fundamentals, pointers & arrays" },
+          { name: "Java", key: "java", note: "Object-oriented principles, encapsulation, inheritance & Swing GUIs" },
+          { name: "TypeScript", key: "typescript", note: "Static type contracts, compile-time safety & interfaces" }
+        ]
+      },
+      {
+        id: "devops-tools",
+        idx: "05",
+        title: "DevOps & Environments",
+        tag: "<devops-tools/>",
+        kicker: "<DEVOPS-TOOLS/>",
+        tools: [
+          { name: "Git", key: "git", note: "Distributed version control, atomic commits & branch workflows" },
+          { name: "GitHub", key: "github", note: "Repository hosting, team collaboration & code review" },
+          { name: "VS Code", key: "vscode", note: "Primary IDE, developer debugging & customization" },
+          { name: "NetBeans", key: "netbeans", note: "Java desktop application development environment" },
+          { name: "XAMPP", key: "xampp", note: "Local full-stack Apache, PHP, and MariaDB server" },
+          { name: "Vercel", key: "vercel", note: "Continuous deployment and preview branch pipelines" },
+          { name: "Docker", key: "docker", note: "Containerized environments and reproducible runtimes" }
+        ]
+      },
+      {
+        id: "ai-design",
+        idx: "06",
+        title: "AI & Design",
+        tag: "<ai-design/>",
+        kicker: "<AI-DESIGN/>",
+        tools: [
+          { name: "Figma", key: "figma", note: "UI/UX wireframing, component design systems & prototypes" },
+          { name: "Gemini", key: "gemini", note: "Google AI reasoning, architecture review & problem-solving" },
+          { name: "Codex", key: "codex", note: "AI pair programming, code synthesis & workflow agents" },
+          { name: "Claude", key: "claude", note: "Analytical reasoning, technical documentation & refinement" },
+          { name: "GitHub Copilot", key: "copilot", note: "Intelligent autocompletion & developer productivity" }
+        ]
+      }
+    ],
+    // Backward-compatible fallback mapping
     WEB: [
       { name: "PHP", icon: "code" },
       { name: "HTML", icon: "html" },

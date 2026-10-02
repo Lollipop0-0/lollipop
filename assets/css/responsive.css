@@ -420,6 +420,24 @@
     padding: 48px 0;
   }
 
+  .stack-chips-wrap {
+    gap: 6px;
+  }
+
+  .stack-chip {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+
+  .stack-projects-stage {
+    padding: 18px;
+    margin-top: 24px;
+  }
+
+  .stack-matching-grid {
+    grid-template-columns: 1fr;
+  }
+
   .stack-grid {
     grid-template-columns: 1fr 1fr;
     gap: 14px;
@@ -818,6 +836,20 @@
     padding: 8px 6px;
     font-size: 0.8125rem;
     gap: 5px;
+  }
+
+  .stack-chip {
+    padding: 5px 8px;
+    font-size: 0.75rem;
+    gap: 6px;
+  }
+
+  .stack-category-title-bar {
+    gap: 8px;
+  }
+
+  .stack-category-line {
+    opacity: 0.35;
   }
 
   .stack-grid {

@@ -483,38 +483,302 @@ function verifyCurrentlyBuildingRepo() {
   }
 }
 
+let activeTechName = null;
+
 /**
- * Render Tech Stack Categories
+ * Find all projects and verified credentials that use a given technology
+ */
+function findToolConnections(toolName, toolKey) {
+  if (typeof window === "undefined" || !window.PORTFOLIO_DATA) return [];
+  const normalizedSearch = (toolName || "").toLowerCase().trim();
+  const searchKey = (toolKey || "").toLowerCase().trim();
+  const results = [];
+
+  const matchesTech = (techList) => {
+    if (!Array.isArray(techList)) return false;
+    return techList.some(t => {
+      const normT = (t || "").toLowerCase().trim();
+      return normT === normalizedSearch ||
+             normT === searchKey ||
+             normT.includes(normalizedSearch) ||
+             normalizedSearch.includes(normT) ||
+             (normalizedSearch === "php" && normT.includes("php")) ||
+             (normalizedSearch.includes("mysql") && normT.includes("mysql")) ||
+             (normalizedSearch === "javascript" && (normT === "js" || normT.includes("javascript"))) ||
+             (normalizedSearch === "mvc architecture" && normT === "mvc") ||
+             (normalizedSearch === "html5" && normT.includes("html")) ||
+             (normalizedSearch === "css3" && normT.includes("css")) ||
+             (normalizedSearch.includes("three") && normT.includes("three")) ||
+             (normalizedSearch.includes("bootstrap") && normT.includes("bootstrap")) ||
+             (normalizedSearch.includes("laravel") && normT.includes("laravel"));
+    });
+  };
+
+  // 1. Featured project
+  const fp = window.PORTFOLIO_DATA.featuredProject;
+  if (fp && matchesTech(fp.technologies)) {
+    results.push({
+      type: "project",
+      id: fp.id,
+      title: fp.title,
+      badge: fp.badgeNumber || "01",
+      tagline: fp.tagline,
+      description: fp.description,
+      category: fp.teamLabel || "Featured Project",
+      technologies: fp.technologies,
+      image: fp.image,
+      isFeatured: true
+    });
+  }
+
+  // 2. Standard projects
+  const projs = window.PORTFOLIO_DATA.projects || [];
+  projs.forEach(p => {
+    if (matchesTech(p.technologies)) {
+      results.push({
+        type: "project",
+        id: p.id,
+        title: p.title,
+        badge: p.badgeNumber || p.id,
+        tagline: p.tagline,
+        description: p.description,
+        category: p.teamLabel || "Project",
+        technologies: p.technologies,
+        image: p.image,
+        isFeatured: false
+      });
+    }
+  });
+
+  // 3. Sololearn Certificates
+  const certs = window.PORTFOLIO_DATA.certificates || [];
+  certs.forEach(c => {
+    if (matchesTech(c.skills) || (c.title && c.title.toLowerCase().includes(normalizedSearch))) {
+      results.push({
+        type: "certificate",
+        id: c.id,
+        title: c.title,
+        badge: "VERIFIED",
+        tagline: `${c.issuer} Certified Credential`,
+        description: c.description,
+        category: "Official Certification",
+        technologies: c.skills,
+        credentialId: c.credentialId,
+        image: c.image
+      });
+    }
+  });
+
+  return results;
+}
+
+/**
+ * Filter and display projects in the <USED-IN-PROJECTS/> stage
+ */
+function filterTechProjects(toolName, toolKey, toolNote) {
+  const stage = document.getElementById("stack-projects-stage");
+  const pill = document.getElementById("stack-active-tool-pill");
+  const countEl = document.getElementById("stack-active-tool-count");
+  const container = document.getElementById("stack-matching-projects");
+  if (!stage || !container) return;
+
+  if (activeTechName === toolName) {
+    clearTechFilter();
+    return;
+  }
+
+  activeTechName = toolName;
+
+  document.querySelectorAll(".stack-chip").forEach(chip => {
+    const isThis = chip.getAttribute("data-name") === toolName;
+    chip.classList.toggle("is-active", isThis);
+    chip.setAttribute("aria-pressed", isThis ? "true" : "false");
+  });
+
+  if (pill) pill.textContent = toolName;
+
+  const matches = findToolConnections(toolName, toolKey);
+
+  if (countEl) {
+    if (matches.length > 0) {
+      countEl.textContent = `${matches.length} connected ${matches.length === 1 ? 'project / credential' : 'projects & credentials'}`;
+    } else {
+      countEl.textContent = "Applied in active coursework & exploratory workflows";
+    }
+  }
+
+  if (matches.length === 0) {
+    container.innerHTML = `
+      <div class="stack-coursework-card">
+        <div class="stack-card-top">
+          <span class="stack-card-badge font-mono">&lt;ACTIVE-COMPETENCY/&gt;</span>
+          <span class="stack-card-category font-mono">DEVELOPMENT WORKFLOW</span>
+        </div>
+        <h4 class="stack-card-title">${escapeHtml(toolName)} in Daily Practice</h4>
+        <p class="stack-card-desc">
+          ${escapeHtml(toolNote || 'Applied across coursework laboratory environments, modern interface experimentation, backend prototyping, and engineering toolchains at NCST.')}
+        </p>
+        <div class="stack-card-meta">
+          <span class="stack-card-status-dot"></span>
+          <span>Verified active developer toolchain &amp; practical competence</span>
+        </div>
+      </div>
+    `;
+  } else {
+    container.innerHTML = matches.map(m => {
+      const isCert = m.type === "certificate";
+      return `
+        <div class="stack-project-card">
+          <div class="stack-card-top">
+            <span class="stack-card-badge font-mono">${escapeHtml(m.badge)}</span>
+            <span class="stack-card-category font-mono">${escapeHtml(m.category)}</span>
+          </div>
+          <h4 class="stack-card-title">${escapeHtml(m.title)}</h4>
+          ${m.tagline ? `<p class="stack-card-tagline">${escapeHtml(m.tagline)}</p>` : ''}
+          <p class="stack-card-desc">${escapeHtml(m.description)}</p>
+          <div class="stack-card-tech-tags">
+            ${(m.technologies || []).map(t => {
+              const isMatch = t.toLowerCase().includes((toolName || '').toLowerCase()) ||
+                              (toolName || '').toLowerCase().includes(t.toLowerCase());
+              return `<span class="stack-card-tech-tag font-mono ${isMatch ? 'is-highlight' : ''}">${escapeHtml(t)}</span>`;
+            }).join('')}
+          </div>
+          <div class="stack-card-actions">
+            ${!isCert ? `
+              <button type="button" class="stack-card-btn stack-card-btn-primary" onclick="if(window.ModalManager){window.ModalManager.openModal('${escapeHtml(m.id)}');}">
+                <span>View Details</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+            ` : `
+              <a href="certificates.html#${escapeHtml(m.id)}" class="stack-card-btn stack-card-btn-primary">
+                <span>View Credential</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </a>
+            `}
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  stage.removeAttribute("hidden");
+
+  try {
+    const isReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    stage.scrollIntoView({ behavior: isReduced ? "auto" : "smooth", block: "nearest" });
+  } catch (e) {}
+}
+
+/**
+ * Clear technology filter and hide <USED-IN-PROJECTS/> panel
+ */
+function clearTechFilter() {
+  activeTechName = null;
+  const stage = document.getElementById("stack-projects-stage");
+  if (stage) stage.setAttribute("hidden", "");
+
+  document.querySelectorAll(".stack-chip").forEach(chip => {
+    chip.classList.remove("is-active");
+    chip.setAttribute("aria-pressed", "false");
+  });
+}
+
+/**
+ * Render Tech Stack Categories & Interactive Atlas
  */
 function renderTechStack() {
   const container = document.getElementById("tech-stack-container");
   if (!container || !window.PORTFOLIO_DATA || !window.PORTFOLIO_DATA.techStack) return;
 
-  const stack = window.PORTFOLIO_DATA.techStack;
-  let html = "";
+  const stackData = window.PORTFOLIO_DATA.techStack;
+  let categories = stackData.categories;
 
-  for (const [category, skills] of Object.entries(stack)) {
-    const itemsHtml = skills.map(s => `
-      <li class="stack-item">
-        <span class="stack-item-bullet">•</span>
-        <span class="stack-item-name">${escapeHtml(s.name)}</span>
-      </li>
-    `).join("");
-
-    html += `
-      <div class="stack-category-card">
-        <div class="stack-category-header">
-          <span class="stack-category-indicator"></span>
-          <h4 class="stack-category-title">${escapeHtml(category)}</h4>
-        </div>
-        <ul class="stack-items-list">
-          ${itemsHtml}
-        </ul>
-      </div>
-    `;
+  if (!categories || !Array.isArray(categories)) {
+    categories = Object.entries(stackData).map(([catName, tools], idx) => ({
+      id: catName.toLowerCase().replace(/[^a-z0-9]/g, "-"),
+      idx: String(idx + 1).padStart(2, "0"),
+      title: catName,
+      tag: `<${catName.toLowerCase().replace(/[^a-z0-9]/g, "-")}/>`,
+      tools: Array.isArray(tools) ? tools.map(t => ({ name: t.name, key: t.name.toLowerCase() })) : []
+    }));
   }
 
+  let totalTools = 0;
+  categories.forEach(c => { totalTools += (c.tools ? c.tools.length : 0); });
+  const totalCountEl = document.getElementById("stack-total-tools");
+  if (totalCountEl) totalCountEl.textContent = `${totalTools} tools`;
+
+  let html = "";
+
+  categories.forEach(cat => {
+    const tools = cat.tools || [];
+    const chipsHtml = tools.map(tool => {
+      const toolKey = tool.key || tool.name.toLowerCase().replace(/[^a-z0-9]/g, "");
+      const svgIcon = (typeof window.getToolSvg === "function") ? window.getToolSvg(toolKey, tool.name) : "";
+      const matches = findToolConnections(tool.name, toolKey);
+      const matchCount = matches.length;
+
+      return `
+        <button type="button"
+                class="stack-chip"
+                data-tech="${escapeHtml(toolKey)}"
+                data-name="${escapeHtml(tool.name)}"
+                data-note="${escapeHtml(tool.note || '')}"
+                aria-pressed="false"
+                title="${escapeHtml(tool.name)}${tool.note ? ' — ' + escapeHtml(tool.note) : ''}">
+          <span class="stack-chip-pulse" aria-hidden="true"></span>
+          <span class="stack-chip-icon">${svgIcon}</span>
+          <span class="stack-chip-name">${escapeHtml(tool.name)}</span>
+          ${matchCount > 0 ? `<span class="stack-chip-badge" title="${matchCount} connected project${matchCount > 1 ? 's' : ''}">${matchCount}</span>` : ''}
+        </button>
+      `;
+    }).join("");
+
+    html += `
+      <div class="stack-category-group" id="stack-cat-${escapeHtml(cat.id || cat.idx)}">
+        <div class="stack-category-title-bar">
+          <div class="stack-category-kicker-wrap">
+            <span class="stack-category-idx">${escapeHtml(cat.idx || "01")}</span>
+            <h3 class="stack-category-tag">${escapeHtml(cat.tag || '<' + cat.title.toLowerCase() + '/>')}</h3>
+          </div>
+          <div class="stack-category-line" aria-hidden="true"></div>
+          <span class="stack-category-count">${tools.length} tools</span>
+        </div>
+        <div class="stack-chips-wrap">
+          ${chipsHtml}
+        </div>
+      </div>
+    `;
+  });
+
   container.innerHTML = html;
+
+  container.onclick = (e) => {
+    const chip = e.target.closest(".stack-chip");
+    if (!chip) return;
+    const name = chip.getAttribute("data-name");
+    const key = chip.getAttribute("data-tech");
+    const note = chip.getAttribute("data-note");
+    filterTechProjects(name, key, note);
+  };
+
+  const closeBtn = document.getElementById("stack-projects-close-btn");
+  if (closeBtn) {
+    closeBtn.onclick = () => clearTechFilter();
+  }
+
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const techParam = urlParams.get("tech");
+    if (techParam) {
+      const targetChip = container.querySelector(`.stack-chip[data-tech="${techParam.toLowerCase()}"], .stack-chip[data-name="${techParam}"]`);
+      if (targetChip) {
+        setTimeout(() => {
+          targetChip.click();
+        }, 150);
+      }
+    }
+  } catch (e) {}
 }
 
 /**

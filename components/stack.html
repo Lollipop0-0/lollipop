@@ -1,9 +1,45 @@
-<!-- Tech Stack Section -->
+<!-- Tech Stack Section (Architectural Design inspired by naphiernode) -->
 <section id="stack" class="stack-section" aria-labelledby="stack-title">
   <div class="container">
-    <h2 id="stack-title">Things I Build With</h2>
-    <p>Languages, tools, databases, and environments I work with daily.</p>
+    <!-- Architectural Section Header -->
+    <div class="stack-section-header">
+      <div class="stack-header-left">
+        <div class="stack-kicker-row">
+          <h2 class="stack-kicker" id="stack-title">&lt;TECH-STACK/&gt;</h2>
+          <span class="stack-badge" id="stack-total-tools">31 tools</span>
+        </div>
+        <p class="stack-subtitle">Technologies, frameworks, runtime environments, and development tools I work with daily.</p>
+      </div>
+      <div class="stack-header-right">
+        <div class="stack-live-status">
+          <span class="stack-live-dot" aria-hidden="true"></span>
+          <span class="stack-live-text">Interactive Atlas</span>
+        </div>
+      </div>
+    </div>
 
-    <div id="tech-stack-container" class="stack-grid"></div>
+    <div class="stack-hairline-rule" aria-hidden="true"></div>
+
+    <!-- Categorized Technology Atlas Grid -->
+    <div id="tech-stack-container" class="stack-categories-layout"></div>
+
+    <!-- Interactive Project Connections Stage (<USED-IN-PROJECTS/>) -->
+    <div id="stack-projects-stage" class="stack-projects-stage" hidden>
+      <div class="stack-projects-header">
+        <div class="stack-projects-tag-wrap">
+          <span class="stack-projects-tag">&lt;USED-IN-PROJECTS/&gt;</span>
+          <span class="stack-projects-pill" id="stack-active-tool-pill">PHP</span>
+          <span class="stack-projects-count" id="stack-active-tool-count">4 projects &amp; credentials</span>
+        </div>
+        <button type="button" class="stack-projects-close-btn" id="stack-projects-close-btn" aria-label="Clear technology filter">
+          <span>Clear</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div id="stack-matching-projects" class="stack-matching-grid"></div>
+    </div>
   </div>
 </section>

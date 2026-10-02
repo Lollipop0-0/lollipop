@@ -244,6 +244,31 @@ const NavigationManager = (() => {
       return;
     }
 
+    const isTechStackPage = window.location.pathname.endsWith("tech-stack.html") ||
+      (document.getElementById("app") && document.getElementById("app").getAttribute("data-page") === "tech-stack");
+
+    if (isTechStackPage) {
+      navLinks.forEach(link => {
+        const href = link.getAttribute("href") || "";
+        if (href === "tech-stack.html" || href === "/tech-stack" || href.endsWith("/tech-stack.html")) {
+          link.classList.add("is-active");
+          link.setAttribute("aria-current", "page");
+        } else {
+          link.classList.remove("is-active");
+          link.removeAttribute("aria-current");
+        }
+      });
+      if (moreTrigger) {
+        moreTrigger.classList.add("is-active");
+        moreTrigger.setAttribute("aria-current", "page");
+      }
+      const gearItem = document.getElementById("more-link-gear");
+      if (gearItem) gearItem.classList.remove("is-active");
+      const stackItem = document.getElementById("more-link-stack");
+      if (stackItem) stackItem.classList.add("is-active");
+      return;
+    }
+
     // On homepage, Home navigation link remains active
     const allLinks = navLinks && navLinks.length ? navLinks : document.querySelectorAll(".nav-link, .mobile-nav-link");
     allLinks.forEach(link => {

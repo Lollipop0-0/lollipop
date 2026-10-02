@@ -63,6 +63,15 @@ const ComponentLoader = (() => {
     { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
   ];
 
+  // Dedicated Tech Stack page manifest: Header, stack-hero, stack, footer, project-modal
+  const TECH_STACK_MANIFEST = [
+    { name: "header", path: "components/header.html", isMainChild: false },
+    { name: "stack-hero", path: "components/stack-hero.html", isMainChild: true },
+    { name: "stack", path: "components/stack.html", isMainChild: true },
+    { name: "footer", path: "components/footer.html", isMainChild: false },
+    { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
+  ];
+
 
   // In-memory component template cache to eliminate redundant network roundtrips
   const componentCache = new Map();
@@ -121,6 +130,10 @@ const ComponentLoader = (() => {
       window.location.pathname.endsWith("gear.html") ||
       window.location.pathname.endsWith("/gear");
 
+    const isTechStackPage = appEl.getAttribute("data-page") === "tech-stack" ||
+      window.location.pathname.endsWith("tech-stack.html") ||
+      window.location.pathname.endsWith("/tech-stack");
+
     const manifest = is404Page
       ? ERROR_404_MANIFEST
       : (isAboutPage
@@ -131,7 +144,9 @@ const ComponentLoader = (() => {
                   ? CERTIFICATES_MANIFEST
                   : (isGearPage
                       ? GEAR_MANIFEST
-                      : HOMEPAGE_MANIFEST))));
+                      : (isTechStackPage
+                          ? TECH_STACK_MANIFEST
+                          : HOMEPAGE_MANIFEST)))));
 
     try {
       // Fetch all components concurrently

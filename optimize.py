@@ -107,6 +107,7 @@ def minify_css():
         "assets/css/components.css",
         "assets/css/sections.css",
         "assets/css/guide.css",
+        "assets/css/fab.css",
         "assets/css/responsive.css"
     ]
     combined_css = ""
@@ -146,6 +147,8 @@ def bundle_js():
         "assets/js/components.js",
         "assets/js/preloader.js",
         "assets/js/tech-icons.js",
+        "assets/js/portfolio-chat.js",
+        "assets/js/portfolio-fab.js",
         "assets/js/guide.js",
         "assets/js/app.js"
     ]

@@ -1052,25 +1052,38 @@ const GuideManager = (() => {
   }
 
   function showInvite() {
+    if (window.PortfolioFab && typeof window.PortfolioFab.showInvite === "function") {
+      window.PortfolioFab.showInvite();
+      return;
+    }
     if (!ensureDOMElements() || !isSupported()) return;
     if (store.get(STORAGE_SEEN_KEY) === "1") {
       showPrompt();
       return;
     }
-    invite.classList.add("is-visible");
-    if (window.SoundManager && typeof window.SoundManager.playPop === "function") {
-      window.SoundManager.playPop();
+    if (invite) {
+      invite.classList.add("is-visible");
+      if (window.SoundManager && typeof window.SoundManager.playPop === "function") {
+        window.SoundManager.playPop();
+      }
     }
   }
 
   function hideInvite() {
+    if (window.PortfolioFab && typeof window.PortfolioFab.hideInvite === "function") {
+      window.PortfolioFab.hideInvite();
+    }
     if (!invite) return;
     invite.classList.remove("is-visible");
   }
 
   function showPrompt() {
+    if (window.PortfolioFab && typeof window.PortfolioFab.restoreAfterTour === "function") {
+      window.PortfolioFab.restoreAfterTour();
+      return;
+    }
     if (!ensureDOMElements() || !isSupported()) return;
-    if (store.get(STORAGE_PROMPT_KEY) !== "off") {
+    if (prompt && store.get(STORAGE_PROMPT_KEY) !== "off") {
       prompt.classList.add("is-on");
     }
   }
@@ -1107,12 +1120,19 @@ const GuideManager = (() => {
 
     await sleep(500);
     running = false;
+    if (window.PortfolioFab && typeof window.PortfolioFab.restoreAfterTour === "function") {
+      window.PortfolioFab.restoreAfterTour();
+    }
     showPrompt();
   }
 
   function start() {
     if (!ensureDOMElements() || !isSupported()) return;
     if (running) return;
+
+    if (window.PortfolioFab && typeof window.PortfolioFab.hideAllForTour === "function") {
+      window.PortfolioFab.hideAllForTour();
+    }
 
     hideInvite();
     if (prompt) prompt.classList.remove("is-on");
@@ -1161,6 +1181,9 @@ const GuideManager = (() => {
       window.NavigationManager.closeDrawer();
     }
     closeMoreDropdown();
+    if (window.PortfolioFab && typeof window.PortfolioFab.restoreAfterTour === "function") {
+      window.PortfolioFab.restoreAfterTour();
+    }
     showPrompt();
   }
 
@@ -1171,6 +1194,11 @@ const GuideManager = (() => {
     if (!isSupported()) return;
 
     ensureDOMElements();
+
+    // If PortfolioFab is present, PortfolioFab coordinates the visitor invitation and tour queries
+    if (window.PortfolioFab) {
+      return;
+    }
 
     const urlParams = new URLSearchParams(window.location.search);
     const hasTourParam = urlParams.has("tour");

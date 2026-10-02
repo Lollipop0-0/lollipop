@@ -2,6 +2,42 @@
 
 This changelog records completed features, refinements, fixes, and synchronizations.
 
+## 2026-10-02: Floating Action Button (FAB) Hub & Portfolio Chatbot
+- **Objective**: Transform the standalone Tour Guide interaction into a modern Floating Action Button (FAB) hub that connects visitors with two distinct choices ("🧭 Tour My Portfolio" and "🤖 Chat With Me"), backed by an intelligent portfolio chatbot and a friendly visitor invitation card, while strictly preserving the entire existing portfolio layout, sections, animations, design identity, and existing Tour Guide system.
+- **Key Deliverables**:
+  - **Modern Floating Action Button (`#portfolioFab`)**:
+    - Fixed at the bottom-right corner (`bottom: 24px; right: 24px;` desktop, `18px/16px` mobile).
+    - Features a sparkles ✨ icon that smoothly rotates into a clean close ✕ icon when open.
+    - Integrated with tactile sound feedback (`SoundManager.playPop()` / `SoundManager.playClose()`).
+    - Full keyboard accessibility, aria-labels (`aria-expanded`, `aria-haspopup`), and reduced-motion compliance.
+  - **Expanded Action Menu (`#fabActionMenu`)**:
+    - Staggered spring expansion directly above the FAB presenting two interactive action pills:
+      - `🧭 Tour My Portfolio`
+      - `🤖 Chat With Me`
+    - Collapses seamlessly when clicking outside, clicking the FAB again, or pressing Escape.
+  - **Friendly Visitor Welcome Invitation (`#visitorInviteNotification`)**:
+    - Positioned adjacent to the FAB with a subtle indicator tail pointing toward the hub.
+    - Exact required copy:
+      *"Hey! 👋 Welcome to my portfolio.
+      Want me to show you around?
+      I can take you on a quick tour, or you can talk to me and ask anything you'd like to know.
+      🧭 Tour My Portfolio
+      🤖 Chat With Me"*
+    - Includes one-click CTAs and clear dismiss button ('✕') with `localStorage` persistence (`ket_fab_invite_dismissed`).
+  - **Preserved Existing Tour Guide System**:
+    - Reused the complete autonomous guide engine (`GuideManager.start()`), preserving all steps, minimum-jerk spring physics, human typing cadence speech bubble, section targeting, interactive portrait highlights, mobile drawer transitions, and SweetAlert2 stop confirmation.
+    - Automatically hides the FAB during active tours and restores it cleanly on completion or manual stop.
+  - **Portfolio Chatbot (`#portfolioChatbot` & `assets/js/portfolio-chat.js`)**:
+    - Responsive floating chat window (desktop 380px panel; mobile viewport-adaptive modal with close button).
+    - Conversational UI featuring header, online pulse indicator, message history with markdown link formatting, suggestion chips ("Tell me about yourself", "Show me your projects", "What are your skills?", "How can I contact you?"), enter-to-send input, and realistic 3-dot typing cadence indicator.
+    - Intelligent, offline-first response engine derived from `PORTFOLIO_DATA` answering questions about bio, education (NCST, 2027), projects (CUP, Inventory, Library, SmartSpace, Hotel, SneakerHub), tech stack (PHP MVC, MySQL, Three.js, Java, C++, Laravel), certifications (Sololearn), workstation gear, and contact channels.
+    - Truthful fallback response when asked about information not in the portfolio.
+    - Modular architecture structured for seamless future backend AI API connection.
+  - **Asset Optimization & Compilation (`optimize.py`)**:
+    - Added `assets/css/fab.css` to `css_files` and `assets/js/portfolio-chat.js` and `assets/js/portfolio-fab.js` to `js_files`.
+    - Compiled and minified production bundles: `styles.min.css` (179.1 KB) and `bundle.min.js` (372.8 KB).
+    - Verified syntax with `node -c assets/js/bundle.min.js` (exit code 0).
+
 ## 2026-10-02: Clean, Minimal Tour Invitation Modal (Cut Picture & AI Fluff)
 - **Objective**: Redesign the tour invite modal (`#guideInvite`), stripping away the avatar photo, rainbow gradient rings, glowing orbs, green radar pings, and feature chips to create an authentic, human, non-AI modal dialog that simply and directly asks visitors if they want a tour guide.
 - **Key Deliverables**:

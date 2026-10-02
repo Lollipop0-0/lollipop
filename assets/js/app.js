@@ -108,9 +108,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-    // 10.5. Initialize Autonomous Guide Tour & Guide Prompt (Bryl Lim inspired)
+    // 10.5. Initialize Autonomous Guide Tour (Bryl Lim inspired)
     if (window.GuideManager) {
       window.GuideManager.init();
+    }
+
+    // 10.6. Initialize Portfolio Chatbot
+    if (window.PortfolioChat) {
+      window.PortfolioChat.init();
+    }
+
+    // 10.7. Initialize Floating Action Button (FAB) Hub & Visitor Invitation
+    if (window.PortfolioFab) {
+      window.PortfolioFab.init();
     }
 
     // 11. Back to Top Smooth Scroll

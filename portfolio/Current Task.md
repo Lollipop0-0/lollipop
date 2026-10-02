@@ -7,15 +7,15 @@
 
 ## Active Task Summary
 - **Tasks**:
-  1. **Clean, Minimal Tour Invitation Modal (Cut Picture & Fluff)**:
-     - **Removed AI-Style Visuals**: Completely removed the avatar picture/frame, rainbow gradient borders, glowing gradient orb, green pulsing radar beacons, and feature chips.
-     - **Natural, Human Prompting**: Replaced verbose copy with clean, direct typography:
-       - Heading: `Want a quick tour?`
-       - Description: `I can show you around the key sections and features.`
-     - **Direct Action Buttons**: Two clean, balanced, side-by-side buttons: `No, thanks` (secondary) and `Yes, guide me` (primary).
-     - **Button Contrast Fix**: Fixed button text visibility bug where `.gi-btn-primary` used non-existent `--background` variable; added `color: #ffffff !important` in light mode and `color: #09090b !important` in dark mode.
-     - **Compact & Focused Card**: Set to `max-width: 320px` with 18px border radius and clean surface background matching the site's design tokens.
-     - **Recompiled Assets**: Compiled production `styles.min.css` (161.9 KB) and `bundle.min.js` (338.0 KB). Syntax validated with `node -c`.
+  1. **Floating Action Button (FAB) Hub & Portfolio Chatbot**:
+     - **FAB Interaction Hub (`#portfolioFab`)**: Fixed in the bottom-right corner, persistent across scrolling with a sparkles ✨ icon that smoothly morphs/rotates into a clean close ✕ icon when open.
+     - **Expanded Action Menu (`#fabActionMenu`)**: Smoothly expands with staggered spring animation above the FAB presenting two interactive choices:
+       - `🧭 Tour My Portfolio`
+       - `🤖 Chat With Me`
+     - **Friendly Visitor Welcome Invitation (`#visitorInviteNotification`)**: Anchored near the FAB introducing the two options with exact required copy, smooth entrance, obvious dismissal, and localStorage persistence (`ket_fab_invite_dismissed`).
+     - **Preserved Existing Tour Guide Walkthrough**: Reused `GuideManager.start()`, preserving 100% of the existing tour steps, minimum-jerk trajectory physics, speech bubble, mobile drawer transitions, and SweetAlert2 stop confirmation. Automatically hides the FAB during active tours and restores it upon completion or manual stop.
+     - **Portfolio Chatbot (`#portfolioChatbot` & `assets/js/portfolio-chat.js`)**: Responsive floating chat window with suggestion chips, enter-to-send, typing cadence indicator, and intelligent response engine answering strictly from `PORTFOLIO_DATA`. Truthful fallback when outside portfolio scope.
+     - **Recompiled Assets (`optimize.py`)**: Generated updated `styles.min.css` (179.1 KB) and `bundle.min.js` (372.8 KB). Syntax validated with `node -c` (exit code 0).
   2. **Mobile Menu Toggle Tour Guidance (`#mobile-menu-toggle`)**:
      - **Pre-Drawer Hamburger Guidance**: On mobile devices, the autonomous guide now specifically points to the hamburger menu toggle button (`#mobile-menu-toggle` / `[data-guide="mobile-menu-toggle"]`) before the drawer is opened.
      - **Visual Feedback & Tap Animation**: Cursor glides directly to the mobile toggle, applies simulated hover/tap styling (`.mobile-menu-toggle.gc-hover`), and types: *"Tap the menu toggle anytime to open navigation links and explore pages."*

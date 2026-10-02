@@ -384,17 +384,21 @@ const SearchManager = (() => {
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
     } else {
-      const aboutSections = ["about-intro", "journey", "stack"];
-      if (aboutSections.includes(target)) {
-        window.location.href = `about.html#${target}`;
-      } else if (target === "about") {
-        window.location.href = "about.html";
-      } else if (target === "certificates") {
-        window.location.href = `certificates.html`;
-      } else if (target === "selected-work" || target === "projects") {
-        window.location.href = `index.html#selected-work`;
+      if (target === "stack") {
+        window.location.href = "tech-stack.html";
       } else {
-        window.location.href = `index.html#${target}`;
+        const aboutSections = ["about-intro", "journey"];
+        if (aboutSections.includes(target)) {
+          window.location.href = `about.html#${target}`;
+        } else if (target === "about") {
+          window.location.href = "about.html";
+        } else if (target === "certificates") {
+          window.location.href = `certificates.html`;
+        } else if (target === "selected-work" || target === "projects") {
+          window.location.href = `index.html#selected-work`;
+        } else {
+          window.location.href = `index.html#${target}`;
+        }
       }
     }
   }

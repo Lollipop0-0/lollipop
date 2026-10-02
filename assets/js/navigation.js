@@ -138,13 +138,9 @@ const NavigationManager = (() => {
       (document.getElementById("app") && document.getElementById("app").getAttribute("data-page") === "about");
 
     if (isAboutPage) {
-      const isStackTarget = window.location.hash === "#stack";
       navLinks.forEach(link => {
         const href = link.getAttribute("href") || "";
         if (href === "about.html" || href === "/about" || href.endsWith("/about.html") || href.includes("components/about")) {
-          link.classList.add("is-active");
-          link.setAttribute("aria-current", "page");
-        } else if (isStackTarget && (href === "about.html#stack" || href === "#stack")) {
           link.classList.add("is-active");
           link.setAttribute("aria-current", "page");
         } else {
@@ -159,13 +155,7 @@ const NavigationManager = (() => {
       const gearItem = document.getElementById("more-link-gear");
       if (gearItem) gearItem.classList.remove("is-active");
       const stackItem = document.getElementById("more-link-stack");
-      if (stackItem) {
-        if (isStackTarget) {
-          stackItem.classList.add("is-active");
-        } else {
-          stackItem.classList.remove("is-active");
-        }
-      }
+      if (stackItem) stackItem.classList.remove("is-active");
       return;
     }
 
@@ -498,7 +488,8 @@ const NavigationManager = (() => {
       // About page timeline, figuring out, tech stack, and snapshot cards
       ".journey-item",
       ".figuring-out-card",
-      ".stack-category-card",
+      ".stack-section-header",
+      ".stack-category-group",
       ".snapshot-card"
     ];
 

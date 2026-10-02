@@ -18,12 +18,11 @@ const ComponentLoader = (() => {
     { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
   ];
 
-  // Dedicated About page manifest: Narrative hero, journey, stack
+  // Dedicated About page manifest: Narrative hero, journey
   const ABOUT_MANIFEST = [
     { name: "header", path: "components/header.html", isMainChild: false },
     { name: "about-hero", path: "components/about-page-hero.html", isMainChild: true },
     { name: "journey", path: "components/journey.html", isMainChild: true },
-    { name: "stack", path: "components/stack.html", isMainChild: true },
     { name: "footer", path: "components/footer.html", isMainChild: false },
     { name: "project-modal", path: "components/project-modal.html", isMainChild: false }
   ];

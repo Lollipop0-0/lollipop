@@ -533,13 +533,17 @@ const GuideManager = (() => {
 
   const isAllowedInteractionTarget = (target) => {
     if (!target || !(target instanceof Node)) return false;
-    // Allow interactions inside the Stop Guide button container
-    if (stopWrap && (target === stopWrap || (typeof stopWrap.contains === "function" && stopWrap.contains(target)))) {
-      return true;
-    }
-    // Allow interactions inside SweetAlert2 modal / container
-    if (typeof target.closest === "function" && target.closest(".swal2-container")) {
-      return true;
+    try {
+      // Allow interactions inside the Stop Guide button container
+      if (stopWrap && (target === stopWrap || (typeof stopWrap.contains === "function" && stopWrap.contains(target)))) {
+        return true;
+      }
+      // Allow interactions inside SweetAlert2 modal / container
+      if (typeof target.closest === "function" && target.closest(".swal2-container")) {
+        return true;
+      }
+    } catch (_) {
+      return false;
     }
     return false;
   };

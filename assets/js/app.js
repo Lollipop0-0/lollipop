@@ -1149,12 +1149,14 @@ function initClickBurst() {
 
   // Tactile micro-tick acoustic feedback on hovering interactive elements
   document.addEventListener("mouseover", (e) => {
-    if (!e.target || !e.target.closest) return;
+    if (!e.target || typeof e.target.closest !== "function") return;
     const interactive = e.target.closest("a, button, .btn, .nav-link, .nav-dropdown-item, .project-card, .gear-card, .naphier-tech-card, .cert-marquee-item, .card");
-    if (interactive && !interactive.contains(e.relatedTarget)) {
-      if (window.SoundManager) {
-        window.SoundManager.playHover();
-      }
+    if (!interactive) return;
+
+    const related = e.relatedTarget;
+    const isInside = Boolean(related && (related instanceof Node) && interactive.contains(related));
+    if (!isInside && window.SoundManager && typeof window.SoundManager.playHover === "function") {
+      window.SoundManager.playHover();
     }
   }, { passive: true });
 }

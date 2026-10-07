@@ -532,9 +532,9 @@ const GuideManager = (() => {
   let interactionsLocked = false;
 
   const isAllowedInteractionTarget = (target) => {
-    if (!target) return false;
+    if (!target || !(target instanceof Node)) return false;
     // Allow interactions inside the Stop Guide button container
-    if (stopWrap && (target === stopWrap || stopWrap.contains(target))) {
+    if (stopWrap && (target === stopWrap || (typeof stopWrap.contains === "function" && stopWrap.contains(target)))) {
       return true;
     }
     // Allow interactions inside SweetAlert2 modal / container
@@ -590,9 +590,10 @@ const GuideManager = (() => {
 
   const handleBlockedFocus = (e) => {
     if (!running) return;
+    if (!e.target || e.target === window || e.target === document || !(e.target instanceof HTMLElement)) return;
     if (isAllowedInteractionTarget(e.target)) return;
 
-    if (e.target && typeof e.target.blur === "function") {
+    if (typeof e.target.blur === "function") {
       e.target.blur();
     }
   };

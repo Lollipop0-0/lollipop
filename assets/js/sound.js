@@ -46,28 +46,45 @@ window.SoundManager = (function () {
     // If user previously activated sound, resume on their first gesture
     if (!isMuted) {
       const resumeOnGesture = () => {
+        isUnlocked = true;
         if (!isMuted && !isMusicPlaying) {
           startAmbientMusic();
           updateUI();
         }
-        window.removeEventListener("pointerdown", resumeOnGesture);
-        window.removeEventListener("keydown", resumeOnGesture);
-        window.removeEventListener("touchstart", resumeOnGesture);
+        cleanup();
       };
-      window.addEventListener("pointerdown", resumeOnGesture, { passive: true });
-      window.addEventListener("keydown", resumeOnGesture, { passive: true });
-      window.addEventListener("touchstart", resumeOnGesture, { passive: true });
+      const cleanup = () => {
+        window.removeEventListener("pointerdown", resumeOnGesture, true);
+        window.removeEventListener("keydown", resumeOnGesture, true);
+        window.removeEventListener("touchstart", resumeOnGesture, true);
+        window.removeEventListener("click", resumeOnGesture, true);
+      };
+      window.addEventListener("pointerdown", resumeOnGesture, { capture: true, passive: true });
+      window.addEventListener("keydown", resumeOnGesture, { capture: true, passive: true });
+      window.addEventListener("touchstart", resumeOnGesture, { capture: true, passive: true });
+      window.addEventListener("click", resumeOnGesture, { capture: true, passive: true });
     }
   }
 
-  function getContext() {
-    if (!ctx && typeof window !== "undefined") {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (AudioCtx) {
-        ctx = new AudioCtx();
+  function hasUserGesture() {
+    if (isUnlocked) return true;
+    if (typeof navigator !== "undefined" && navigator.userActivation && (navigator.userActivation.hasBeenActive || navigator.userActivation.isActive)) {
+      isUnlocked = true;
+      return true;
+    }
+    return false;
+  }
+
+  function getContext(allowCreate = false) {
+    if (!ctx && allowCreate && typeof window !== "undefined") {
+      if (hasUserGesture()) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) {
+          ctx = new AudioCtx();
+        }
       }
     }
-    if (ctx && ctx.state === "suspended") {
+    if (ctx && ctx.state === "suspended" && hasUserGesture()) {
       ctx.resume().catch(() => {});
     }
     return ctx;
@@ -77,17 +94,22 @@ window.SoundManager = (function () {
     if (isUnlocked || typeof window === "undefined") return;
     const unlock = () => {
       isUnlocked = true;
-      const c = getContext();
+      const c = getContext(true);
       if (c && c.state === "suspended") {
         c.resume().catch(() => {});
       }
-      window.removeEventListener("pointerdown", unlock);
-      window.removeEventListener("keydown", unlock);
-      window.removeEventListener("touchstart", unlock);
+      cleanup();
     };
-    window.addEventListener("pointerdown", unlock, { passive: true });
-    window.addEventListener("keydown", unlock, { passive: true });
-    window.addEventListener("touchstart", unlock, { passive: true });
+    const cleanup = () => {
+      window.removeEventListener("pointerdown", unlock, true);
+      window.removeEventListener("keydown", unlock, true);
+      window.removeEventListener("touchstart", unlock, true);
+      window.removeEventListener("click", unlock, true);
+    };
+    window.addEventListener("pointerdown", unlock, { capture: true, passive: true });
+    window.addEventListener("keydown", unlock, { capture: true, passive: true });
+    window.addEventListener("touchstart", unlock, { capture: true, passive: true });
+    window.addEventListener("click", unlock, { capture: true, passive: true });
   }
 
   /**
@@ -95,7 +117,7 @@ window.SoundManager = (function () {
    */
   function startAmbientMusic() {
     if (isMusicPlaying) return;
-    const audioCtx = getContext();
+    const audioCtx = getContext(true);
     if (!audioCtx) return;
 
     // Support optional custom audio tag if present in markup
@@ -132,8 +154,8 @@ window.SoundManager = (function () {
 
   function scheduleNextChord() {
     if (!isMusicPlaying) return;
-    const audioCtx = getContext();
-    if (!audioCtx || audioCtx.state === "closed") return;
+    const audioCtx = getContext(false);
+    if (!audioCtx || audioCtx.state !== "running") return;
 
     const chord = CHORDS[chordIndex];
     const now = audioCtx.currentTime;
@@ -239,7 +261,7 @@ window.SoundManager = (function () {
   function playClick() {
     if (isMuted) return;
     try {
-      const audioCtx = getContext();
+      const audioCtx = getContext(true);
       if (!audioCtx || audioCtx.state === "closed") return;
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
@@ -269,12 +291,13 @@ window.SoundManager = (function () {
    */
   function playHover() {
     if (isMuted) return;
+    if (!hasUserGesture()) return;
     const now = Date.now();
     if (now - lastHoverTime < hoverCooldownMs) return;
     lastHoverTime = now;
     try {
-      const audioCtx = getContext();
-      if (!audioCtx || audioCtx.state === "closed") return;
+      const audioCtx = getContext(false);
+      if (!audioCtx || audioCtx.state !== "running") return;
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
 
@@ -299,7 +322,7 @@ window.SoundManager = (function () {
   function playTheme() {
     if (isMuted) return;
     try {
-      const audioCtx = getContext();
+      const audioCtx = getContext(true);
       if (!audioCtx || audioCtx.state === "closed") return;
       const osc1 = audioCtx.createOscillator();
       const osc2 = audioCtx.createOscillator();
@@ -332,7 +355,7 @@ window.SoundManager = (function () {
   function playOpen() {
     if (isMuted) return;
     try {
-      const audioCtx = getContext();
+      const audioCtx = getContext(true);
       if (!audioCtx || audioCtx.state === "closed") return;
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
@@ -358,7 +381,7 @@ window.SoundManager = (function () {
   function playClose() {
     if (isMuted) return;
     try {
-      const audioCtx = getContext();
+      const audioCtx = getContext(true);
       if (!audioCtx || audioCtx.state === "closed") return;
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
@@ -384,7 +407,7 @@ window.SoundManager = (function () {
   function playNavigate() {
     if (isMuted) return;
     try {
-      const audioCtx = getContext();
+      const audioCtx = getContext(true);
       if (!audioCtx || audioCtx.state === "closed") return;
       const osc1 = audioCtx.createOscillator();
       const osc2 = audioCtx.createOscillator();
@@ -416,7 +439,7 @@ window.SoundManager = (function () {
    */
   function playActivationChime() {
     try {
-      const audioCtx = getContext();
+      const audioCtx = getContext(true);
       if (!audioCtx || audioCtx.state === "closed") return;
       const notes = [523.25, 659.25, 783.99, 987.77];
       const start = audioCtx.currentTime;
@@ -445,7 +468,7 @@ window.SoundManager = (function () {
    */
   function playMutePop() {
     try {
-      const audioCtx = getContext();
+      const audioCtx = getContext(true);
       if (!audioCtx || audioCtx.state === "closed") return;
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
@@ -469,7 +492,8 @@ window.SoundManager = (function () {
    * Main Toggle Handler (Toggles Background Music + Sound Effects)
    */
   function toggleMusic() {
-    const audioCtx = getContext();
+    isUnlocked = true;
+    const audioCtx = getContext(true);
     if (audioCtx && audioCtx.state === "suspended") {
       audioCtx.resume().catch(() => {});
     }
@@ -562,7 +586,9 @@ window.SoundManager = (function () {
   return {
     init,
     playClick,
+    playPop: playClick,
     playHover,
+    playTick: playHover,
     playTheme,
     playOpen,
     playClose,
